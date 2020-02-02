@@ -9,6 +9,8 @@
 #   makefile.
 # - Be compliant to no more than C++17 (plus GNU extensions / C11 backports)
 
+default: all
+
 ################################################################################
 SRC =
 ################################################################################
@@ -25,9 +27,13 @@ SUFFIXES =
 # just consider our own suffixes
 .SUFFIXES: .cpp .h .hpp .x .out .a .so
 
-all: $(EXE)
+all: compile
 
 .PHONY: all
+
+compile: $(EXE)
+
+.PHONY: compile
 
 %.x: %.cpp
 	$(CXX) $< -o $@ $(CXXFLAGS)

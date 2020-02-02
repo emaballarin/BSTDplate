@@ -3,13 +3,17 @@
 
 default: all
 
-all:
-	+$(MAKE) $@ -C src
-	+$(MAKE) $@ -C include
+all: compile
+
+bear: clean compile
+
+compile:
+	+$(MAKE) $@ -C src -f Makefile
+	+$(MAKE) $@ -C include -f Makefile
 
 clean:
-	+$(MAKE) $@ -C src
-	+$(MAKE) $@ -C include
+	+$(MAKE) $@ -C src -f Makefile clean
+	+$(MAKE) $@ -C include -f Makefile clean
 	@find . -type f \( -name '*~' -o -name 'a.out' -name '*.x' \) -exec rm '{}' \;
 
 format:
@@ -24,4 +28,4 @@ clangify-revert:
 	+find . -type d -exec rm -R -f {}/./.clang-format \;
 	+mv -f ./.clang-format-backup ./.clang-format
 
-.PHONY: all clean format default clangify clangify-revert
+.PHONY: all bear compile clean format default clangify clangify-revert
