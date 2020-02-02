@@ -1,6 +1,9 @@
 # BSTDplate
 
 
+![Build Status](https://travis-ci.com/emaballarin/BSTDplate.svg?branch=master)
+
+
 A (hopefully) *no-frills* **templated Binary Search Tree** implementation using iterators, in modern C++ (i.e. C++14/17/20).
 
 This project is a joint effort of [Leonardo Arrighi](https://github.com/LeonardoArrighi), [Francesco Romor](https://github.com/FrancescoRo) and [Emanuele Ballarin](https://github.com/emaballarin)
