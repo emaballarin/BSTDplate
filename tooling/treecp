@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# [ba|z]sh shorthand to recursively copy the .clang-format file (or any) across the entire directory tree, as required by some IDEs/editors
+
+treecp () {
+find . -type d -exec cp "$1" {} \;
+}
