@@ -43,7 +43,8 @@ compile_flags.txt
 compile_commands.json
 
 # Clang Formatter/Completer
-#.clang-format
+.clang-format
+!/.clang-format
 /.clang_complete
 
 # Special files and folders

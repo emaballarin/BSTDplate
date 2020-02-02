@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# [ba|z]sh shorthand to just reverse the effects of `treecp`.
-
-treerm () {
-find . -type d -exec rm -R -f {}/$1 \;
-}
