@@ -16,7 +16,7 @@ SRC =
 ################################################################################
 
 CXX = c++
-CXXFLAGS = -W -Wall -Wextra -g -std=c++17 -I./ -I../include/
+CXXFLAGS = -W -Wall -Wextra -g -std=c++17 -ansi -pedantic -I./ -I../include/
 
 EXE = $(SRC:.cpp=.x)
 
