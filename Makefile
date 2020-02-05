@@ -42,6 +42,19 @@ pvsrun:
 	+plog-converter -a GA:1,2 -t tasklist -o ./project.tasks ./project.log
 	+pvsdeploy rem ./
 
+# Just like the one above, but working only if you have a "real" license. Avoids some "jumping through hoops of fire", OTOH.
+# May not work if you don't have the right files/tools/executables in-place...
+pvsrun-compliant:
+	+rm ./compile_commands.json
+	+bear make bear
+	+make clean
+	+rm ./project.log
+	+rm ./project.tasks
+	+rm ./strace_out
+	+pvs-studio-analyzer trace -- make bear
+	+pvs-studio-analyzer analyze -o ./project.log -j4
+	+plog-converter -a GA:1,2 -t tasklist -o ./project.tasks ./project.log
+
 # May not work if you don't have the right files/tools/executables in-place...
 bear-aio:
 	+make clean
@@ -57,4 +70,4 @@ clean-all:
 	+pvsdeploy rem ./
 
 
-.PHONY: all bear compile clean format default clangify clangify-revert pvsrun bear-aio clean-all
+.PHONY: all bear compile clean format default clangify clangify-revert pvsrun bear-aio clean-all pvsrun-compliant
