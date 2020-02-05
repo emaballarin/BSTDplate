@@ -30,12 +30,12 @@ clangify-revert:
 
 # May not work if you don't have the right files/tools/executables in-place...
 pvsrun:
-	+rm ./compile_commands.json
+	+rm -f ./compile_commands.json
 	+bear make bear
 	+make clean
-	+rm ./project.log
-	+rm ./project.tasks
-	+rm ./strace_out
+	+rm -f ./project.log
+	+rm -f ./project.tasks
+	+rm -f ./strace_out
 	+pvsdeploy add ./
 	+pvs-studio-analyzer trace -- make bear
 	+pvs-studio-analyzer analyze -o ./project.log -j4
@@ -45,12 +45,12 @@ pvsrun:
 # Just like the one above, but working only if you have a "real" license. Avoids some "jumping through hoops of fire", OTOH.
 # May not work if you don't have the right files/tools/executables in-place...
 pvsrun-compliant:
-	+rm ./compile_commands.json
+	+rm -f ./compile_commands.json
 	+bear make bear
 	+make clean
-	+rm ./project.log
-	+rm ./project.tasks
-	+rm ./strace_out
+	+rm -f ./project.log
+	+rm -f ./project.tasks
+	+rm -f ./strace_out
 	+pvs-studio-analyzer trace -- make bear
 	+pvs-studio-analyzer analyze -o ./project.log -j4
 	+plog-converter -a GA:1,2 -t tasklist -o ./project.tasks ./project.log
@@ -64,9 +64,9 @@ bear-aio:
 # May not work if you don't have the right files/tools/executables in-place...
 clean-all:
 	+make clean
-	+rm ./project.log
-	+rm ./project.tasks
-	+rm ./strace_out
+	+rm -f ./project.log
+	+rm -f ./project.tasks
+	+rm -f ./strace_out
 	+pvsdeploy rem ./
 
 
