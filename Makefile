@@ -28,4 +28,33 @@ clangify-revert:
 	+find . -type d -exec rm -R -f {}/./.clang-format \;
 	+mv -f ./.clang-format-backup ./.clang-format
 
-.PHONY: all bear compile clean format default clangify clangify-revert
+# May not work if you don't have the right files/tools/executables in-place...
+pvsrun:
+	+rm ./compile_commands.json
+	+bear make bear
+	+make clean
+	+rm ./project.log
+	+rm ./project.tasks
+	+rm ./strace_out
+	+pvsdeploy add ./
+	+pvs-studio-analyzer trace -- make bear
+	+pvs-studio-analyzer analyze -o ./project.log -j4
+	+plog-converter -a GA:1,2 -t tasklist -o ./project.tasks ./project.log
+	+pvsdeploy rem ./
+
+# May not work if you don't have the right files/tools/executables in-place...
+bear-aio:
+	+make clean
+	+bear make bear
+	+make clean
+
+# May not work if you don't have the right files/tools/executables in-place...
+clean-all:
+	+make clean
+	+rm ./project.log
+	+rm ./project.tasks
+	+rm ./strace_out
+	+pvsdeploy rem ./
+
+
+.PHONY: all bear compile clean format default clangify clangify-revert pvsrun bear-aio clean-all
