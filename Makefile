@@ -48,5 +48,13 @@ bear-aio:
 	+bear make bear
 	+make clean
 
+# May not work if you don't have the right files/tools/executables in-place...
+clean-all:
+	+make clean
+	+rm ./project.log
+	+rm ./project.tasks
+	+rm ./strace_out
+	+pvsdeploy rem ./
 
-.PHONY: all bear compile clean format default clangify clangify-revert pvsrun bear-aio
+
+.PHONY: all bear compile clean format default clangify clangify-revert pvsrun bear-aio clean-all
