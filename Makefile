@@ -20,6 +20,11 @@ format:
 	+$(MAKE) $@ -C src
 	+$(MAKE) $@ -C include
 
+valgrind:
+	+make all
+	+$(MAKE) $@ -C src
+	+$(MAKE) $@ -C include
+
 clangify:
 	+find . -type d -exec cp -f "./.clang-format" {} \;
 
@@ -70,4 +75,4 @@ clean-all:
 	+pvsdeploy rem ./
 
 
-.PHONY: all bear compile clean format default clangify clangify-revert pvsrun bear-aio clean-all pvsrun-compliant
+.PHONY: all bear compile clean format default clangify clangify-revert pvsrun bear-aio clean-all pvsrun-compliant valgrind
