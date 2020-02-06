@@ -43,6 +43,14 @@ format: $(SRC)
 
 .PHONY: format
 
+valgrind:
+	make all
+ifneq ("$(wildcard ./*.x)", "")
+	@valgrind -s ./*.x || echo "Please, install valgrind to run this command!"
+endif
+
+.PHONY: valgrind
+
 clean:
 	rm -f $(EXE) *~
 
