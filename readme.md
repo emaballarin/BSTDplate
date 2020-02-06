@@ -1,7 +1,7 @@
 # Advanced Programming Exam
 
 The exam consists of a written project followed by an oral discussion. 
-The written project is due to February 14, 2020, at 11:59 PM.
+The written project is due to February 19, 2020, at 11:59 PM.
 Orals take place on 19th and 20th of February.
 
 - Work in groups make of two/three people.
@@ -34,6 +34,7 @@ The tree must be traversed in order, i.e., if I "print" the tree in the picture,
 1 3 4 6 7 8 10 13 14
 ```
 node `1` is the first node, and node `14` is the last one.
+
 IF I CANOT GO RIGHT DOWN I GO UP RIGHT, IF I CAN GO RIGHT I GO RIGHT AND THEN AS LEFT AS I CAN. IF I CANNOT GO RIGHT I GO UP. PRIORITY: LEFT DOWN, RIGHT DOWN, UP.
 
 ### Assignments
@@ -68,7 +69,6 @@ std::pair<iterator, bool> insert(const pair_type& x);
 std::pair<iterator, bool> insert(pair_type&& x);
 ```
 They are used to insert a new node. The function returns a pair of an iterator (pointing to the node) and a bool. The bool is true if a new node has been allocated, false otherwise (i.e., the key was already present in the tree). `pair_type` can be for example `std::pair<const key_type, value_type>`. 
-GIVE THE POSSIBILITY TO INSERT WITHOUT TRAVERSING AGAIN IF FALSE: WITH EMPLACE
 
 t.insert({1,2});//make it like below
 //t.insert(std::pair<kt, vt>{1,2});
@@ -99,7 +99,7 @@ const_iterator cbegin() const;
 ```
 
 Return an iterator to the left-most node (which, likely, is not the root node).
-WHEN YOU DEREFERENCE A CONST ITERATOR YOU GET A CONST OBJECT (READ-ONLLY)
+WHEN YOU DEREFERENCE A CONST ITERATOR YOU GET A CONST OBJECT (READ-ONLY)
 
 ##### End
 
@@ -160,7 +160,7 @@ void erase(const key_type& x);
 ```
 
 Removes the element (if one exists) with the key equivalent to key.
-IT IS IMPORTANT THAT YOU DO NOT DELETE OTHER NODES, CHANGE THE KEY (FOR EXAMPLE FROM 3 TO 4)
+IT IS IMPORTANT THAT YOU DO NOT DELETE OTHER NODES, CHANGE THE KEY (FOR EXAMPLE FROM 3 TO 4)[CHIEDI]
 
 ### Hints
 - **Big hint** use `std::pair<const key_type,value_type>`, which is defined in the header `utility`
@@ -169,7 +169,6 @@ IT IS IMPORTANT THAT YOU DO NOT DELETE OTHER NODES, CHANGE THE KEY (FOR EXAMPLE 
 
 template<typename T>//NB NODE COULD BE AN INDEPENDENT CONCEPT SO IT MAKES SENSE TO HAVE JUST ONE NODE
 struct Node{
-std::pair<T>
 using value_type=T
 left pointer (unique pointer)
 righ pointer (unique pointer)
