@@ -4,6 +4,7 @@
 **/.clion/
 **/.pycharm/
 **/.atom/
+**/.clangd/
 qtcreator/
 **/qtcreator/
 
