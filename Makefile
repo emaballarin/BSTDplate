@@ -17,8 +17,10 @@ clean:
 	@find . -type f \( -name '*~' -o -name 'a.out' -name '*.x' \) -exec rm '{}' \;
 
 format:
+	+make clangify
 	+$(MAKE) $@ -C src
 	+$(MAKE) $@ -C include
+	+make clangify-revert
 
 valgrind:
 	+make all
