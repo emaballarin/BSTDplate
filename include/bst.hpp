@@ -9,7 +9,7 @@ class bst
     using key_type = Key;
     using value_type = Value;
     using node_type = Node<std::pair<key_type, value_type>>;
-    using iterator = iterator<node_type>
+    using iterator = iterator<node_type>;
     //using const_iterator
 
     bst() = default;
@@ -56,4 +56,4 @@ class bst
 
     private:
     Node* root;
-}
+};
