@@ -1,167 +1,105 @@
-// DEFINES
-#define DIAG
-
-// INCLUDES
 #include <cassert>
+#include <iostream>
 #include <memory>
 #include <utility>
 
-#if defined(DIAG)
-    #include <iostream>
-#endif
-
-// CLASS
 template<typename T>
 class Node
 {
     public:
     using value_type = T;
 
-    /*
-     * CTORS
-     */
-
-    // Default
-    Node();
-
-    // Custom (full signature, by-value)
-    Node(std::unique_ptr<Node>&, std::unique_ptr<Node>&, std::unique_ptr<Node>&);
-
-    // Copy (by-ref)
+    Node() = default;
     Node(Node&) = delete;
-
-    // Move (non-cqual)
     Node(Node&&);
-
-    // Move (cqual)
     Node(const Node&&);
 
-    /*
-     * ASSTS
-     */
-
-    // Copy (by-ref)
     Node& operator=(const Node&) = delete;
-
-    // Copy (by-val)
     Node& operator=(const Node) = delete;
-
-    // Move (non-cqual)
     Node& operator=(Node&&);
-
-    // Move (cqual)
     Node& operator=(const Node&&);
 
-    /*
-     * DTOR
-     */
+    ~Node() = default;
 
-    ~Node();
-
-    /*
-     * GETTERS / SETTERS
-     */
-    // RO Getter
     const T& read_elem() const;
+    const std::unique_ptr<Node>& read_lc() const;
+    const std::unique_ptr<Node>& read_rc() const;
+    const std::shared_ptr<Node>& read_pr() const;
 
-    // Forwarding setter
+    template<typename ST>
+    void set_lc(Node<ST>&);
+
+    template<typename ST>
+    void set_rc(Node<ST>&);
+
+    template<typename STL, typename STR>
+    void set_both_children(Node<STL>&, Node<STR>&);
+
     template<typename FWR>
     void write_elem(FWR&&);
 
+    void null_left();
+    void null_right();
+
+    void info()
+    {
+        std::cout << "~~ A NODE ~~"
+                  << "\n"
+                  << "Contained element: " << this->read_elem() << "\n"
+                  << "Left child: ";
+        if (this->left_child == nullptr)
+        {
+            std::cout << "NONE";
+        }
+        else
+        {
+            std::cout << this->read_lc().get();
+        }
+        std::cout << "\n";
+        std::cout << "Right child: ";
+        if (this->right_child == nullptr)
+        {
+            std::cout << "NONE";
+        }
+        else
+        {
+            std::cout << this->read_rc().get();
+        }
+        std::cout << "\n";
+        std::cout << "Parent: ";
+        if (this->parent == nullptr)
+        {
+            std::cout << "NONE";
+        }
+        else
+        {
+            std::cout << this->read_pr().get();
+        }
+        std::cout << "\n\n";
+    };
+
 
     private:
-    T elem{};
-    std::unique_ptr<Node> left_child = nullptr;
-    std::unique_ptr<Node> right_child = nullptr;
-    std::unique_ptr<Node> parent = nullptr;
+    T elem;
+
+    std::unique_ptr<Node> left_child;
+    std::unique_ptr<Node> right_child;
+    std::shared_ptr<Node> parent;
+
+    void null_parent();  // Must stay private to avoid disasters
 };
 
-// MEMBER IMPLEMENTATION
-/*
- * CTORS
- */
-
-// Default
-template<typename T>
-Node<T>::Node() : elem{}, left_child{nullptr}, right_child{nullptr}, parent{nullptr}
-{
-#if defined(DIAG)
-    std::cout << "[DIAG]: "
-              << "Called: Default Constructor!"
-              << "\n"
-              << std::endl;
-#endif
-};
-
-// Custom (full signature, by-value)
-template<typename T>
-Node<T>::Node(std::unique_ptr<Node>& lc, std::unique_ptr<Node>& rc, std::unique_ptr<Node>& pr) :
-    //left_child{std::move(lc)}, right_child{std::move(rc)}, parent{std::move(pr)}, elem{}
-    elem{}
-
-{
-    // Asserts
-    assert(((lc != rc) || (lc == nullptr && rc == nullptr))
-           && "Left and Right children cannot be the same, unless null pointers.");
-    assert(((lc != pr && lc != pr) || (lc == nullptr && rc == nullptr && pr == nullptr))
-           && "Left and/or Right children cannot be the same as the parent, unless all are null pointers.");
-
-    // Manage pointers
-    //lc.swap(left_child);
-    //rc.swap(right_child);
-    //pr.swap(parent);
-    lc == nullptr ? left_child = nullptr : left_child.swap(lc);
-    rc == nullptr ? right_child = nullptr : right_child.swap(rc);
-    pr == nullptr ? parent = nullptr : parent.swap(pr);
-
-    // Diagnostics
-#if defined(DIAG)
-    std::cout << "[DIAG]: "
-              << "Called: Custom (FS) Constructor!"
-              << "\n"
-              << std::endl;
-#endif
-};
-
-// Copy (by-ref) <-| DELETED
-// template<typename T>
-// Node<T>::Node(Node&){};
-
-// Move (non-cqual)
 template<typename T>
 Node<T>::Node(Node&& node) :
-    elem{std::move}, left_child{std::move(node.left_child)}, right_child{std::move(node.right_child)}, parent{std::move(
-                                                                                                         node.parent)}
-{
-    // Diagnostics
-#if defined(DIAG)
-    std::cout << "[DIAG]: "
-              << "Called: Move Constructor (NON-CONST)!"
-              << "\n"
-              << std::endl;
-#endif
-};
+    elem{std::move(node.elem)}, left_child{std::move(node.left_child)},
+    right_child{std::move(node.right_child)}, parent{std::move(node.parent)} {};
 
-// Move (cqual)
 template<typename T>
 Node<T>::Node(const Node&& node) :
-    elem{std::move}, left_child{std::move(node.left_child)}, right_child{std::move(node.right_child)}, parent{std::move(
-                                                                                                         node.parent)}
-{
-    // Diagnostics
-#if defined(DIAG)
-    std::cout << "[DIAG]: "
-              << "Called: Move Constructor (CONST)!"
-              << "\n"
-              << std::endl;
-#endif
-};
+    elem{std::move(node.elem)}, left_child{std::move(node.left_child)},
+    right_child{std::move(node.right_child)}, parent{std::move(node.parent)} {};
 
-/*
- * ASSTS
- */
 
-// Move (non-cqual)
 template<typename T>
 Node<T>& Node<T>::operator=(Node<T>&& node)
 {
@@ -169,17 +107,9 @@ Node<T>& Node<T>::operator=(Node<T>&& node)
     this->left_child = std::move(node.left_child);
     this->right_child = std::move(node.right_child);
     this->parent = std::move(node.parent);
-    // Diagnostics
-#if defined(DIAG)
-    std::cout << "[DIAG]: "
-              << "Called: Move Assignment (NON-CONST)!"
-              << "\n"
-              << std::endl;
-#endif
     return *this;
 };
 
-// Move (cqual)
 template<typename T>
 Node<T>& Node<T>::operator=(const Node<T>&& node)
 {
@@ -187,57 +117,93 @@ Node<T>& Node<T>::operator=(const Node<T>&& node)
     this->left_child = std::move(node.left_child);
     this->right_child = std::move(node.right_child);
     this->parent = std::move(node.parent);
-    // Diagnostics
-#if defined(DIAG)
-    std::cout << "[DIAG]: "
-              << "Called: Move Assignment (CONST)!"
-              << "\n"
-              << std::endl;
-#endif
     return *this;
 };
 
-/*
-* DTOR
-*/
-template<typename T>
-Node<T>::~Node()
-{
-#if defined(DIAG)
-    std::cout << "[DIAG]: "
-              << "Called: Destructor!"
-              << "\n"
-              << std::endl;
-#endif
-};
-
-/*
-* GETTERS / SETTERS
-*/
+// Read-only access...
 template<typename T>
 const T& Node<T>::read_elem() const
 {
-#if defined(DIAG)
-    std::cout << "[DIAG]: "
-              << "Getting: elem (ROR)!"
-              << "\n"
-              << std::endl;
-#endif
-    return elem;
+    return this->elem;
+};
+
+template<typename T>
+const std::unique_ptr<Node<T>>& Node<T>::read_lc() const
+{
+    return this->left_child;
+};
+
+template<typename T>
+const std::unique_ptr<Node<T>>& Node<T>::read_rc() const
+{
+    return this->right_child;
+};
+
+template<typename T>
+const std::shared_ptr<Node<T>>& Node<T>::read_pr() const
+{
+    return this->parent;
 };
 
 template<typename T>
 template<typename FWR>
 void Node<T>::write_elem(FWR&& given)
 {
-    elem = std::forward<FWR>(given);  // Copy? Move? Not our problem anymore... ¯\_(ツ)_/¯
-#if defined(DIAG)
-    std::cout << "[DIAG]: "
-              << "Setting: elem (FROM FORWARDING)!"
-              << "\n"
-              << std::endl;
-#endif
+    this->elem = std::forward<FWR>(given);
 };
+
+// Ptr setters
+template<typename T>
+template<typename ST>
+void Node<T>::set_lc(Node<ST>& given)
+{
+    this->left_child = std::make_unique<Node<ST>>(std::move(given));
+    given.parent.reset(this);
+};
+
+template<typename T>
+template<typename ST>
+void Node<T>::set_rc(Node<ST>& given)
+{
+    this->right_child = std::make_unique<Node<ST>>(std::move(given));
+    given.parent.reset(this);
+};
+
+template<typename T>
+template<typename STL, typename STR>
+void Node<T>::set_both_children(Node<STL>& l_given, Node<STR>& r_given)
+{
+    this->set_lc(l_given);
+    this->set_rc(r_given);
+};
+
+// Utility
+template<typename T>
+void Node<T>::null_left()
+{
+    if (this->left_child != nullptr)
+    {
+        this->left_child.get()->null_parent();
+        this->left_child = nullptr;
+    }
+}
+
+template<typename T>
+void Node<T>::null_right()
+{
+    if (this->right_child != nullptr)
+    {
+        this->right_child.get()->null_parent();
+        this->right_child = nullptr;
+    }
+}
+
+template<typename T>
+void Node<T>::null_parent()
+{
+    this->parent = nullptr;
+}
+
 
 // NON-MEMBER IMPLEMENTATION
 // ?
