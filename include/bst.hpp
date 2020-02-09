@@ -2,15 +2,18 @@
 #include <utility>
 
 
-template<typename Key, typename Value, typename Cmp = std::less<Key>(default)>
+template<typename kt, typename vt, typename Cmp = std::less<kt>(default)>
 class bst
 {
     public:
-    using key_type = Key;
-    using value_type = Value;
+
+    using key_type = kt;
+    using value_type = vt;
     using node_type = Node<std::pair<key_type, value_type>>;
     using iterator = iterator<node_type>;
     //using const_iterator
+
+    friend class iterator<node_type>;
 
     bst() = default;
     bst
