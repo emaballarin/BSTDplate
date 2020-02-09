@@ -157,16 +157,16 @@ template<typename T>
 template<typename ST>
 void Node<T>::set_lc(Node<ST>& given)
 {
-    this->left_child = std::make_unique<Node<ST>>(std::move(given));
     given.parent.reset(this);
+    this->left_child = std::make_unique<Node<ST>>(std::move(given));
 };
 
 template<typename T>
 template<typename ST>
 void Node<T>::set_rc(Node<ST>& given)
 {
-    this->right_child = std::make_unique<Node<ST>>(std::move(given));
     given.parent.reset(this);
+    this->right_child = std::make_unique<Node<ST>>(std::move(given));
 };
 
 template<typename T>
