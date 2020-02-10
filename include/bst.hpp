@@ -1,62 +1,88 @@
-#include <node.hpp>
+#pragma once
+#include "node.hpp"
+#include "iterator.hpp"
 #include <utility>
+#include <iostream>
+#include <vector>
 
-
-template<typename kt, typename vt, typename Cmp = std::less<kt>(default)>
+template<typename kt, typename vt, typename cmp = std::less<kt>>
 class bst
 {
     public:
+      using key_type = kt;
+      using value_type = vt;
+      using pair_type = std::pair<kt, vt>;
+      using node_type = Node<pair_type>;
+      using iterator = tree_iterator<node_type>;
+      using const_iterator = const_tree_iterator<node_type>;
 
-    using key_type = kt;
-    using value_type = vt;
-    using node_type = Node<std::pair<key_type, value_type>>;
-    using iterator = iterator<node_type>;
-    //using const_iterator
-
-    friend class iterator<node_type>;
-
-    bst() = default;
-    bst
+      bst() = default;
 
       //insert
-      std::pair<iterator, bool>
-      insert(const pair_type& x);
-    std::pair<iterator, bool> insert(pair_type&& x);
+      std::pair<iterator, bool> insert(const pair_type& x);
+      std::pair<iterator, bool> insert(pair_type&& x);
 
-    //emplace
-    template<class... Types>
-    std::pair<iterator, bool> emplace(Types&&... args);
+      //emplace
+      template<class... Types>
+      std::pair<iterator, bool> emplace(Types&&... args);
 
-    //clear
-    void clear();
+      //clear
+      void clear();
 
-    //begin
-    iterator begin();
-    const_iterator begin() const;
-    const_iterator cbegin() const;
+      //begin
+      iterator begin();
+      const_iterator begin() const;
+      const_iterator cbegin() const;
 
-    //end
-    iterator end();
-    const_iterator end() const;
-    const_iterator cend() const;
+      //end
+      iterator end();
+      const_iterator end() const;
+      const_iterator cend() const;
 
-    //find
-    iterator find(const key_type& x);
-    const_iterator find(const key_type& x) const;
+      //find
+      iterator find(const key_type& x);
+      const_iterator find(const key_type& x) const;
 
-    //balance
-    void balance();
+      //balance
+      void balance();
 
-    //subscripting
-    value_type& operator[](const key_type& x);
-    value_type& operator[](key_type&& x);
+      //subscripting
+      value_type& operator[](const key_type& x);
+      value_type& operator[](key_type&& x);
 
-    //Put-to operator
-    friend std::ostream& operator<<(std::ostream& os, const bst& x);
+      //Put-to operator
+      friend std::ostream& operator<<(std::ostream& os, const bst& x);
 
-    //erase
-    void erase(const key_type& x);
+      //erase
+      void erase(const key_type& x);
 
     private:
-    Node* root;
+      Node<pair_type>* root;
+      std::vector<node_type*> ordered_vec;
+
+      //wrapper for find: bool=true returns end, bool=false returns where to insert
+      iterator find_private(const key_type&, bool);
+      const_iterator find_private(const key_type&, bool) const;
 };
+
+/*They are used to insert a new node. The function returns a pair of an iterator
+(pointing to the node) and a bool. The bool is true if a new node has been
+allocated, false otherwise (i.e., the key was already present in the tree).*/
+template<typename kt, typename vt, typename cmp>
+std::pair<typename bst<kt, vt, cmp>::iterator, bool>
+bst<kt, vt, cmp>::insert(const pair_type& x){
+  iterator iter_found = find(x.first());
+
+  if (iter_found==end()){
+
+  }
+  else{
+    return false;
+  }
+
+}
+
+template<typename kt, typename vt, typename cmp=std::less<kt>>
+std::pair<typename bst<kt, vt, ::iterator, bool> bst<kt, vt, cmp> insert(pair_type&& x){
+
+}
