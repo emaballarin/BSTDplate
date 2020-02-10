@@ -1,11 +1,11 @@
 # Advanced Programming Exam
 
-The exam consists of a written project followed by an oral discussion. 
+The exam consists of a written project followed by an oral discussion.
 The written project is due to February 19, 2020, at 11:59 PM.
 Orals take place on 19th and 20th of February.
 
 - Work in groups make of two/three people.
-- Use a separate git repository. 
+- Use a separate git repository.
 - You have to upload all and only the **source files** you wrote, with a **Makefile** and a **readme.md** where you describe how to compile, run your code, and a short report on what you have done, understood, and, eventually, benchmarked(COMPARE PERFORMANCE WITH OTHER LIBRARIES).
 - Your code must have no memory leaks.
 - No warnings must appear if compiled with the flags `-Wall -Wextra`.
@@ -15,7 +15,7 @@ Orals take place on 19th and 20th of February.
 ## Binary search tree
 A MAP IS SELF-BALANCING(SAME NODES ON LEFT AND RIGHT): EVERY TIME YOU ADD AN ELEMENT IT REBALANCES ITSELF
 
-The project consists of the implementation of a **template** binary search tree (BST). A BST is a hierarchical (ordered) data structure where each **node** can have at most two children, namely, **left** and **right** child. Each node stores a **pair** of a **key** and the associated **value**. The binary tree is ordered according to the keys. 
+The project consists of the implementation of a **template** binary search tree (BST). A BST is a hierarchical (ordered) data structure where each **node** can have at most two children, namely, **left** and **right** child. Each node stores a **pair** of a **key** and the associated **value**. The binary tree is ordered according to the keys.
 If we assume that we sort the keys in ascending order (i.e., we use the less than `<` operator), then given a node `N`, all the nodes having keys **smaller** than the key of the node `N` are on the **left**. All the nodes with a key **greater** than the key of the node `N` are on the **right**.
 
 ![](./.aux/binary.png)
@@ -59,7 +59,7 @@ bool operator()(const T& x, const T& y){ return x< y}}
 
 - Implement proper iterators for your tree (i.e., `iterator` and `const_iterator`). Forward iterator is sufficient. (THE ITERATOR SHOULD FOLLOW THE ORTHER AS IN TREE TRAVERSAL)
 - Mark `noexcept` the right functions.
-- Remember the KISS principle. 
+- Remember the KISS principle.
 - Implement at least the following public member functions.
 
 ##### Insert
@@ -68,7 +68,7 @@ bool operator()(const T& x, const T& y){ return x< y}}
 std::pair<iterator, bool> insert(const pair_type& x);
 std::pair<iterator, bool> insert(pair_type&& x);
 ```
-They are used to insert a new node. The function returns a pair of an iterator (pointing to the node) and a bool. The bool is true if a new node has been allocated, false otherwise (i.e., the key was already present in the tree). `pair_type` can be for example `std::pair<const key_type, value_type>`. 
+They are used to insert a new node. The function returns a pair of an iterator (pointing to the node) and a bool. The bool is true if a new node has been allocated, false otherwise (i.e., the key was already present in the tree). `pair_type` can be for example `std::pair<const key_type, value_type>`.
 
 t.insert({1,2});//make it like below
 //t.insert(std::pair<kt, vt>{1,2});
@@ -95,6 +95,7 @@ Clear the content of the tree.
 ```c++
 iterator begin();
 const_iterator begin() const;
+
 const_iterator cbegin() const;
 ```
 
@@ -106,6 +107,7 @@ WHEN YOU DEREFERENCE A CONST ITERATOR YOU GET A CONST OBJECT (READ-ONLY)
 ```c++
 iterator end();
 const_iterator end() const;
+
 const_iterator cend() const;
 ```
 
@@ -136,7 +138,7 @@ value_type& operator[](key_type&& x);
 ```
 Returns a reference to the value that is mapped to a key equivalent to `x`, performing an insertion if such key does not already exist.
 
-NB: THERE IS NO CONST BEFORE{: 
+NB: THERE IS NO CONST BEFORE{:
 
 insert({x, vt{}})// for the default constructor
 
@@ -240,11 +242,10 @@ class bst{}
 
 #to test
 bits_bst.hpp
-#ifndef 
+#ifndef
 #include "bst.hpp"
 
 insert..
 #endif
 
 NB keep templates in headers
-
