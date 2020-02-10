@@ -7,7 +7,7 @@
  *                                                                            *
 \******************************************************************************/
 #pragma once
-#define DIAG  // Disable this before "shipping to production"
+#define DIAG  // Remove/comment this before "shipping to production"
 
 #include <cassert>              // Safety tests
 #include <experimental/memory>  // Use: observer_ptr | we REALLY want a raw ptr with the same semantics as smart ptr
@@ -28,10 +28,10 @@ class Node
     template<typename FWR>
     inline Node(FWR&&) noexcept;
 
-    Node(Node&) = delete;
+    Node(Node&) = delete;  // Explicit deletion as in GNU unique_ptr.h
     inline Node(Node&&) noexcept;
 
-    Node& operator=(const Node&) = delete;
+    Node& operator=(const Node&) = delete;  // Explicit deletion as in GNU unique_ptr.h
     inline Node& operator=(Node&&) noexcept;
 
     inline ~Node() noexcept = default;
