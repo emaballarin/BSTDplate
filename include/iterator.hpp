@@ -4,51 +4,30 @@
 #include "bst.hpp"
 #include "node.hpp"
 #include <iostream>
+#include <type_traits>
 
-template<typename node>
-class tree_iterator{
+template<typename node, bool Const=true>//https://stackoverflow.com/questions/2150192/how-to-avoid-code-duplication-implementing-const-and-non-const-iterators
+class tree_iterator
+{
+
     public:
-        using value_type = typename node::value_type; // we use typename to avoid the compiler to think of it as the name of a static variable of node
-        using reference = value_type&;
-        using pointer = value_type*;
-        using iterator_category = std::forward_iterator_tag;
+    using value_type = typename node::value_type;
+    using reference = typename std::conditional< Const, const node &, node & >::type;
+    using pointer = typename std::conditional< Const, const node *, node * >::type;
+    using iterator_category = std::forward_iterator_tag;
+    using difference_type = std::ptrdiff_t;
 
-        reference operator*() const;
-        pointer operator->() const;
+    reference operator*() const;
+    pointer operator->() const;
 
-        tree_iterator& operator++();
-        tree_iterator operator++(int);
-        bool operator==(const tree_iterator& rhs) const;
-        bool operator!=(const tree_iterator& rhs) const;
-
-
+    tree_iterator& operator++();
+    tree_iterator operator++(int);
+    bool operator==(const tree_iterator& rhs) const;
+    bool operator!=(const tree_iterator& rhs) const;
 
     private:
-        Node<value_type>* current;
-
-
+    node* current;
 };
 
-template<typename node>
-class const_tree_iterator{
-    public:
-        using value_type = typename node::value_type; // we use typename to avoid the compiler to think of it as the name of a static variable of node
-        using const_reference = const value_type&;
-        using const_pointer = const value_type*;
-        using iterator_category = std::forward_iterator_tag;
-
-        const_reference operator*() const;
-        const_pointer operator->() const;
-
-        const_tree_iterator& operator++();
-        const_tree_iterator operator++(int);
-        bool operator==(const const_tree_iterator& rhs) const;
-        bool operator!=(const const_tree_iterator& rhs) const;
-
-
-
-    private:
-        const Node<value_type>* current;
-
-
-};
+template<typename node, bool Const>
+typename tree_iterator<node, Const>::reference tree_iterator<node, Const>::operator*() const{}
