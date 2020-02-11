@@ -120,9 +120,21 @@ inline tree_iterator<node, Const>& tree_iterator<node, Const>::leftmost(tree_ite
 {
     tree_iterator<node, Const> next{given};
 
+<<<<<<< HEAD
     while (next->read_lc())
     {
         next.current = next->read_lc.get();
     }
     return next;
+=======
+  return next;
+}
+
+template<typename node, bool Const>
+bool tree_iterator<node, Const>::next_exist(tree_iterator& given) const{
+  if
+  while ( !(given->is_left()) && !(given->read_pr()->read_rc()) && given->read_pr.get()){
+    given.current = given->read_pr().get();
+  }
+>>>>>>> changes in iterator
 }
