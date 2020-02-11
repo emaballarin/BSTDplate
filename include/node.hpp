@@ -50,6 +50,8 @@ class Node
     template<typename FWR>
     inline void write_elem(FWR&&);
 
+    inline void detach_left() noexcept;
+    inline void detach_right() noexcept;
     inline void null_left() noexcept;
     inline void null_right() noexcept;
 
@@ -152,7 +154,7 @@ inline void Node<T>::set_both_children(Node<T>*& l_given, Node<T>*& r_given)
 
 // Utility
 template<typename T>
-inline void Node<T>::null_left() noexcept
+inline void Node<T>::detach_left() noexcept
 {
     if (this->left_child != nullptr)
     {
@@ -163,13 +165,31 @@ inline void Node<T>::null_left() noexcept
 }
 
 template<typename T>
-inline void Node<T>::null_right() noexcept
+inline void Node<T>::detach_right() noexcept
 {
     if (this->right_child != nullptr)
     {
         this->right_child.get()->null_parent();
         this->right_child.release();
         this->right_child = nullptr;
+    }
+}
+
+template<typename T>
+inline void Node<T>::null_left() noexcept
+{
+    if (this->left_child != nullptr)
+    {
+        this->left_child.reset();
+    }
+}
+
+template<typename T>
+inline void Node<T>::null_right() noexcept
+{
+    if (this->right_child != nullptr)
+    {
+        this->right_child.reset();
     }
 }
 
