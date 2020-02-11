@@ -1,16 +1,23 @@
+/******************************************************************************\
+ * |> ITERATOR a.k.a. iterator.hpp <|                                         *
+ *                                                                            *
+ * "Knowing too much is a great advantage and a greater curse"                *
+ *                                                                            *
+ *                          (on the choice of not relying explicitly on keys) *
+ *                                                                            *
+\******************************************************************************/
 #pragma once
-#include <iterator>
-#include <memory>
-//#include "bst.hpp"
+
 #include "node.hpp"
+//#include "bst.hpp"    // Cannot cyclically import ;)
 
 #include <iostream>
+#include <iterator>
+#include <memory>
 #include <type_traits>
 
-template<
-  typename node,
-  bool Const =
-    true>  //https://stackoverflow.com/questions/2150192/how-to-avoid-code-duplication-implementing-const-and-non-const-iterators
+template<typename node,
+         bool Const = true>  // Source: https://stackoverflow.com/questions/2150192
 class tree_iterator
 {
     public:
@@ -18,9 +25,9 @@ class tree_iterator
     using reference = typename std::conditional<Const, const node&, node&>::type;
     using pointer = typename std::conditional<Const, const node*, node*>::type;
     using iterator_category = std::forward_iterator_tag;
-    using difference_type = std::ptrdiff_t;  //not used
+    using difference_type = std::ptrdiff_t;  // Never used, but needed ;)
 
-    //constructor. Default move and copy constructors/assignments
+    // Custom: ctor | Default: cpctor, mvctor, cpasst, mvasst, dtor
     explicit tree_iterator(node*&) noexcept;
 
     reference operator*() const;
@@ -36,8 +43,7 @@ class tree_iterator
     private:
     value_type* current;
 
-    tree_iterator& leftmost(tree_iterator&);
-    bool next_exist(tree_iterator&) const;
+    tree_iterator& leftmost(tree_iterator&) const;  // Originally not const. Why?
 };
 
 template<typename node, bool Const>
@@ -62,69 +68,59 @@ tree_iterator<node, Const>& tree_iterator<node, Const>::operator++()
 
     tree_iterator<node, Const> next{current};
 
-    pointer ptr_r = next->read_rc().get();
+    pointer& ptr_r = next->read_rc().get();  // Originally not reference. Why?
+
     if (ptr_r)
     {
         next.current = ptr_r;
-        return left_most(next);
+        next = leftmost(next);
     }
     else if (!(next->read_lc().get()) && next->is_left())
     {
         next.current = next->read_pr().get();
-        return next;
     }
     else
     {
-        while (!(next->is_left()) && !(next->read_pr()->read_rc()) && next->read_pr.get())
+        while (!(next->is_left()) && !(next->read_pr()->read_rc()) && next->read_pr().get())
         {
             next.current = next->read_pr().get();
         }
-        next.current = next ? next->read_pr().get() : current++;
-        return next;
+        next.current =
+          next ? next->read_pr().get() : current++;  // Avoid returning a nullptr (parent of root) instead of tree end
     }
+
+    // Allow (N)RVO, however the compiler wants to perform it
+    return next;
 }
 
 template<typename node, bool Const>
 tree_iterator<node, Const> tree_iterator<node, Const>::operator++(int)
 {
-    if (next_exist())
-    {
-        tree_iterator<node, Const> old{current};
-        ++this;
-        return old;
-    }
+    tree_iterator<node, Const> old{current};  // Always possible if called from in-range
+    ++this;                                   // May result in UB (but not our problem; crf.: N.M. Josuttis, 1999)
+    return old;
 }
 
 template<typename node, bool Const>
 bool tree_iterator<node, Const>::operator==(const tree_iterator<node, Const>& given) const
 {
-    return &*current == &*(given->current);
+    return &*current == &*(given->current);  // Since nodes are uncopyable, it should just satisfy identity
 }
 
 template<typename node, bool Const>
 bool tree_iterator<node, Const>::operator!=(const tree_iterator<node, Const>& given) const
 {
-    return &*current != &*(given->current);
+    return &*current != &*(given->current);  // Since nodes are uncopyable, it should just satisfy non-identity
 }
 
 template<typename node, bool Const>
-tree_iterator<node, Const>& tree_iterator<node, Const>::leftmost(tree_iterator<node, Const>& given)
+tree_iterator<node, Const>& tree_iterator<node, Const>::leftmost(tree_iterator<node, Const>& given) const
 {
-    tree_iterator<node, Const> next{current};
+    tree_iterator<node, Const> next{given};
 
     while (next->read_lc())
     {
         next.current = next->read_lc.get();
     }
-
     return next;
-}
-
-template<typename node, bool Const>
-bool tree_iterator<node, Const>::next_exist(tree_iterator& given) const
-{
-    while (!(given->is_left()) && !(given->read_pr()->read_rc()) && given->read_pr.get())
-    {
-        given.current = given->read_pr().get();
-    }
 }
