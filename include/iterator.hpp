@@ -43,7 +43,7 @@ class tree_iterator
     private:
     value_type* current;
 
-    tree_iterator& leftmost(tree_iterator&) const;  // Originally not const. Why?
+    tree_iterator& leftmost(tree_iterator&);
 };
 
 template<typename node, bool Const>
@@ -89,7 +89,7 @@ tree_iterator<node, Const>& tree_iterator<node, Const>::operator++()
           next ? next->read_pr().get() : current++;  // Avoid returning a nullptr (parent of root) instead of tree end
     }
 
-    // Allow (N)RVO, however the compiler wants to perform it
+    // Allow (N)RVO, however the compiler wants to perform it (Does it? Cool!)
     return next;
 }
 
@@ -114,7 +114,7 @@ bool tree_iterator<node, Const>::operator!=(const tree_iterator<node, Const>& gi
 }
 
 template<typename node, bool Const>
-tree_iterator<node, Const>& tree_iterator<node, Const>::leftmost(tree_iterator<node, Const>& given) const
+tree_iterator<node, Const>& tree_iterator<node, Const>::leftmost(tree_iterator<node, Const>& given)
 {
     tree_iterator<node, Const> next{given};
 
