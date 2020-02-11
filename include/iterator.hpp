@@ -8,6 +8,8 @@
 \******************************************************************************/
 #pragma once
 
+// SET NOEXCEPT WHERE NEEDED!
+
 #include "node.hpp"
 //#include "bst.hpp"    // Cannot cyclically import ;)
 
@@ -28,42 +30,42 @@ class tree_iterator
     using difference_type = std::ptrdiff_t;  // Never used, but needed ;)
 
     // Custom: ctor | Default: cpctor, mvctor, cpasst, mvasst, dtor
-    explicit tree_iterator(node*&) noexcept;
+    inline explicit tree_iterator(node*&) noexcept;
 
-    reference operator*() const;
-    pointer operator->() const;
+    inline reference operator*() const;
+    inline pointer operator->() const;
 
-    tree_iterator& operator++();
-    tree_iterator operator++(int);
+    inline tree_iterator& operator++();
+    inline tree_iterator operator++(int);  // Why not reference?
 
-    bool operator==(const tree_iterator&) const;
-    bool operator!=(const tree_iterator&) const;
+    inline bool operator==(const tree_iterator&) const;
+    inline bool operator!=(const tree_iterator&) const;
 
 
     private:
     value_type* current;
 
-    tree_iterator& leftmost(tree_iterator&);
+    inline tree_iterator& leftmost(tree_iterator&);
 };
 
 template<typename node, bool Const>
-tree_iterator<node, Const>::tree_iterator(node*& given) noexcept : current{given} {};
+inline tree_iterator<node, Const>::tree_iterator(node*& given) noexcept : current{given} {};
 
 
 template<typename node, bool Const>
-typename tree_iterator<node, Const>::reference tree_iterator<node, Const>::operator*() const
+inline typename tree_iterator<node, Const>::reference tree_iterator<node, Const>::operator*() const
 {
     return *current;
 }
 
 template<typename node, bool Const>
-typename tree_iterator<node, Const>::pointer tree_iterator<node, Const>::operator->() const
+inline typename tree_iterator<node, Const>::pointer tree_iterator<node, Const>::operator->() const
 {
     return &(*(*this));
 }
 
 template<typename node, bool Const>
-tree_iterator<node, Const>& tree_iterator<node, Const>::operator++()
+inline tree_iterator<node, Const>& tree_iterator<node, Const>::operator++()
 {
 
     tree_iterator<node, Const> next{current};
@@ -94,7 +96,7 @@ tree_iterator<node, Const>& tree_iterator<node, Const>::operator++()
 }
 
 template<typename node, bool Const>
-tree_iterator<node, Const> tree_iterator<node, Const>::operator++(int)
+inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++(int)
 {
     tree_iterator<node, Const> old{current};  // Always possible if called from in-range
     ++this;                                   // May result in UB (but not our problem; crf.: N.M. Josuttis, 1999)
@@ -102,19 +104,19 @@ tree_iterator<node, Const> tree_iterator<node, Const>::operator++(int)
 }
 
 template<typename node, bool Const>
-bool tree_iterator<node, Const>::operator==(const tree_iterator<node, Const>& given) const
+inline bool tree_iterator<node, Const>::operator==(const tree_iterator<node, Const>& given) const
 {
     return &*current == &*(given->current);  // Since nodes are uncopyable, it should just satisfy identity
 }
 
 template<typename node, bool Const>
-bool tree_iterator<node, Const>::operator!=(const tree_iterator<node, Const>& given) const
+inline bool tree_iterator<node, Const>::operator!=(const tree_iterator<node, Const>& given) const
 {
     return &*current != &*(given->current);  // Since nodes are uncopyable, it should just satisfy non-identity
 }
 
 template<typename node, bool Const>
-tree_iterator<node, Const>& tree_iterator<node, Const>::leftmost(tree_iterator<node, Const>& given)
+inline tree_iterator<node, Const>& tree_iterator<node, Const>::leftmost(tree_iterator<node, Const>& given)
 {
     tree_iterator<node, Const> next{given};
 
