@@ -11,10 +11,10 @@ class bst
     public:
       using key_type = kt;
       using value_type = vt;
-      using pair_type = std::pair<kt, vt>;
+      using pair_type = std::pair<const kt, vt>;
       using node_type = Node<pair_type>;
-      using iterator = tree_iterator<node_type>;
-      using const_iterator = const_tree_iterator<node_type>;
+      using iterator = tree_iterator<node_type, false>;
+      using const_iterator = tree_iterator<node_type, true>;
 
       bst() = default;
 
@@ -71,18 +71,10 @@ allocated, false otherwise (i.e., the key was already present in the tree).*/
 template<typename kt, typename vt, typename cmp>
 std::pair<typename bst<kt, vt, cmp>::iterator, bool>
 bst<kt, vt, cmp>::insert(const pair_type& x){
-  iterator iter_found = find(x.first());
-
-  if (iter_found==end()){
-
-  }
-  else{
-    return false;
-  }
 
 }
 
-template<typename kt, typename vt, typename cmp=std::less<kt>>
-std::pair<typename bst<kt, vt, ::iterator, bool> bst<kt, vt, cmp> insert(pair_type&& x){
+template<typename kt, typename vt, typename cmp>
+std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pair_type&& x){
 
 }

@@ -26,16 +26,14 @@ class Node
     inline Node() noexcept = default;
 
     template<typename FWR>
-    inline Node(FWR&&);
+    inline Node(FWR&&) noexcept;//is_nothrow_constructible<unique_ptr>::value==true
 
-    Node(Node&) = delete;
+    Node(Node&) = delete;//not necessary, since move constructor is specified
     inline Node(Node&&) noexcept;
-    inline Node(const Node&&) noexcept;
 
-    Node& operator=(const Node&) = delete;
-    Node& operator=(const Node) = delete;
+    Node& operator=(const Node&) = delete;//not necessary, since move constructor is specified
+    //Node& operator=(const Node) = delete;//why expliciting this?
     inline Node& operator=(Node&&) noexcept;
-    inline Node& operator=(const Node&&) noexcept;
 
     inline ~Node() noexcept = default;
 
@@ -77,7 +75,7 @@ class Node
 
 template<typename T>
 template<typename FWR>
-inline Node<T>::Node(FWR&& given) : elem{std::forward<FWR>(given)} {};
+inline Node<T>::Node(FWR&& given) noexcept: elem{std::forward<FWR>(given)} {};
 
 template<typename T>
 inline Node<T>::Node(Node&& node) noexcept :
@@ -85,23 +83,7 @@ inline Node<T>::Node(Node&& node) noexcept :
     right_child{std::move(node.right_child)}, parent{std::move(node.parent)} {};
 
 template<typename T>
-inline Node<T>::Node(const Node&& node) noexcept :
-    elem{std::move(node.elem)}, left_child{std::move(node.left_child)},
-    right_child{std::move(node.right_child)}, parent{std::move(node.parent)} {};
-
-
-template<typename T>
 inline Node<T>& Node<T>::operator=(Node<T>&& node) noexcept
-{
-    this->elem = std::move(node.elem);
-    this->left_child = std::move(node.left_child);
-    this->right_child = std::move(node.right_child);
-    this->parent = std::move(node.parent);
-    return *this;
-};
-
-template<typename T>
-inline Node<T>& Node<T>::operator=(const Node<T>&& node) noexcept
 {
     this->elem = std::move(node.elem);
     this->left_child = std::move(node.left_child);
