@@ -7,7 +7,7 @@
  *                                                                            *
 \******************************************************************************/
 #pragma once
-#define DIAG  // Disable this before "shipping to production"
+#define DIAG  // Remove/comment this before "shipping to production"
 
 #include <cassert>              // Safety tests
 #include <experimental/memory>  // Use: observer_ptr | we REALLY want a raw ptr with the same semantics as smart ptr
@@ -26,13 +26,12 @@ class Node
     inline Node() noexcept = default;
 
     template<typename FWR>
-    inline Node(FWR&&) noexcept;//is_nothrow_constructible<unique_ptr>::value==true
+    inline Node(FWR&&) noexcept;
 
-    Node(Node&) = delete;//not necessary, since move constructor is specified
+    Node(Node&) = delete;  // Explicit deletion as in GNU unique_ptr.h
     inline Node(Node&&) noexcept;
 
-    Node& operator=(const Node&) = delete;//not necessary, since move constructor is specified
-    //Node& operator=(const Node) = delete;//why expliciting this?
+    Node& operator=(const Node&) = delete;  // Explicit deletion as in GNU unique_ptr.h
     inline Node& operator=(Node&&) noexcept;
 
     inline ~Node() noexcept = default;
@@ -75,12 +74,13 @@ class Node
 
 template<typename T>
 template<typename FWR>
-inline Node<T>::Node(FWR&& given) noexcept: elem{std::forward<FWR>(given)} {};
+inline Node<T>::Node(FWR&& given) noexcept : elem{std::forward<FWR>(given)} {};
 
 template<typename T>
 inline Node<T>::Node(Node&& node) noexcept :
     elem{std::move(node.elem)}, left_child{std::move(node.left_child)},
     right_child{std::move(node.right_child)}, parent{std::move(node.parent)} {};
+
 
 template<typename T>
 inline Node<T>& Node<T>::operator=(Node<T>&& node) noexcept
