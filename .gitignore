@@ -114,5 +114,3 @@ pip-selfcheck.json
 
 # D programming language
 *.d
-
-include/test.cpp
