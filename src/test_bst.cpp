@@ -1,7 +1,7 @@
-#include "iterator.hpp"
 #include "bst.hpp"
+#include "iterator.hpp"
 #include "node.hpp"
 
-int main(){
-  
+int main()
+{
 }
