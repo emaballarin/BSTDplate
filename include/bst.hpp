@@ -12,6 +12,7 @@
 #include "iterator.hpp"
 #include "node.hpp"
 
+#include <cassert>
 #include <iostream>  // Overload of operator<<
 #include <queue>     // Use: std::queue
 #include <utility>
@@ -171,13 +172,15 @@ bst<kt, vt, cmp>& bst<kt, vt, cmp>::operator=(const bst<kt, vt, cmp>& original)
 
 
 template<typename kt, typename vt, typename cmp>
-std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(const pair_type& x)
+std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(const pair_type& pair)
 {
+    //
 }
 
 template<typename kt, typename vt, typename cmp>
-std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pair_type&& x)
+std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pair_type&& pair)
 {
+    //
 }
 
 template<typename kt, typename vt, typename cmp>
@@ -190,86 +193,59 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(T
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key)
 {
-    return find(key, false);
+    Node<std::pair<const kt, vt>>* cursor = this->root.get();
+    auto& cursor_key = cursor->read_elem().first;
+    tree_iterator<Node<std::pair<kt, vt>>, false> iter_ret{cursor};
+
+    while (cursor_key != key)
+    {
+        cursor = (key > cursor_key) ? cursor->read_rc().get() : cursor->read_lc().get();
+
+        if (!cursor)
+        {
+            iter_ret = end();
+            break;
+            //return end();
+        }
+        cursor_key = cursor->read_elem().first;
+    }
+    if (cursor)
+    {
+        tree_iterator<Node<std::pair<kt, vt>>, false> found_iter{cursor};
+        iter_ret = found_iter;
+    }
+    return iter_ret;
 }
 
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find(const key_type& key) const
 {
-    return find(key, false);
-}
-
-template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key, bool is_private)
-{
-    std::unique_ptr<Node<std::pair<const kt, vt>>> cursor = this->root;
-    std::unique_ptr<Node<std::pair<const kt, vt>>> check{};
+    Node<std::pair<const kt, vt>>* cursor = this->root.get();
     auto& cursor_key = cursor->read_elem().first;
+    tree_iterator<Node<std::pair<kt, vt>>, true> c_iter_ret{cursor};
 
+    while (cursor_key != key)
+    {
+        cursor = (key > cursor_key) ? cursor->read_rc().get() : cursor->read_lc().get();
 
-
-
-
-
-
-
-//    bool exit = false;
-
-//    while ((cursor_key != key) && !exit)
-//    {
-//        check = (cursor_key > key) ? cursor->read_rc() : cursor->read_lc();
-//
-//        if (check)
-//        {
-//            cursor = check;
-//            cursor_key = cursor->read_elem().first;
-//            cursor = is_private ? cursor :
-//        }
-//        else
-//        {
-//            // NON C'E' CHIAVE
-//            // cursor è il padre del nullptr;
-//            exit = true;
-//
-//        }
-//        // ESEGUITO MAI
-//    }
-//    // TROVATA LA CHIAVE
-
-
-
-
-    // Return statement
-    //
-
-
-
-    this->root->read_elem(); // primo elemento del cfr
-
-
-    //return bst::iterator(<#initializer #>);
-}
-
-template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find(const key_type& key, bool is_private) const
-{
-    //return bst::const_iterator(<#initializer #>);
+        if (!cursor)
+        {
+            c_iter_ret = cend();
+            break;
+            //return end();
+        }
+        cursor_key = cursor->read_elem().first;
+    }
+    if (cursor)
+    {
+        tree_iterator<Node<std::pair<kt, vt>>, true> found_iter{cursor};
+        c_iter_ret = found_iter;
+    }
+    return c_iter_ret;
 }
 
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::swap(bst<kt, vt, cmp>& given) noexcept
 {
     given.root.swap(this->root);
-}
-
-template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find_private(const key_type& key)
-{
-    return find(key, true);
-}
-
-template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find_private(const key_type& key) const
-{
-    return find(key, true);
 }
