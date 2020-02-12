@@ -26,7 +26,11 @@ int main()
     auto test_iter = tree_iterator<Node<int>, false>(plutonode_1_lc);
 
     auto test_pluto = ++test_iter;
-    test_pluto->info();
+    test_pluto = ++test_pluto;
+    //test_pluto->info();
+
+    delete pippo;
+    delete plutonode_1_pr;
 
 
     // Default return

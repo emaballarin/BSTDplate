@@ -156,6 +156,7 @@ bst<kt, vt, cmp>& bst<kt, vt, cmp>::operator=(const bst<kt, vt, cmp>& original)
 {
     if (this != &original)  // Optimize against self-assignment
     {
+        // PROBLEMA GROSSO!
         bst<kt, vt, cmp> copy{original};
         this = &copy;
     }
