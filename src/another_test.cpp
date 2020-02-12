@@ -25,12 +25,19 @@ int main()
 
     auto test_iter = tree_iterator<Node<int>, false>(plutonode_1_lc);
 
-    auto test_pluto = ++test_iter;
-    test_pluto = ++test_pluto;
-    //test_pluto->info();
+    auto test_pluto = test_iter++;
+    //test_pluto = ++test_pluto;
+    test_pluto->info();
 
     delete pippo;
     delete plutonode_1_pr;
+
+    auto ferrari = new bst<int, int>();
+    auto xyz = new bst<int, int>();
+
+    *ferrari = *xyz;
+
+    (void)ferrari;
 
 
     // Default return

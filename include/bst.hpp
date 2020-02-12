@@ -94,6 +94,9 @@ class bst
     //wrapper for find: bool=true returns end, bool=false returns where to insert
     iterator find_private(const key_type&, bool);
     const_iterator find_private(const key_type&, bool) const;
+
+    // Private swap function
+    void swap(bst<kt, vt, cmp>&) noexcept;
 };
 
 
@@ -101,7 +104,7 @@ class bst
 template<typename kt, typename vt, typename cmp>
 bst<kt, vt, cmp>::bst(const bst<kt, vt, cmp>& original)
 {
-    if (!(original->root))
+    if (!(original.root.get()))
     {
         this->root = nullptr;
     }
@@ -110,8 +113,8 @@ bst<kt, vt, cmp>::bst(const bst<kt, vt, cmp>& original)
         std::queue<node_type*> queue_original{};
         std::queue<node_type*> queue_this{};
 
-        queue_original.push(original->root);
-        queue_this.push(this->root);
+        queue_original.push(original.root.get());
+        queue_this.push(this->root.get());
 
         bool has_children;  // Hoist-by-hand
 
@@ -119,27 +122,27 @@ bst<kt, vt, cmp>::bst(const bst<kt, vt, cmp>& original)
         while (!queue_original.empty())
         {
             has_children =
-              (queue_original.front()->read_lc()->get()->read_lc()->get()
-               || queue_original.front()->read_rc()->get()->read_rc()->get());  // Avoid repeated evaluation
+              (queue_original.front()->read_lc().get()->read_lc().get()
+               || queue_original.front()->read_rc().get()->read_rc().get());  // Avoid repeated evaluation
             // Sx case
-            if (queue_original.front()->read_lc()->get())
+            if (queue_original.front()->read_lc().get())
             {
                 queue_this.front()->set_lc(new node_type(queue_original.front()->read_lc()->read_elem()));
                 if (has_children)
                 {
-                    queue_original.push(queue_original.front()->read_lc()->get());
-                    queue_this.push(queue_this.front()->read_lc()->get());
+                    queue_original.push(queue_original.front()->read_lc().get());
+                    queue_this.push(queue_this.front()->read_lc().get());
                 }
             }
 
             // Dx case
-            if (queue_original.front()->read_rc()->get())
+            if (queue_original.front()->read_rc().get())
             {
                 queue_this.front()->set_rc(new node_type(queue_original.front()->read_rc()->read_elem()));
                 if (has_children)
                 {
-                    queue_original.push(queue_original.front()->read_rc()->get());
-                    queue_this.push(queue_this.front()->read_rc()->get());
+                    queue_original.push(queue_original.front()->read_rc().get());
+                    queue_this.push(queue_this.front()->read_rc().get());
                 }
             }
 
@@ -158,9 +161,9 @@ bst<kt, vt, cmp>& bst<kt, vt, cmp>::operator=(const bst<kt, vt, cmp>& original)
     {
         // PROBLEMA GROSSO!
         bst<kt, vt, cmp> copy{original};
-        this = &copy;
+        //this = &copy;
+        this->swap(copy);
     }
-
     return *this;
 };
 
@@ -229,4 +232,10 @@ template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find_private(const key_type&, bool) const
 {
     //return bst::const_iterator(<#initializer #>);
+}
+
+template<typename kt, typename vt, typename cmp>
+void bst<kt, vt, cmp>::swap(bst<kt, vt, cmp>& given) noexcept
+{
+    given.root.swap(this->root);
 }
