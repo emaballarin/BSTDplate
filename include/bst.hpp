@@ -1,9 +1,19 @@
-#pragma once
+/******************************************************************************\
+ * |> BST a.k.a. bst.hpp <|                                                   *
+ *                                                                            *
+ * "To find your true self, you may need to go back to your root(s)"          *
+ *                                                                            *
+ *                                               (on how `end` is returned)   *
+ *                                                                            *
+\******************************************************************************/
+
+#pragma once  // Easy ODR
+
 #include "iterator.hpp"
 #include "node.hpp"
 
-#include <iostream>
-#include <queue>
+#include <iostream>  // Overload of operator<<
+#include <queue>     // Use: std::queue
 #include <utility>
 #include <vector>
 
@@ -45,12 +55,12 @@ class bst
     //clear
     void clear();
 
-    //begin
+    //(c)begin
     iterator begin();
     const_iterator begin() const;
     const_iterator cbegin() const;
 
-    //end
+    //(c)end
     iterator end();
     const_iterator end() const;
     const_iterator cend() const;
@@ -103,13 +113,15 @@ bst<kt, vt, cmp>::bst(const bst<kt, vt, cmp>& original)
         queue_original.push(original->root);
         queue_this.push(this->root);
 
-        bool has_children;
+        bool has_children;  // Hoist-by-hand
 
+        // Copy-elision by hand: so much fun! :)
         while (!queue_original.empty())
         {
-            has_children = (queue_original.front()->read_lc()->get()->read_lc()->get()
-                            || queue_original.front()->read_rc()->get()->read_rc()->get());
-            // Sx
+            has_children =
+              (queue_original.front()->read_lc()->get()->read_lc()->get()
+               || queue_original.front()->read_rc()->get()->read_rc()->get());  // Avoid repeated evaluation
+            // Sx case
             if (queue_original.front()->read_lc()->get())
             {
                 queue_this.front()->set_lc(new node_type(queue_original.front()->read_lc()->read_elem()));
@@ -120,7 +132,7 @@ bst<kt, vt, cmp>::bst(const bst<kt, vt, cmp>& original)
                 }
             }
 
-            // Dx
+            // Dx case
             if (queue_original.front()->read_rc()->get())
             {
                 queue_this.front()->set_rc(new node_type(queue_original.front()->read_rc()->read_elem()));
@@ -131,6 +143,7 @@ bst<kt, vt, cmp>::bst(const bst<kt, vt, cmp>& original)
                 }
             }
 
+            // Pop after push, to allow an easy end condition
             queue_original.pop();
             queue_this.pop();
         }
@@ -141,8 +154,13 @@ bst<kt, vt, cmp>::bst(const bst<kt, vt, cmp>& original)
 template<typename kt, typename vt, typename cmp>
 bst<kt, vt, cmp>& bst<kt, vt, cmp>::operator=(bst<kt, vt, cmp>& original)
 {
-    bst<kt, vt, cmp> copy{original};
-    this = &copy;
+    // Optimize against self-assignment
+    if (*this != original)
+    {
+        bst<kt, vt, cmp> copy{original};
+        this = &copy;
+    }
+
     return *this;
 };
 

@@ -6,6 +6,7 @@
  *                                         (an author, on this header file)   *
  *                                                                            *
 \******************************************************************************/
+
 #pragma once
 #define DIAG  // Remove/comment this before "shipping to production"
 

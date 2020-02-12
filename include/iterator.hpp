@@ -6,12 +6,12 @@
  *                          (on the choice of not relying explicitly on keys) *
  *                                                                            *
 \******************************************************************************/
+
 #pragma once
 
 // SET NOEXCEPT WHERE NEEDED!
 
 #include "node.hpp"
-//#include "bst.hpp"    // Cannot cyclically import ;)
 
 #include <iostream>
 #include <iterator>
