@@ -64,8 +64,9 @@ class bst
     std::unique_ptr<node_type> root;
     std::vector<iterator> vec;
 
-    void detach(iterator);
-    void balance_sub_tree(iterator, iterator, iterator);
+    void detach();
+    void balance_sub_l(std::size_t, std::size_t);
+    void balance_sub_r(std::size_t, std::size_t);
 
 };
 
@@ -138,25 +139,55 @@ template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::balance(){
   //check that the tree is not void
 
+  //initialize vec with iterators mantaining the tree order
   for(iterator Iter{begin()}; Iter!=cend(); ++Iter){
     vec.push_back(iterator{*Iter});
   }
 
-  iterator new_root = vec[std::floor(vec.size()/2)];
+  //set the new root
+  std::size_t middle_index = std::floor(vec.size()/2);
+  iterator new_root = vec[middle_index];
   detach(new_root);
 
-  balance_sub_tree(begin(), new_root, end());
+  //dividi et impera
+  balance_sub_l(0, middle_index);
+  balance_sub_r(middle_index, vec.size());
 
 }
 
 template<typename kt, typename vt, typename cmp>
-void bst<kt, vt, cmp>::detach(typename bst<kt, vt, cmp>::iterator node_iter){}
+void bst<kt, vt, cmp>::detach()
+{
+  this->root->detach_left();
+  this->root->detach_right();
+}
 
 template<typename kt, typename vt, typename cmp>
-void bst<kt, vt, cmp>::balance_sub_tree(typename bst<kt, vt, cmp>::iterator leftmost,
-                                        typename bst<kt, vt, cmp>::iterator middle,
-                                        typename bst<kt, vt, cmp>::iterator rightmost){}
+void bst<kt, vt, cmp>::balance_sub_l(std::size_t left, std::size_t middle)
+{
+  std::size_t dis_ml = middle-left;
 
+  std::size_t l_child = left+std::floor(dis_ml/2);
+  detach(vec[l_child]);
+  vec[middle]->set_lc(*vec[l_child]);
+
+  if(l_child-left>0){ balance_sub_l(left, l_child);}
+  if(middle-l_child>1){ balance_sub_r(++l_child, middle);}
+
+}
+
+template<typename kt, typename vt, typename cmp>
+void bst<kt, vt, cmp>::balance_sub_r(std::size_t middle, std::size_t right)
+{
+  std::size_t dis_rm = right-middle;
+
+  std::size_t r_child = right-std::floor(dis_rm/2);
+  detach(vec[r_child]);
+  vec[middle]->set_rc(*vec[r_child]);
+
+  if(r_child-middle>0){balance_sub_l(middle, r_child);}
+  if(right-r_child>1){balance_sub_l(++r_child, right);}
+}
 
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::value_type&
