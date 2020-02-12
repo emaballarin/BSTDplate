@@ -92,8 +92,11 @@ class bst
     std::vector<node_type*> ordered_vec;
 
     //wrapper for find: bool=true returns end, bool=false returns where to insert
-    iterator find_private(const key_type&, bool);
-    const_iterator find_private(const key_type&, bool) const;
+    iterator find(const key_type&, bool);
+    const_iterator find(const key_type&, bool) const;
+
+    iterator find_private(const key_type&);
+    const_iterator find_private(const key_type&) const;
 
     // Private swap function
     void swap(bst<kt, vt, cmp>&) noexcept;
@@ -159,7 +162,6 @@ bst<kt, vt, cmp>& bst<kt, vt, cmp>::operator=(const bst<kt, vt, cmp>& original)
 {
     if (this != &original)  // Optimize against self-assignment
     {
-        // PROBLEMA GROSSO!
         bst<kt, vt, cmp> copy{original};
         //this = &copy;
         this->swap(copy);
@@ -168,9 +170,6 @@ bst<kt, vt, cmp>& bst<kt, vt, cmp>::operator=(const bst<kt, vt, cmp>& original)
 };
 
 
-/*They are used to insert a new node. The function returns a pair of an iterator
-(pointing to the node) and a bool. The bool is true if a new node has been
-allocated, false otherwise (i.e., the key was already present in the tree).*/
 template<typename kt, typename vt, typename cmp>
 std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(const pair_type& x)
 {
@@ -189,47 +188,70 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(T
 }
 
 template<typename kt, typename vt, typename cmp>
-void bst<kt, vt, cmp>::clear()
+typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key)
 {
+    return find(key, false);
 }
 
 template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& x)
+typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find(const key_type& key) const
 {
+    return find(key, false);
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key, bool is_private)
+{
+    std::unique_ptr<Node<std::pair<const kt, vt>>> cursor = this->root;
+    std::unique_ptr<Node<std::pair<const kt, vt>>> check{};
+    auto& cursor_key = cursor->read_elem().first;
+
+
+
+
+
+
+
+
+//    bool exit = false;
+
+//    while ((cursor_key != key) && !exit)
+//    {
+//        check = (cursor_key > key) ? cursor->read_rc() : cursor->read_lc();
+//
+//        if (check)
+//        {
+//            cursor = check;
+//            cursor_key = cursor->read_elem().first;
+//            cursor = is_private ? cursor :
+//        }
+//        else
+//        {
+//            // NON C'E' CHIAVE
+//            // cursor è il padre del nullptr;
+//            exit = true;
+//
+//        }
+//        // ESEGUITO MAI
+//    }
+//    // TROVATA LA CHIAVE
+
+
+
+
+    // Return statement
+    //
+
+
+
+    this->root->read_elem(); // primo elemento del cfr
+
+
     //return bst::iterator(<#initializer #>);
 }
 
 template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find(const key_type& x) const
-{
-    //return bst::const_iterator(<#initializer #>);
-}
-
-template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::value_type& bst<kt, vt, cmp>::operator[](const key_type& x)
-{
-    //return <#initializer #>;
-}
-
-template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::value_type& bst<kt, vt, cmp>::operator[](key_type&& x)
-{
-    //return <#initializer #>;
-}
-
-template<typename kt, typename vt, typename cmp>
-void bst<kt, vt, cmp>::erase(const key_type& x)
-{
-}
-
-template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find_private(const key_type&, bool)
-{
-    //return bst::iterator(<#initializer #>);
-}
-
-template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find_private(const key_type&, bool) const
+typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find(const key_type& key, bool is_private) const
 {
     //return bst::const_iterator(<#initializer #>);
 }
@@ -238,4 +260,16 @@ template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::swap(bst<kt, vt, cmp>& given) noexcept
 {
     given.root.swap(this->root);
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find_private(const key_type& key)
+{
+    return find(key, true);
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find_private(const key_type& key) const
+{
+    return find(key, true);
 }
