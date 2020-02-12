@@ -30,7 +30,7 @@ class tree_iterator
     using difference_type = std::ptrdiff_t;  // Never used, but needed ;)
 
     // Custom: ctor | Default: cpctor, mvctor, cpasst, mvasst, dtor
-    inline explicit tree_iterator(node*&) noexcept;
+    inline explicit tree_iterator(node*) noexcept;
 
     inline reference operator*() const;
     inline pointer operator->() const;
@@ -49,7 +49,7 @@ class tree_iterator
 };
 
 template<typename node, bool Const>
-inline tree_iterator<node, Const>::tree_iterator(node*& given) noexcept : current{given} {};
+inline tree_iterator<node, Const>::tree_iterator(node* given) noexcept : current{given} {};
 
 
 template<typename node, bool Const>

@@ -44,9 +44,9 @@ class Node
     inline bool is_left() noexcept;
     inline bool is_right() noexcept;
 
-    inline void set_lc(Node<T>*&);
-    inline void set_rc(Node<T>*&);
-    inline void set_both_children(Node<T>*&, Node<T>*&);
+    inline void set_lc(Node<T>*);
+    inline void set_rc(Node<T>*);
+    inline void set_both_children(Node<T>*, Node<T>*);
 
     template<typename FWR>
     inline void write_elem(FWR&&);
@@ -129,7 +129,7 @@ inline void Node<T>::write_elem(FWR&& given)
 
 // Ptr setters
 template<typename T>
-inline void Node<T>::set_lc(Node<T>*& given)
+inline void Node<T>::set_lc(Node<T>* given)
 {
     assert(given);                      // Can't set to nullptr this way; use null_left() instead
     assert(!(this->left_child.get()));  // Can set only if free
@@ -141,7 +141,7 @@ inline void Node<T>::set_lc(Node<T>*& given)
 };
 
 template<typename T>
-inline void Node<T>::set_rc(Node<T>*& given)
+inline void Node<T>::set_rc(Node<T>* given)
 {
     assert(given);                       // Can't set to nullptr this way; use null_right() instead
     assert(!(this->right_child.get()));  // Can set only if free
@@ -153,7 +153,7 @@ inline void Node<T>::set_rc(Node<T>*& given)
 };
 
 template<typename T>
-inline void Node<T>::set_both_children(Node<T>*& l_given, Node<T>*& r_given)
+inline void Node<T>::set_both_children(Node<T>* l_given, Node<T>* r_given)
 {
     this->set_lc(l_given);
     this->set_rc(r_given);
