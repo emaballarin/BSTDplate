@@ -45,7 +45,7 @@ class tree_iterator
     private:
     value_type* current;
 
-    inline tree_iterator& leftmost(tree_iterator&);
+    inline tree_iterator& leftmost(tree_iterator&) noexcept;
 };
 
 template<typename node, bool Const>
@@ -62,6 +62,7 @@ template<typename node, bool Const>
 inline typename tree_iterator<node, Const>::pointer tree_iterator<node, Const>::operator->() const
 {
     return &(*(*this));
+    //return current;
 }
 
 template<typename node, bool Const>
@@ -69,8 +70,10 @@ inline tree_iterator<node, Const>& tree_iterator<node, Const>::operator++()
 {
 
     tree_iterator<node, Const> next{current};
+    //auto next_ = new tree_iterator<node, Const>(current);
+    //auto& next = *next_;
 
-    pointer& ptr_r = next->read_rc().get();  // Originally not reference. Why?
+    pointer ptr_r = next->read_rc().get();
 
     if (ptr_r)
     {
@@ -88,19 +91,28 @@ inline tree_iterator<node, Const>& tree_iterator<node, Const>::operator++()
             next.current = next->read_pr().get();
         }
         next.current =
-          next ? next->read_pr().get() : current++;  // Avoid returning a nullptr (parent of root) instead of tree end
+          next.current ? next->read_pr().get() : current++;  // Avoid returning a nullptr (parent of root) instead of tree end
     }
 
+    // Allow the iterator to outlive the scope
+    //auto next_ret = new tree_iterator<node, Const>(next.current);
+
     // Allow (N)RVO, however the compiler wants to perform it (Does it? Cool!)
-    return next;
+    auto ret = new tree_iterator<node, Const>(next.current);
+    return *ret;
+    //return *next_ret;
 }
 
 template<typename node, bool Const>
 inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++(int)  // Acceptable warning (clang-tidy)
 {
-    tree_iterator<node, Const> old{current};  // Always possible if called from in-range
-    ++this;                                   // May result in UB (but not our problem; crf.: N.M. Josuttis, 1999)
-    return old;
+    //tree_iterator<node, Const> old{current};  // Always possible if called from in-range
+    auto old_ptr = new tree_iterator<node, Const>(current);
+    ++*this;                                   // May result in UB (but not our problem; crf.: N.M. Josuttis, 1999)
+    return *old_ptr;
+    //return old;
+    //auto ret = new tree_iterator<node, Const>(old.current);
+    //return *ret;
 }
 
 template<typename node, bool Const>
@@ -116,13 +128,15 @@ inline bool tree_iterator<node, Const>::operator!=(const tree_iterator<node, Con
 }
 
 template<typename node, bool Const>
-inline tree_iterator<node, Const>& tree_iterator<node, Const>::leftmost(tree_iterator<node, Const>& given)
+inline tree_iterator<node, Const>& tree_iterator<node, Const>::leftmost(tree_iterator<node, Const>& given) noexcept
 {
     tree_iterator<node, Const> next{given};
 
     while (next->read_lc())
     {
-        next.current = next->read_lc.get();
+        next.current = next->read_lc().get();
     }
-    return next;
+    auto ret = new tree_iterator<node, Const>(next.current);
+    return *ret;
+    //return next;
 }
