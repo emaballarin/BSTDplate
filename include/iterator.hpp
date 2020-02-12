@@ -35,7 +35,7 @@ class tree_iterator
     inline reference operator*() const;
     inline pointer operator->() const;
 
-    inline tree_iterator& operator++();
+    inline tree_iterator operator++();
     inline tree_iterator operator++(int);  // Acceptable warning (clang-tidy)
 
     inline bool operator==(const tree_iterator&) const;
@@ -45,7 +45,7 @@ class tree_iterator
     private:
     value_type* current;
 
-    inline tree_iterator& leftmost(tree_iterator&);
+    inline tree_iterator leftmost(tree_iterator&) noexcept;
 };
 
 template<typename node, bool Const>
@@ -65,12 +65,12 @@ inline typename tree_iterator<node, Const>::pointer tree_iterator<node, Const>::
 }
 
 template<typename node, bool Const>
-inline tree_iterator<node, Const>& tree_iterator<node, Const>::operator++()
+inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++()
 {
 
     tree_iterator<node, Const> next{current};
 
-    pointer& ptr_r = next->read_rc().get();  // Originally not reference. Why?
+    pointer ptr_r = next->read_rc().get();
 
     if (ptr_r)
     {
@@ -87,8 +87,8 @@ inline tree_iterator<node, Const>& tree_iterator<node, Const>::operator++()
         {
             next.current = next->read_pr().get();
         }
-        next.current =
-          next ? next->read_pr().get() : current++;  // Avoid returning a nullptr (parent of root) instead of tree end
+        next.current = next.current ? next->read_pr().get()
+                                    : current++;  // Avoid returning a nullptr (parent of root) instead of tree end
     }
 
     // Allow (N)RVO, however the compiler wants to perform it (Does it? Cool!)
@@ -99,7 +99,7 @@ template<typename node, bool Const>
 inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++(int)  // Acceptable warning (clang-tidy)
 {
     tree_iterator<node, Const> old{current};  // Always possible if called from in-range
-    ++this;                                   // May result in UB (but not our problem; crf.: N.M. Josuttis, 1999)
+    ++*this;                                  // May result in UB (but not our problem; crf.: N.M. Josuttis, 1999)
     return old;
 }
 
@@ -116,13 +116,13 @@ inline bool tree_iterator<node, Const>::operator!=(const tree_iterator<node, Con
 }
 
 template<typename node, bool Const>
-inline tree_iterator<node, Const>& tree_iterator<node, Const>::leftmost(tree_iterator<node, Const>& given)
+inline tree_iterator<node, Const> tree_iterator<node, Const>::leftmost(tree_iterator<node, Const>& given) noexcept
 {
     tree_iterator<node, Const> next{given};
 
     while (next->read_lc())
     {
-        next.current = next->read_lc.get();
+        next.current = next->read_lc().get();
     }
     return next;
 }
