@@ -195,53 +195,32 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key)
 {
     Node<std::pair<const kt, vt>>* cursor = this->root.get();
     auto& cursor_key = cursor->read_elem().first;
-    tree_iterator<Node<std::pair<kt, vt>>, false> iter_ret{cursor};
+    tree_iterator<Node<std::pair<kt, vt>>, true> iter_ret{cursor};
 
-    while (cursor_key != key)
+    while (true)
     {
-        cursor = (key > cursor_key) ? cursor->read_rc().get() : cursor->read_lc().get();
-
-        if (!cursor)
+        if (() && ())
         {
-            iter_ret = end();
-            break;
-            //return end();
+            //
         }
-        cursor_key = cursor->read_elem().first;
-    }
-    if (cursor)
-    {
-        tree_iterator<Node<std::pair<kt, vt>>, false> found_iter{cursor};
-        iter_ret = found_iter;
+        else if (() && ())
+        {
+            //
+        }
+        else
+        {
+            //
+        }
     }
     return iter_ret;
+
+
 }
 
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find(const key_type& key) const
 {
-    Node<std::pair<const kt, vt>>* cursor = this->root.get();
-    auto& cursor_key = cursor->read_elem().first;
-    tree_iterator<Node<std::pair<kt, vt>>, true> c_iter_ret{cursor};
-
-    while (cursor_key != key)
-    {
-        cursor = (key > cursor_key) ? cursor->read_rc().get() : cursor->read_lc().get();
-
-        if (!cursor)
-        {
-            c_iter_ret = cend();
-            break;
-            //return end();
-        }
-        cursor_key = cursor->read_elem().first;
-    }
-    if (cursor)
-    {
-        tree_iterator<Node<std::pair<kt, vt>>, true> found_iter{cursor};
-        c_iter_ret = found_iter;
-    }
-    return c_iter_ret;
+    //
 }
 
 template<typename kt, typename vt, typename cmp>
