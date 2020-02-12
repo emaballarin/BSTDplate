@@ -27,7 +27,7 @@ class Node
     inline Node() noexcept = default;
 
     template<typename FWR>
-    inline Node(FWR&&) noexcept;
+    inline explicit Node(FWR&&) noexcept;   // FIXME: May shadow mvctor!
 
     Node(Node&) = delete;  // Explicit deletion as in GNU unique_ptr.h
     inline Node(Node&&) noexcept;
@@ -77,7 +77,7 @@ class Node
 
 template<typename T>
 template<typename FWR>
-inline Node<T>::Node(FWR&& given) noexcept : elem{std::forward<FWR>(given)} {};
+inline Node<T>::Node(FWR&& given) noexcept : elem{std::forward<FWR>(given)} {}; // FIXME: May shadow mvctor!
 
 template<typename T>
 inline Node<T>::Node(Node&& node) noexcept :

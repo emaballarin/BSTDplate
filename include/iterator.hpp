@@ -36,7 +36,7 @@ class tree_iterator
     inline pointer operator->() const;
 
     inline tree_iterator& operator++();
-    inline tree_iterator operator++(int);  // Why not reference?
+    inline tree_iterator operator++(int);  // Acceptable warning (clang-tidy)
 
     inline bool operator==(const tree_iterator&) const;
     inline bool operator!=(const tree_iterator&) const;
@@ -96,7 +96,7 @@ inline tree_iterator<node, Const>& tree_iterator<node, Const>::operator++()
 }
 
 template<typename node, bool Const>
-inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++(int)
+inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++(int)  // Acceptable warning (clang-tidy)
 {
     tree_iterator<node, Const> old{current};  // Always possible if called from in-range
     ++this;                                   // May result in UB (but not our problem; crf.: N.M. Josuttis, 1999)

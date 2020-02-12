@@ -38,7 +38,7 @@ class bst
     bst(bst&&) noexcept = default;
 
     // cpasst
-    bst& operator=(bst&);
+    bst& operator=(const bst&);
 
     //mvasst
     bst& operator=(bst&&) noexcept = default;
@@ -152,10 +152,9 @@ bst<kt, vt, cmp>::bst(const bst<kt, vt, cmp>& original)
 
 // cpasst
 template<typename kt, typename vt, typename cmp>
-bst<kt, vt, cmp>& bst<kt, vt, cmp>::operator=(bst<kt, vt, cmp>& original)
+bst<kt, vt, cmp>& bst<kt, vt, cmp>::operator=(const bst<kt, vt, cmp>& original)
 {
-    // Optimize against self-assignment
-    if (*this != original)
+    if (this != &original)  // Optimize against self-assignment
     {
         bst<kt, vt, cmp> copy{original};
         this = &copy;
@@ -176,4 +175,57 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(co
 template<typename kt, typename vt, typename cmp>
 std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pair_type&& x)
 {
+}
+
+template<typename kt, typename vt, typename cmp>
+template<class... Types>
+std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(Types&&... args)
+{
+    return std::pair<iterator, bool>();
+}
+
+template<typename kt, typename vt, typename cmp>
+void bst<kt, vt, cmp>::clear()
+{
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& x)
+{
+    //return bst::iterator(<#initializer #>);
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find(const key_type& x) const
+{
+    //return bst::const_iterator(<#initializer #>);
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::value_type& bst<kt, vt, cmp>::operator[](const key_type& x)
+{
+    //return <#initializer #>;
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::value_type& bst<kt, vt, cmp>::operator[](key_type&& x)
+{
+    //return <#initializer #>;
+}
+
+template<typename kt, typename vt, typename cmp>
+void bst<kt, vt, cmp>::erase(const key_type& x)
+{
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find_private(const key_type&, bool)
+{
+    //return bst::iterator(<#initializer #>);
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find_private(const key_type&, bool) const
+{
+    //return bst::const_iterator(<#initializer #>);
 }
