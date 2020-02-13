@@ -5,12 +5,15 @@
 #include <iostream>
 #include <utility>
 #include <vector>
+#include <cmath>
 
 template<typename kt, typename vt, typename cmp = std::less<kt>>
 class bst
 {
     public:
     using key_type = kt;
+    using const_key_type = const kt;
+    using const_value_type = const vt;
     using value_type = vt;
     using pair_type = std::pair<const kt, vt>;
     using node_type = Node<pair_type>;
@@ -58,23 +61,131 @@ class bst
     void erase(const key_type& x);
 
     private:
-    Node<pair_type>* root;
-    std::vector<node_type*> ordered_vec;
+    std::unique_ptr<node_type> root;
+    std::vector<iterator> vec;
 
-    //wrapper for find: bool=true returns end, bool=false returns where to insert
-    iterator find_private(const key_type&, bool);
-    const_iterator find_private(const key_type&, bool) const;
+    void detach(iterator);
+    void balance_sub_tree(iterator, iterator, iterator);
+
 };
 
-/*They are used to insert a new node. The function returns a pair of an iterator
-(pointing to the node) and a bool. The bool is true if a new node has been
-allocated, false otherwise (i.e., the key was already present in the tree).*/
 template<typename kt, typename vt, typename cmp>
-std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(const pair_type& x)
+void bst<kt, vt, cmp>::clear()
 {
+  root.reset();
 }
 
 template<typename kt, typename vt, typename cmp>
-std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pair_type&& x)
+typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::begin()
 {
+  return leftmost(this->root.get());
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::begin() const
+{
+  return const_iterator{leftmost(this->root.get())};
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cbegin() const{
+  return const_iterator{leftmost(this->root.get())};
+}
+
+//I would use const_iterator inside leftmost, but then how to convert it in iterator?const_cast?
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::iterator leftmost(typename bst<kt, vt, cmp>::node_type*& node){
+  typename bst<kt, vt, cmp>::iterator begin{node};
+
+  while (!(begin->is_left()))
+  {
+    *begin = begin->read_lc().get();
+  }
+
+  return begin;
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::end()
+{
+  return rightmost(this->root.get());
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::end() const
+{
+  return const_iterator(rightmost(this->root.get()));
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cend() const{
+  return const_iterator(rightmost(this->root.get()));
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::iterator rightmost(typename bst<kt, vt, cmp>::node_type*& node){
+  typename bst<kt, vt, cmp>::iterator begin{node};
+
+  while (!(begin->is_right()))
+  {
+    *begin = begin->read_rc().get();
+  }
+
+  return begin;
+}
+
+template<typename kt, typename vt, typename cmp>
+void bst<kt, vt, cmp>::balance(){
+  //check that the tree is not void
+
+  for(iterator Iter{begin()}; Iter!=cend(); ++Iter){
+    vec.push_back(iterator{*Iter});
+  }
+
+  iterator new_root = vec[std::floor(vec.size()/2)];
+  detach(new_root);
+
+  balance_sub_tree(begin(), new_root, end());
+
+}
+
+template<typename kt, typename vt, typename cmp>
+void bst<kt, vt, cmp>::detach(typename bst<kt, vt, cmp>::iterator node_iter){}
+
+template<typename kt, typename vt, typename cmp>
+void bst<kt, vt, cmp>::balance_sub_tree(typename bst<kt, vt, cmp>::iterator leftmost,
+                                        typename bst<kt, vt, cmp>::iterator middle,
+                                        typename bst<kt, vt, cmp>::iterator rightmost){}
+
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::value_type&
+bst<kt, vt, cmp>::operator[](typename bst<kt, vt, cmp>::const_key_type& x){
+  iterator found = this->find(x);
+  //add assert?
+  return found->read_elem().second();//not range checked
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::value_type&
+bst<kt, vt, cmp>::operator[](typename bst<kt, vt, cmp>::key_type&& x){
+  iterator found = this->find(x);
+  //add assert?
+  return found->read_elem().second();//not range checked
+}
+
+template<typename kt, typename vt, typename cmp>
+void bst<kt, vt, cmp>::erase(typename bst<kt, vt, cmp>::const_key_type& x){
+  iterator erasing = find(x);
+  //check to_be_erased is not end
+  //check special cases erasing root
+  if (erasing->read_lc() && erasing->read_rc()){//both children
+    iterator next{erasing.next()};
+    substitute(erasing, next);
+  } else if(erasing->read_lc() || erasing->read_rc()){//XOR with previous if condition
+    substitute(erasing, erasing->read_pr());
+  } else (!erasing->read_lc() && !erasing->read_rc()){//leaf
+
+  }
+
 }

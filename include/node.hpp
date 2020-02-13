@@ -55,6 +55,11 @@ class Node
 
 #if defined(DIAG)
     void info() const noexcept;  // If you wanted this inline, you're using it wrong ;)
+    friend std::ostream& operator<<(std::ostream& os, const Node& node){
+      os << "(" << node.read_elem().first
+         << "," << node.read_elem().second << ")";
+      return os;
+    }
 #endif
 
 
@@ -209,7 +214,7 @@ void Node<T>::info() const noexcept
 {
     std::cout << "~~ A NODE ~~"
               << "\n"
-              << "Contained element: " << this->read_elem() << "\n"
+              << "Contained element: " << *this << "\n"
               << "Left child: ";
     if (this->left_child == nullptr)
     {
