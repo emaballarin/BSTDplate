@@ -6,6 +6,7 @@
 #include <utility>
 #include <vector>
 #include <cmath>
+#include <queue>
 
 template<typename kt, typename vt, typename cmp = std::less<kt>>
 class bst
@@ -68,6 +69,11 @@ class bst
     void balance_sub_l(std::size_t, std::size_t);
     void balance_sub_r(std::size_t, std::size_t);
 
+    void exchange(iterator);
+    void replace(iterator);
+    void substitute(iterator, iterator);
+    void detach_leaf(iterator);
+
 };
 
 template<typename kt, typename vt, typename cmp>
@@ -95,7 +101,7 @@ typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cbegin() const{
 
 //I would use const_iterator inside leftmost, but then how to convert it in iterator?const_cast?
 template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::iterator leftmost(typename bst<kt, vt, cmp>::node_type*& node){
+typename bst<kt, vt, cmp>::iterator leftmost(typename bst<kt, vt, cmp>::node_type* node){
   typename bst<kt, vt, cmp>::iterator begin{node};
 
   while (!(begin->is_left()))
@@ -124,7 +130,7 @@ typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cend() const{
 }
 
 template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::iterator rightmost(typename bst<kt, vt, cmp>::node_type*& node){
+typename bst<kt, vt, cmp>::iterator rightmost(typename bst<kt, vt, cmp>::node_type* node){
   typename bst<kt, vt, cmp>::iterator begin{node};
 
   while (!(begin->is_right()))
@@ -144,10 +150,12 @@ void bst<kt, vt, cmp>::balance(){
     vec.push_back(iterator{*Iter});
   }
 
+  //erase all relationships among the tree nodes
+  detach();
+
   //set the new root
   std::size_t middle_index = std::floor(vec.size()/2);
   iterator new_root = vec[middle_index];
-  detach(new_root);
 
   //dividi et impera
   balance_sub_l(0, middle_index);
@@ -158,8 +166,26 @@ void bst<kt, vt, cmp>::balance(){
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::detach()
 {
-  this->root->detach_left();
-  this->root->detach_right();
+  std::queue<node_type*> queue{};
+  queue.push(this->root->get());
+
+  while (!queue.empty())
+  {
+      // Sx case
+      if (queue.front()->read_lc().get())
+      {
+        queue.push(queue.front()->read_lc().get());
+      }
+
+      // Dx case
+      if (queue.front()->read_rc().get())
+      {
+        queue.push(queue.front()->read_rc().get());
+      }
+
+      queue.front()->detach_children();
+      queue.pop();
+  }
 }
 
 template<typename kt, typename vt, typename cmp>
@@ -193,7 +219,6 @@ template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::value_type&
 bst<kt, vt, cmp>::operator[](typename bst<kt, vt, cmp>::const_key_type& x){
   iterator found = this->find(x);
-  //add assert?
   return found->read_elem().second();//not range checked
 }
 
@@ -201,22 +226,119 @@ template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::value_type&
 bst<kt, vt, cmp>::operator[](typename bst<kt, vt, cmp>::key_type&& x){
   iterator found = this->find(x);
-  //add assert?
   return found->read_elem().second();//not range checked
 }
 
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::erase(typename bst<kt, vt, cmp>::const_key_type& x){
   iterator erasing = find(x);
-  //check to_be_erased is not end
-  //check special cases erasing root
-  if (erasing->read_lc() && erasing->read_rc()){//both children
-    iterator next{erasing.next()};
-    substitute(erasing, next);
-  } else if(erasing->read_lc() || erasing->read_rc()){//XOR with previous if condition
-    substitute(erasing, erasing->read_pr());
-  } else (!erasing->read_lc() && !erasing->read_rc()){//leaf
 
+  //add exception
+  if (erasing->read_lc() && erasing->read_rc())//both children present
+  {
+    iterator next{erasing.next()};
+    exchange(next);
+    substitute(erasing,next);
+    delete *erasing;
+
+  } else if(erasing->read_lc() || erasing->read_rc())//only one child
+  {
+    replace(erasing);
+    delete *erasing;
+
+  } else //(!(erasing->read_lc()) && !(erasing->read_rc()))
+  {
+    detach_leaf(erasing);
+    delete *erasing;
   }
 
+}
+
+template<typename kt, typename vt, typename cmp>
+void bst<kt, vt, cmp>::exchange(typename bst<kt, vt, cmp>::iterator actual)
+{
+  if (actual->read_lc() && actual->read_rc())//both children present
+  {
+    iterator next{actual.next()};
+    exchange(next);
+    substitute(actual, next);
+
+  } else if(actual->read_lc() || actual->read_rc())//only one child
+  {
+    replace(actual);
+
+  } else //(!actual->read_lc() && !actual->read_rc())
+  {
+    detach_leaf(actual);
+  }
+}
+
+/* Erase a node with only one child. Two nested if-clauses: the first checks
+if the node to be erased is left or right, the second checks if its child is
+left or right. There are four cases in total*/
+template<typename kt, typename vt, typename cmp>
+void bst<kt, vt, cmp>::replace(typename bst<kt, vt, cmp>::iterator substituting)
+{
+  if (substituting->is_left())
+  {
+    //?more efficient way?
+    iterator father{substituting->read_pr().get()};
+    substituting->read_pr()->detach_left();
+    if (substituting->read_lc())
+    {
+      iterator left{substituting->read_lc().get()};
+      father->set_lc(*left);
+    } else //substituting has right node
+    {
+      iterator right{substituting->read_rc().get()};
+      father->set_lc(right);
+    }
+  } else
+  {
+    //?more efficient way?
+    iterator father{substituting->read_pr().get()};
+    substituting->read_pr()->detach_right();
+
+    if (substituting->read_rc())
+    {
+      iterator left{substituting->read_lc().get()};
+      father->set_rc(*left);
+    } else //substituting has right node
+    {
+      iterator right{substituting->read_rc().get()};
+      father->set_rc(right);
+    }
+  }
+}
+
+/*Substitute overload: the node to_be_substituted has two children, substituting
+has no children and parent. At the end of the procedure to_be_substituted is
+detached and needs to be erased or reattached properly.*/
+template<typename kt, typename vt, typename cmp>
+void bst<kt, vt, cmp>::substitute(typename bst<kt, vt, cmp>::iterator to_be_substituted,
+                                  typename bst<kt, vt, cmp>::iterator substituting)
+{
+  iterator parent{to_be_substituted->read_pr()};
+  iterator left{to_be_substituted->read_lc()};
+  iterator right{to_be_substituted->read_rc()};
+
+  to_be_substituted->detach_children();
+  if (to_be_substituted->is_left()){
+    to_be_substituted->read_pr()->detach_left();
+    parent->set_lc(*substituting);
+  }
+  else {
+    to_be_substituted->read_pr()->detach_right();
+    parent->set_rc(*substituting);
+  }
+
+  substituting->set_lc(*left);
+  substituting->set_rc(*left);
+}
+
+template<typename kt, typename vt, typename cmp>
+void bst<kt, vt, cmp>::detach_leaf(typename bst<kt, vt, cmp>::iterator erasing)
+{
+  if (erasing->is_left()){ erasing->read_pr()->detach_left();}
+  else{erasing->read_pr()->detach_right();}
 }

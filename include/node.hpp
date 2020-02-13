@@ -43,16 +43,16 @@ class Node
     inline bool is_left() noexcept;
     inline bool is_right() noexcept;
 
-    inline void set_lc(Node<T>*&);
-    inline void set_rc(Node<T>*&);
-    inline void set_both_children(Node<T>*&, Node<T>*&);
+    inline void set_lc(Node<T>*);
+    inline void set_rc(Node<T>*);
+    inline void set_both_children(Node<T>*&, Node<T>*&);//change to set_children
 
     template<typename FWR>
     inline void write_elem(FWR&&);
 
     inline void null_left() noexcept;
     inline void null_right() noexcept;
-
+    //add detach
 #if defined(DIAG)
     void info() const noexcept;  // If you wanted this inline, you're using it wrong ;)
     friend std::ostream& operator<<(std::ostream& os, const Node& node){
