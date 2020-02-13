@@ -131,7 +131,7 @@ inline void Node<T>::write_elem(FWR&& given)
 
 // Ptr setters
 template<typename T>
-inline void Node<T>::set_lc(Node<T>*& given)
+inline void Node<T>::set_lc(Node<T>* given)
 {
     assert(this->left_child == nullptr);
     this->left_child.reset(given);
@@ -140,7 +140,7 @@ inline void Node<T>::set_lc(Node<T>*& given)
 };
 
 template<typename T>
-inline void Node<T>::set_rc(Node<T>*& given)
+inline void Node<T>::set_rc(Node<T>* given)
 {
     assert(this->right_child == nullptr);
     this->right_child.reset(given);

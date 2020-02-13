@@ -279,34 +279,54 @@ left or right. There are four cases in total*/
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::replace(typename bst<kt, vt, cmp>::iterator substituting)
 {
-  if (substituting->is_left())
+  if (substituting->read_pr())
   {
-    //?more efficient way?
-    iterator father{substituting->read_pr().get()};
-    substituting->read_pr()->detach_left();
-    if (substituting->read_lc())
+    if (substituting->is_left())
     {
-      iterator left{substituting->read_lc().get()};
-      father->set_lc(*left);
-    } else //substituting has right node
+      //?more efficient way?
+      iterator father{substituting->read_pr().get()};
+      substituting->read_pr()->detach_left();
+      if (substituting->read_lc())
+      {
+        iterator left{substituting->read_lc().get()};
+        substituting->detach_left();
+        father->set_lc(*left);
+      } else //substituting has right node
+      {
+        iterator right{substituting->read_rc().get()};
+        substituting->detach_right();
+        father->set_lc(right);
+      }
+    } else
     {
-      iterator right{substituting->read_rc().get()};
-      father->set_lc(right);
+      //?more efficient way?
+      iterator father{substituting->read_pr().get()};
+      substituting->read_pr()->detach_right();
+
+      if (substituting->read_rc())
+      {
+        iterator left{substituting->read_lc().get()};
+        substituting->detach_left();
+        father->set_rc(*left);
+      } else //substituting has right node
+      {
+        iterator right{substituting->read_rc().get()};
+        substituting->detach_right();
+        father->set_rc(right);
+      }
     }
   } else
   {
-    //?more efficient way?
-    iterator father{substituting->read_pr().get()};
-    substituting->read_pr()->detach_right();
-
-    if (substituting->read_rc())
+    if (substituting->read_lc())
     {
       iterator left{substituting->read_lc().get()};
-      father->set_rc(*left);
-    } else //substituting has right node
+      substituting->detach_left();
+      root->reset(*left);//destroys previous root
+    } else
     {
       iterator right{substituting->read_rc().get()};
-      father->set_rc(right);
+      substituting->detach_right();
+      root->reset(*right);//destroys previous root
     }
   }
 }
@@ -318,22 +338,25 @@ template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::substitute(typename bst<kt, vt, cmp>::iterator to_be_substituted,
                                   typename bst<kt, vt, cmp>::iterator substituting)
 {
-  iterator parent{to_be_substituted->read_pr()};
   iterator left{to_be_substituted->read_lc()};
   iterator right{to_be_substituted->read_rc()};
-
   to_be_substituted->detach_children();
-  if (to_be_substituted->is_left()){
-    to_be_substituted->read_pr()->detach_left();
-    parent->set_lc(*substituting);
-  }
-  else {
-    to_be_substituted->read_pr()->detach_right();
-    parent->set_rc(*substituting);
+
+  if (to_be_substituted->read_pr())//if to_be_substituted is not the root
+  {
+    iterator parent{to_be_substituted->read_pr()};
+    if (to_be_substituted->is_left()){
+      to_be_substituted->read_pr()->detach_left();
+      parent->set_lc(*substituting);
+    }
+    else {
+      to_be_substituted->read_pr()->detach_right();
+      parent->set_rc(*substituting);
+    }
   }
 
   substituting->set_lc(*left);
-  substituting->set_rc(*left);
+  substituting->set_rc(*right);
 }
 
 template<typename kt, typename vt, typename cmp>
