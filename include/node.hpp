@@ -86,15 +86,8 @@ class Node
 
 template<typename T>
 template<typename FWR>
-inline Node<T>::Node(FWR&& given) noexcept : elem{std::forward<FWR>(given)}
-{
-#if defined(DIAG)
-    std::cout << "[DIAG]: "
-              << "Called: FWDing ctor of Element!"
-              << "\n"
-              << std::endl;
-#endif
-};  // We're very lucky it doesn't happen ;)
+inline Node<T>::Node(FWR&& given) noexcept :
+    elem{std::forward<FWR>(given)} {};  // We're very lucky it doesn't happen ;)
 
 template<typename T>
 inline Node<T>::Node(Node&& node) noexcept :
