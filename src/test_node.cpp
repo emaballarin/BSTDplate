@@ -4,7 +4,9 @@
 
 int main()
 {
-    // On the stack
+    /*
+     * ~~ ON THE HEAP ~~
+     */
 
 
     // Canonical retline

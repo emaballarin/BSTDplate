@@ -1,0 +1,15 @@
+#!/usr/bin/zsh
+
+PREVIOUS_CALLDIR="$(pwd)"
+PRJ_FOLDER="/home/emaballarin/DSSC/advprog/BSTDplate/"
+
+cd "$PRJ_FOLDER"
+
+make clean
+rm -f "$PRJ_FOLDER"/mytest.x
+
+g++ -W -Wall -Wextra -g -std=c++17 -I./ -I../include/ -I"$PRJ_FOLDER/include" -I"$PRJ_FOLDER/src" "$@" -o "$PRJ_FOLDER"/mytest.x
+"$PRJ_FOLDER"/mytest.x
+valgrind -s "$PRJ_FOLDER"/mytest.x
+
+cd "$PREVIOUS_CALLDIR"

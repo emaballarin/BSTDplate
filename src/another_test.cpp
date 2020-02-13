@@ -4,17 +4,22 @@
 #include "iterator.hpp"
 #include "node.hpp"
 
+#include <functional>
 #include <iostream>
-
-template<class... Types>
-void pippoprova(Types&&... args)
-{
-    ((std::cout << args), ...) << std::endl;
-}
 
 int main()
 {
-    // Default return
-    pippoprova(1, 2, "hello", "ano");
+    auto pippo = new bst<int, int, std::less<int>>;
+    std::pair<int, int> ktest = std::pair<int, int>{};
+    ktest.first = 10;
+    ktest.second = 200;
+
+
+    pippo->insert(ktest);
+
+    (void)pippo;
+
+    delete pippo;
+
     return 0;
 }

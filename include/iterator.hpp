@@ -32,8 +32,6 @@ class tree_iterator
     // Custom: ctor | Default: cpctor, mvctor, cpasst, mvasst, dtor
     tree_iterator() = default;
     inline explicit tree_iterator(node*) noexcept;
-    //missing constructor of const_iter from iter
-    //missing next()
 
     inline reference operator*() const;
     inline pointer operator->() const;
@@ -44,11 +42,13 @@ class tree_iterator
     inline bool operator==(const tree_iterator&) const;
     inline bool operator!=(const tree_iterator&) const;
 
+    inline tree_iterator next();
+
 
     private:
     value_type* current;
 
-    inline tree_iterator leftmost(tree_iterator&) noexcept;
+    inline tree_iterator<node, Const> leftmost(tree_iterator<node, Const>&) noexcept;
 };
 
 template<typename node, bool Const>
@@ -128,4 +128,24 @@ inline tree_iterator<node, Const> tree_iterator<node, Const>::leftmost(tree_iter
         next.current = next->read_lc().get();
     }
     return next;
+}
+
+template<typename node, bool Const>
+inline tree_iterator<node, Const> tree_iterator<node, Const>::next()
+{
+    return tree_iterator<node, Const>{(++std::copy(*this)).current};    // Will it work ??
+}
+
+
+// NON-MEMBER FUNCTIONS
+template<typename node>
+inline tree_iterator<node, true> tree_iterator_constify(tree_iterator<node, false> given)
+{
+    return tree_iterator<node, true>{given.current};
+}
+
+template<typename node>
+inline tree_iterator<node, false> tree_iterator_unconstify(tree_iterator<node, true> given)
+{
+    return tree_iterator<node, false>{given.current};
 }

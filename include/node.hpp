@@ -46,15 +46,19 @@ class Node
 
     inline void set_lc(Node<T>*);
     inline void set_rc(Node<T>*);
-    inline void set_both_children(Node<T>*, Node<T>*);
+    inline void set_children(Node<T>*, Node<T>*) noexcept;
 
     template<typename FWR>
     inline void write_elem(FWR&&);
 
     inline void detach_left() noexcept;
     inline void detach_right() noexcept;
+    inline void detach_children() noexcept;
+
     inline void null_left() noexcept;
     inline void null_right() noexcept;
+    inline void null_children() noexcept;
+
     //add detach
 #if defined(DIAG)
     void info() const noexcept;  // If you wanted this inline, you're using it wrong ;)
@@ -82,8 +86,15 @@ class Node
 
 template<typename T>
 template<typename FWR>
-inline Node<T>::Node(FWR&& given) noexcept :
-    elem{std::forward<FWR>(given)} {};  // We're very lucky it doesn't happen ;)
+inline Node<T>::Node(FWR&& given) noexcept : elem{std::forward<FWR>(given)}
+{
+#if defined(DIAG)
+    std::cout << "[DIAG]: "
+              << "Called: FWDing ctor of Element!"
+              << "\n"
+              << std::endl;
+#endif
+};  // We're very lucky it doesn't happen ;)
 
 template<typename T>
 inline Node<T>::Node(Node&& node) noexcept :
@@ -159,10 +170,24 @@ inline void Node<T>::set_rc(Node<T>* given)
 };
 
 template<typename T>
-inline void Node<T>::set_both_children(Node<T>* l_given, Node<T>* r_given)
+inline void Node<T>::set_children(Node<T>* l_given, Node<T>* r_given) noexcept
 {
     this->set_lc(l_given);
     this->set_rc(r_given);
+}
+
+template<typename T>
+inline void Node<T>::detach_children() noexcept
+{
+    this->detach_left();
+    this->detach_right();
+}
+
+template<typename T>
+inline void Node<T>::null_children() noexcept
+{
+    this->null_left();
+    this->null_right();
 };
 
 // Utility
