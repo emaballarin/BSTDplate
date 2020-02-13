@@ -12,7 +12,8 @@
 default: all
 
 ################################################################################
-SRC = test.cpp another_test.cpp
+SRC = test_node.cpp test_iterator.cpp test_bst.cpp bench_bst.cpp test.cpp \
+      another_test.cpp
 ################################################################################
 
 CXX = c++
@@ -57,6 +58,10 @@ clean:
 .PHONY: clean
 
 ################################################################################
-test.x : CXXFLAGS += -Wno-unused-variable
-another_test.x : CXXFLAGS += -Wno-unused-variable
+test_node.cpp : CXXFLAGS += -W
+test_iterator.cpp : CXXFLAGS += -W
+test_bst.cpp : CXXFLAGS += -W
+bench_bst.cpp : CXXFLAGS += -W
+test.cpp : CXXFLAGS += -W
+another_test.cpp : CXXFLAGS += -W
 ################################################################################
