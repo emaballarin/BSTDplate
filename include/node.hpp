@@ -6,10 +6,11 @@
  *                                         (an author, on this header file)   *
  *                                                                            *
 \******************************************************************************/
+
 #pragma once
 #define DIAG  // Remove/comment this before "shipping to production"
 
-#include <cassert>              // Safety tests <- TO BE IMPLEMENTED
+#include <cassert>              // Safety tests
 #include <experimental/memory>  // Use: observer_ptr | we REALLY want a raw ptr with the same semantics as smart ptr
 #include <memory>               // Use: unique_ptr
 
@@ -26,7 +27,7 @@ class Node
     inline Node() noexcept = default;
 
     template<typename FWR>
-    inline Node(FWR&&) noexcept;
+    inline explicit Node(FWR&&) noexcept;  // We're very lucky it doesn't happen ;)
 
     Node(Node&) = delete;  // Explicit deletion as in GNU unique_ptr.h
     inline Node(Node&&) noexcept;
@@ -45,11 +46,13 @@ class Node
 
     inline void set_lc(Node<T>*);
     inline void set_rc(Node<T>*);
-    inline void set_both_children(Node<T>*&, Node<T>*&);  //change to set_children
+    inline void set_both_children(Node<T>*, Node<T>*);
 
     template<typename FWR>
     inline void write_elem(FWR&&);
 
+    inline void detach_left() noexcept;
+    inline void detach_right() noexcept;
     inline void null_left() noexcept;
     inline void null_right() noexcept;
     //add detach
@@ -74,12 +77,13 @@ class Node
     inline void set_childtype(bool) noexcept;
 
     inline void null_parent() noexcept;
-    inline void set_parent(Node<T>*);
+    inline void set_parent(Node<T>*) noexcept;
 };
 
 template<typename T>
 template<typename FWR>
-inline Node<T>::Node(FWR&& given) noexcept : elem{std::forward<FWR>(given)} {};
+inline Node<T>::Node(FWR&& given) noexcept :
+    elem{std::forward<FWR>(given)} {};  // We're very lucky it doesn't happen ;)
 
 template<typename T>
 inline Node<T>::Node(Node&& node) noexcept :
@@ -133,7 +137,10 @@ inline void Node<T>::write_elem(FWR&& given)
 template<typename T>
 inline void Node<T>::set_lc(Node<T>* given)
 {
-    assert(this->left_child == nullptr);
+    assert(given);                      // Can't set to nullptr this way; use null_left() instead
+    assert(!(this->left_child.get()));  // Can set only if free
+    assert(!(this->parent.get()) || this->parent.get() != given);  // Can't create cycles
+
     this->left_child.reset(given);
     this->left_child.get()->set_parent(this);
     this->left_child.get()->set_childtype(false);
@@ -142,14 +149,17 @@ inline void Node<T>::set_lc(Node<T>* given)
 template<typename T>
 inline void Node<T>::set_rc(Node<T>* given)
 {
-    assert(this->right_child == nullptr);
+    assert(given);                       // Can't set to nullptr this way; use null_right() instead
+    assert(!(this->right_child.get()));  // Can set only if free
+    assert(!(this->parent.get()) || this->parent.get() != given);  // Can't create cycles
+
     this->right_child.reset(given);
     this->right_child.get()->set_parent(this);
     this->right_child.get()->set_childtype(true);
 };
 
 template<typename T>
-inline void Node<T>::set_both_children(Node<T>*& l_given, Node<T>*& r_given)
+inline void Node<T>::set_both_children(Node<T>* l_given, Node<T>* r_given)
 {
     this->set_lc(l_given);
     this->set_rc(r_given);
@@ -157,9 +167,9 @@ inline void Node<T>::set_both_children(Node<T>*& l_given, Node<T>*& r_given)
 
 // Utility
 template<typename T>
-inline void Node<T>::null_left() noexcept
+inline void Node<T>::detach_left() noexcept
 {
-    if (this->left_child != nullptr)
+    if (this->left_child)
     {
         this->left_child.get()->null_parent();
         this->left_child.release();
@@ -168,13 +178,31 @@ inline void Node<T>::null_left() noexcept
 }
 
 template<typename T>
-inline void Node<T>::null_right() noexcept
+inline void Node<T>::detach_right() noexcept
 {
-    if (this->right_child != nullptr)
+    if (this->right_child)
     {
         this->right_child.get()->null_parent();
         this->right_child.release();
         this->right_child = nullptr;
+    }
+}
+
+template<typename T>
+inline void Node<T>::null_left() noexcept
+{
+    if (this->left_child)
+    {
+        this->left_child.reset();
+    }
+}
+
+template<typename T>
+inline void Node<T>::null_right() noexcept
+{
+    if (this->right_child)
+    {
+        this->right_child.reset();
     }
 }
 
@@ -185,7 +213,7 @@ inline void Node<T>::null_parent() noexcept
 }
 
 template<typename T>
-inline void Node<T>::set_parent(Node<T>* newparent)
+inline void Node<T>::set_parent(Node<T>* newparent) noexcept
 {
     this->parent.reset(newparent);
 }

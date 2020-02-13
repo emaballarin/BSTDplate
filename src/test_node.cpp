@@ -4,8 +4,9 @@
 
 int main()
 {
-    int unused;
+    // On the stack
 
-    std::cout << "Hello, world!" << std::endl;
+
+    // Canonical retline
     return 0;
 }

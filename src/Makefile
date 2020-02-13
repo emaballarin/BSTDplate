@@ -12,11 +12,12 @@
 default: all
 
 ################################################################################
-SRC = test.cpp
+SRC = test_node.cpp test_iterator.cpp test_bst.cpp bench_bst.cpp test.cpp \
+      another_test.cpp
 ################################################################################
 
 CXX = c++
-CXXFLAGS = -W -Wall -Wextra -g -std=c++17 -ansi -pedantic -I./ -I../include/
+CXXFLAGS = -W -Wall -Wextra -g -std=c++17 -I./ -I../include/
 
 EXE = $(SRC:.cpp=.x)
 
@@ -57,5 +58,10 @@ clean:
 .PHONY: clean
 
 ################################################################################
-test.x : CXXFLAGS += -Wno-unused-variable
+test_node.cpp : CXXFLAGS += -W
+test_iterator.cpp : CXXFLAGS += -W
+test_bst.cpp : CXXFLAGS += -W
+bench_bst.cpp : CXXFLAGS += -W
+test.cpp : CXXFLAGS += -W
+another_test.cpp : CXXFLAGS += -W
 ################################################################################
