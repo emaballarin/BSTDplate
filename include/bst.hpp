@@ -49,12 +49,12 @@ class bst
 
 
     //insert
-    std::pair<iterator, bool> insert(const pair_type& x);
-    std::pair<iterator, bool> insert(pair_type&& x);
+    std::pair<iterator, bool> insert(const pair_type&);
+    std::pair<iterator, bool> insert(pair_type&&);
 
     //emplace
     template<class... Types>
-    std::pair<iterator, bool> emplace(Types&&... args);
+    std::pair<iterator, bool> emplace(Types&&...);
 
     //clear
     void clear();
@@ -70,18 +70,18 @@ class bst
     const_iterator cend() const;
 
     //find
-    iterator find(const key_type& x);
-    const_iterator find(const key_type& x) const;
+    iterator find(const key_type&);
+    const_iterator find(const key_type&) const;
 
     // find, overloaded on RVALUE
-    iterator find(key_type&& x);
+    iterator find(key_type&&);
 
     //balance
     void balance();
 
     //subscripting
-    value_type& operator[](const key_type& x);
-    value_type& operator[](key_type&& x);
+    value_type& operator[](const_key_type&);
+    value_type& operator[](key_type&&);
 
     //Put-to operator
     friend std::ostream& operator<<(std::ostream& os, const bst<kt, vt, cmp>& bstree)
@@ -97,19 +97,12 @@ class bst
     };
 
     //erase
-    void erase(const key_type& x);
+    void erase(const_key_type&);
 
     private:
     std::unique_ptr<node_type> root;
     //node_type* root;
     std::vector<iterator> vec;
-
-    //wrapper for find: bool=true returns end, bool=false returns where to insert
-    iterator find(const key_type&, bool);
-    const_iterator find(const key_type&, bool) const;
-
-    iterator find_private(const key_type&);
-    const_iterator find_private(const key_type&) const;
 
     // Private swap function
     void swap(bst<kt, vt, cmp>&) noexcept;
@@ -416,7 +409,7 @@ void bst<kt, vt, cmp>::balance_sub_l(std::size_t left, std::size_t middle)
 {
     std::size_t dis_ml = middle - left;
 
-    std::size_t l_child = left + std::floor(dis_ml / 2);
+    auto l_child = left + static_cast<std::size_t>(std::floor(dis_ml / 2));
     detach(vec[l_child]);
     vec[middle]->set_lc(*vec[l_child]);
 
@@ -435,7 +428,7 @@ void bst<kt, vt, cmp>::balance_sub_r(std::size_t middle, std::size_t right)
 {
     std::size_t dis_rm = right - middle;
 
-    std::size_t r_child = right - std::floor(dis_rm / 2);
+    auto r_child = static_cast<std::size_t>(right - std::floor(dis_rm / 2));
     detach(vec[r_child]);
     vec[middle]->set_rc(*vec[r_child]);
 
