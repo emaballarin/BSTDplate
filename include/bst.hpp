@@ -339,6 +339,11 @@ void bst<kt, vt, cmp>::substitute(typename bst<kt, vt, cmp>::iterator to_be_subs
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::detach_leaf(typename bst<kt, vt, cmp>::iterator erasing)
 {
-  if (erasing->is_left()){ erasing->read_pr()->detach_left();}
-  else{erasing->read_pr()->detach_right();}
+  if (erasing->read_pr())
+  {
+    if (erasing->is_left()){ erasing->read_pr()->detach_left();}
+    else{erasing->read_pr()->detach_right();}
+  } else {//single root to erase
+    root.reset();
+  }
 }
