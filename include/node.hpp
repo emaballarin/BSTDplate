@@ -27,7 +27,7 @@ class Node
     inline Node() noexcept = default;
 
     template<typename FWR>
-    inline explicit Node(FWR&&) noexcept;   // We're very lucky it doesn't happen ;)
+    inline explicit Node(FWR&&) noexcept;  // We're very lucky it doesn't happen ;)
 
     Node(Node&) = delete;  // Explicit deletion as in GNU unique_ptr.h
     inline Node(Node&&) noexcept;
@@ -77,7 +77,8 @@ class Node
 
 template<typename T>
 template<typename FWR>
-inline Node<T>::Node(FWR&& given) noexcept : elem{std::forward<FWR>(given)} {};  // We're very lucky it doesn't happen ;)
+inline Node<T>::Node(FWR&& given) noexcept :
+    elem{std::forward<FWR>(given)} {};  // We're very lucky it doesn't happen ;)
 
 template<typename T>
 inline Node<T>::Node(Node&& node) noexcept :
