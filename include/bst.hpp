@@ -126,22 +126,17 @@ class bst
     void detach_leaf(iterator);
 };
 
-<<<<<<<
-
-=======
 
 // cpctor
->>>>>>>
 template<typename kt, typename vt, typename cmp>
-<<<<<<<
 void bst<kt, vt, cmp>::clear()
-=======
-bst<kt, vt, cmp>::bst(const bst<kt, vt, cmp>& original)
->>>>>>>
 {
-<<<<<<<
     root.reset();
-=======
+}
+
+template<typename kt, typename vt, typename cmp>
+bst<kt, vt, cmp>::bst(const bst<kt, vt, cmp>& original)
+{
     if (!(original.root.get()))
     {
         this->root = nullptr;
@@ -252,20 +247,18 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(co
         }
     }
     return to_be_ret;
->>>>>>>
 }
 
 template<typename kt, typename vt, typename cmp>
-<<<<<<<
 typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::begin()
-=======
+{
+    return leftmost(this->root.get());
+}
+
+template<typename kt, typename vt, typename cmp>
 std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pair_type&& pair)
 // COPY OF THE ABOVE
->>>>>>>
 {
-<<<<<<<
-    return leftmost(this->root.get());
-=======
     Node<std::pair<const kt, vt>>* cursor = this->root.get();
     auto& cursor_key = cursor->read_elem().first;
     std::pair<bst<kt, vt, cmp>::iterator, bool> to_be_ret;
@@ -311,10 +304,8 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pa
         }
     }
     return to_be_ret;
->>>>>>>
 }
 
-<<<<<<<
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::begin() const
 {
@@ -629,7 +620,7 @@ void bst<kt, vt, cmp>::detach_leaf(typename bst<kt, vt, cmp>::iterator erasing)
     }
 }
 
-=======
+
 template<typename kt, typename vt, typename cmp>
 template<class... Types>
 std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(Types&&... args)
@@ -777,5 +768,3 @@ bool bst<kt, vt, cmp>::ecmp(kt lhs, kt rhs)
 {
     return (!cmp(lhs, rhs) && !cmp(rhs, lhs));
 }
-
->>>>>>>
