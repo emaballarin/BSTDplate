@@ -30,7 +30,7 @@ class tree_iterator
     using difference_type = std::ptrdiff_t;  // Never used, but needed ;)
 
     // Custom: ctor | Default: cpctor, mvctor, cpasst, mvasst, dtor
-    tree_iterator()=default;
+    tree_iterator() = default;
     explicit tree_iterator(node*&) noexcept;
     //missing constructor of const_iter from iter
     //missing next()

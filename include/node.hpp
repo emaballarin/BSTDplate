@@ -45,7 +45,7 @@ class Node
 
     inline void set_lc(Node<T>*);
     inline void set_rc(Node<T>*);
-    inline void set_both_children(Node<T>*&, Node<T>*&);//change to set_children
+    inline void set_both_children(Node<T>*&, Node<T>*&);  //change to set_children
 
     template<typename FWR>
     inline void write_elem(FWR&&);
@@ -55,10 +55,10 @@ class Node
     //add detach
 #if defined(DIAG)
     void info() const noexcept;  // If you wanted this inline, you're using it wrong ;)
-    friend std::ostream& operator<<(std::ostream& os, const Node& node){
-      os << "(" << node.read_elem().first
-         << "," << node.read_elem().second << ")";
-      return os;
+    friend std::ostream& operator<<(std::ostream& os, const Node& node)
+    {
+        os << "(" << node.read_elem().first << "," << node.read_elem().second << ")";
+        return os;
     }
 #endif
 
