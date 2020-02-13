@@ -81,9 +81,15 @@ class bst
     value_type& operator[](key_type&& x);
 
     //Put-to operator
-    friend std::ostream& operator<<(std::ostream& os, const bst<kt, vt, cmp>& x)
+    friend std::ostream& operator<<(std::ostream& os, const bst<kt, vt, cmp>& bstree)
     {
-        // Do stuff here!
+        tree_iterator<Node<std::pair<kt, vt>>, true> iter{bstree.cbegin()};
+
+        while (iter != bstree.cend())
+        {
+            os << (iter++)->read_elem();
+        }
+        // Retline
         return os;
     };
 
