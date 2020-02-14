@@ -207,7 +207,8 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(co
         {
             if (ecmp(cursor_key, pair.first))
             {
-                tree_iterator<Node<std::pair<kt, vt>>, false> found_key{cursor};
+                tree_iterator<Node<std::pair<kt, vt>>, false> found_key =
+                  tree_iterator<Node<std::pair<kt, vt>>, false>(cursor);
                 to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, false};
                 break;
             }
@@ -258,7 +259,8 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pa
         {
             if (ecmp(cursor_key, pair.first))
             {
-                tree_iterator<Node<std::pair<kt, vt>>, false> found_key{cursor};
+                tree_iterator<Node<std::pair<kt, vt>>, false> found_key =
+                  tree_iterator<Node<std::pair<kt, vt>>, false>(cursor);
                 to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, false};
                 break;
             }
@@ -634,7 +636,8 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(T
             if (ecmp(cursor_key, pair.first))
             {
                 cursor->write_elem(pair);
-                tree_iterator<Node<std::pair<kt, vt>>, false> found_key{cursor};
+                tree_iterator<Node<std::pair<kt, vt>>, false> found_key =
+                  tree_iterator<Node<std::pair<kt, vt>>, false>(cursor);
                 to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, false};
                 break;
             }
@@ -683,7 +686,8 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key)
         {
             if (ecmp(cursor_key, key))
             {
-                tree_iterator<Node<std::pair<kt, vt>>, false> found_key{cursor};
+                tree_iterator<Node<std::pair<kt, vt>>, false> found_key =
+                  tree_iterator<Node<std::pair<kt, vt>>, false>(cursor);
                 iter_ret = found_key;
                 break;
             }
@@ -721,7 +725,8 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(key_type&& key)
         {
             if (ecmp(cursor_key, key))
             {
-                tree_iterator<Node<std::pair<kt, vt>>, false> found_key{cursor};
+                tree_iterator<Node<std::pair<kt, vt>>, false> found_key =
+                  tree_iterator<Node<std::pair<kt, vt>>, false>(cursor);
                 iter_ret = found_key;
                 break;
             }
