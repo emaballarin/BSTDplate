@@ -23,7 +23,7 @@ template<typename kt, typename vt, typename cmp = std::less<kt>>
 class bst
 {
     public:
-    using key_type = kt;
+    using key_type = const kt;
     using const_key_type = const kt;
     using const_value_type = const vt;
     using value_type = vt;
@@ -86,11 +86,16 @@ class bst
     //Put-to operator
     friend std::ostream& operator<<(std::ostream& os, const bst<kt, vt, cmp>& bstree)
     {
-        tree_iterator<Node<std::pair<kt, vt>>, true> iter{bstree.cbegin()};
+        const_iterator iter{bstree.cbegin()};
+        const char s = ' ';
 
         while (iter != bstree.cend())
         {
-            os << (iter++)->read_elem();
+            //check that keys and values are printable
+            os << "(" << iter->read_elem().first
+               << ":" << iter->read_elem().second
+               << ")" << s;
+            ++iter;
         }
         // Retline
         return os;
@@ -101,7 +106,6 @@ class bst
 
     private:
     std::unique_ptr<node_type> root;
-    //node_type* root;
     std::vector<iterator> vec;
 
     // Private swap function
@@ -109,6 +113,7 @@ class bst
 
     // Member comparison for keys
     bool ecmp(kt, kt);
+
     void detach();
     void balance_sub_l(std::size_t, std::size_t);
     void balance_sub_r(std::size_t, std::size_t);
@@ -120,7 +125,6 @@ class bst
 };
 
 
-// cpctor
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::clear()
 {
@@ -142,33 +146,23 @@ bst<kt, vt, cmp>::bst(const bst<kt, vt, cmp>& original)
         queue_original.push(original.root.get());
         queue_this.push(this->root.get());
 
-        bool has_children;  // Hoist-by-hand
-
-        // Copy-elision by hand: so much fun! :)
+        // Copy-elision by hand
         while (!queue_original.empty())
         {
-            has_children = (queue_original.front()->read_lc().get()->read_lc().get()
-                            || queue_original.front()->read_rc().get()->read_rc().get());  // Avoid repeated evaluation
             // Sx case
             if (queue_original.front()->read_lc().get())
             {
                 queue_this.front()->set_lc(new node_type(queue_original.front()->read_lc()->read_elem()));
-                if (has_children)
-                {
-                    queue_original.push(queue_original.front()->read_lc().get());
-                    queue_this.push(queue_this.front()->read_lc().get());
-                }
+                queue_original.push(queue_original.front()->read_lc().get());
+                queue_this.push(queue_this.front()->read_lc().get());
             }
 
             // Dx case
             if (queue_original.front()->read_rc().get())
             {
                 queue_this.front()->set_rc(new node_type(queue_original.front()->read_rc()->read_elem()));
-                if (has_children)
-                {
-                    queue_original.push(queue_original.front()->read_rc().get());
-                    queue_this.push(queue_this.front()->read_rc().get());
-                }
+                queue_original.push(queue_original.front()->read_rc().get());
+                queue_this.push(queue_this.front()->read_rc().get());
             }
 
             // Pop after push, to allow an easy end condition
@@ -185,7 +179,6 @@ bst<kt, vt, cmp>& bst<kt, vt, cmp>::operator=(const bst<kt, vt, cmp>& original)
     if (this != &original)  // Optimize against self-assignment
     {
         bst<kt, vt, cmp> copy{original};
-        //this = &copy;
         this->swap(copy);
     }
     return *this;
@@ -195,13 +188,13 @@ bst<kt, vt, cmp>& bst<kt, vt, cmp>::operator=(const bst<kt, vt, cmp>& original)
 template<typename kt, typename vt, typename cmp>
 std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(const pair_type& pair)
 {
-    Node<std::pair<const kt, vt>>* cursor = this->root.get();
+    node_type* cursor = this->root.get();
     auto& cursor_key = cursor->read_elem().first;
-    std::pair<bst<kt, vt, cmp>::iterator, bool> to_be_ret;
+    std::pair<iterator, bool> to_be_ret;
 
     while (true)
     {
-        if (Node<std::pair<const kt, vt>>* r_child = cursor->read_rc().get();
+        if (node_type* r_child = cursor->read_rc().get();
             (cmp(pair.first, cursor_key)) && (r_child))
         {
             cursor = r_child;
@@ -240,12 +233,6 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(co
         }
     }
     return to_be_ret;
-}
-
-template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::begin()
-{
-    return leftmost(this->root.get());
 }
 
 template<typename kt, typename vt, typename cmp>
@@ -297,6 +284,12 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pa
         }
     }
     return to_be_ret;
+}
+
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::begin()
+{
+    return leftmost(this->root.get());
 }
 
 template<typename kt, typename vt, typename cmp>
@@ -446,14 +439,14 @@ template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::value_type& bst<kt, vt, cmp>::operator[](typename bst<kt, vt, cmp>::const_key_type& x)
 {
     iterator found = this->find(x);
-    return found->read_elem().second();  //not range checked
+    return found->read_elem().second;  //not range checked
 }
 
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::value_type& bst<kt, vt, cmp>::operator[](typename bst<kt, vt, cmp>::key_type&& x)
 {
     iterator found = this->find(x);
-    return found->read_elem().second();  //not range checked
+    return found->read_elem().second;  //not range checked
 }
 
 template<typename kt, typename vt, typename cmp>
