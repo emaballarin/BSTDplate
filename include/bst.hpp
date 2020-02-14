@@ -187,7 +187,7 @@ template<typename kt, typename vt, typename cmp>
 std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(const pair_type& pair)
 {
     node_type* cursor = this->root.get();
-    auto& cursor_key = cursor->read_elem().first;
+    kt cursor_key = cursor->read_elem().first;
     std::pair<iterator, bool> to_be_ret;
 
     while (true)
@@ -237,7 +237,7 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pa
 // COPY OF THE ABOVE
 {
     Node<std::pair<const kt, vt>>* cursor = this->root.get();
-    auto& cursor_key = cursor->read_elem().first;
+    kt cursor_key = cursor->read_elem().first;
     std::pair<bst<kt, vt, cmp>::iterator, bool> to_be_ret;
 
     while (true)
@@ -609,7 +609,7 @@ template<class... Types>
 std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(Types&&... args)
 {
     Node<std::pair<const kt, vt>>* cursor = this->root.get();
-    auto& cursor_key = cursor->read_elem().first;
+    kt cursor_key = cursor->read_elem().first;
     std::pair<bst<kt, vt, cmp>::iterator, bool> to_be_ret;
 
     // Check for correctness, eventually.
@@ -663,7 +663,7 @@ template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key)
 {
     Node<std::pair<const kt, vt>>* cursor = this->root.get();
-    auto& cursor_key = cursor->read_elem().first;
+    kt cursor_key = cursor->read_elem().first;
     tree_iterator<Node<std::pair<kt, vt>>, false> iter_ret{cursor};
 
     while (true)
@@ -701,7 +701,7 @@ template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(key_type&& key)
 {
     Node<std::pair<const kt, vt>>* cursor = this->root.get();
-    auto& cursor_key = cursor->read_elem().first;
+    kt cursor_key = cursor->read_elem().first;
     tree_iterator<Node<std::pair<kt, vt>>, false> iter_ret{cursor};
 
     while (true)
