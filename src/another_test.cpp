@@ -15,7 +15,8 @@ int main()
 
     auto getpair = pippo->insert(ktest);
 
-    std::cout << getpair.first->read_elem().first << getpair.first->read_elem().second << getpair.second << std::endl;
+    std::cout << getpair.first->read_elem().first << " " << getpair.first->read_elem().second << " " << getpair.second
+              << std::endl;
 
 
     (void)pippo;
