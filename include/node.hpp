@@ -41,8 +41,8 @@ class Node
     inline const std::unique_ptr<Node<T>>& read_lc() const noexcept;
     inline const std::unique_ptr<Node<T>>& read_rc() const noexcept;
     inline const std::experimental::observer_ptr<Node<T>>& read_pr() const noexcept;
-    inline bool is_left() noexcept;
-    inline bool is_right() noexcept;
+    inline bool is_left() const noexcept;
+    inline bool is_right() const noexcept;
 
     inline void set_lc(Node<T>*);
     inline void set_rc(Node<T>*);
@@ -243,13 +243,13 @@ inline void Node<T>::set_childtype(bool childbool) noexcept
 }
 
 template<typename T>
-inline bool Node<T>::is_left() noexcept
+inline bool Node<T>::is_left() const noexcept
 {
-    return !this->childtype;
+    return !(this->childtype);
 }
 
 template<typename T>
-inline bool Node<T>::is_right() noexcept
+inline bool Node<T>::is_right() const noexcept
 {
     return this->childtype;
 }

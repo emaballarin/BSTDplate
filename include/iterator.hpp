@@ -31,7 +31,7 @@ class tree_iterator
 
     // Custom: ctor | Default: cpctor, mvctor, cpasst, mvasst, dtor
     tree_iterator() = default;
-    inline explicit tree_iterator(node*) noexcept;
+    inline explicit tree_iterator(value_type*) noexcept;
 
     inline reference operator*() const;
     inline pointer operator->() const;
@@ -46,13 +46,17 @@ class tree_iterator
 
 
     private:
+    //pointer current;
     value_type* current;
+    //node* current;
+    //node* current;
 
     inline tree_iterator<node, Const> leftmost(tree_iterator<node, Const>&) noexcept;
 };
 
 template<typename node, bool Const>
-inline tree_iterator<node, Const>::tree_iterator(node* given) noexcept : current{given} {};
+//inline tree_iterator<node, Const>::tree_iterator(node* given) noexcept : current{given} {};
+inline tree_iterator<node, Const>::tree_iterator(value_type* given) noexcept : current{given} {};
 
 
 template<typename node, bool Const>
@@ -65,6 +69,7 @@ template<typename node, bool Const>
 inline typename tree_iterator<node, Const>::pointer tree_iterator<node, Const>::operator->() const
 {
     return &(*(*this));
+    //return &(current);
 }
 
 template<typename node, bool Const>
@@ -72,6 +77,7 @@ inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++()
 {
 
     tree_iterator<node, Const> next{current};
+    //tree_iterator<node, false> next{const_cast<value_type*>(current)};
 
     pointer ptr_r = next->read_rc().get();
 
@@ -86,6 +92,7 @@ inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++()
     }
     else
     {
+        next.current = next->read_pr().get();
         while (!(next->is_left()) && !(next->read_pr()->read_rc()) && next->read_pr().get())
         {
             next.current = next->read_pr().get();
@@ -95,6 +102,8 @@ inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++()
     }
 
     // Allow (N)RVO, however the compiler wants to perform it (Does it? Cool!)
+    //tree_iterator<node, Const> ret_next{current};
+    *this = next;  // Pipelining
     return next;
 }
 
@@ -121,8 +130,7 @@ inline bool tree_iterator<node, Const>::operator!=(const tree_iterator<node, Con
 template<typename node, bool Const>
 inline tree_iterator<node, Const> tree_iterator<node, Const>::leftmost(tree_iterator<node, Const>& given) noexcept
 {
-    tree_iterator<node, Const> next{given};
-
+    tree_iterator<node, Const> next{given.current};
     while (next->read_lc())
     {
         next.current = next->read_lc().get();
@@ -133,7 +141,7 @@ inline tree_iterator<node, Const> tree_iterator<node, Const>::leftmost(tree_iter
 template<typename node, bool Const>
 inline tree_iterator<node, Const> tree_iterator<node, Const>::next()
 {
-    return tree_iterator<node, Const>{(++std::copy(*this)).current};    // Will it work ??
+    return tree_iterator<node, Const>{(++std::copy(*this)).current};  // Will it work ??
 }
 
 
