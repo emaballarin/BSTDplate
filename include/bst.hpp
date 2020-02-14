@@ -120,6 +120,7 @@ class bst
     void replace(iterator);
     void substitute(iterator, iterator);
     void detach_leaf(iterator);
+    iterator leftmost(node_type*);
 };
 
 
@@ -205,13 +206,13 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(co
 
         while (true)
         {
-            if (node_type* r_child = cursor->read_rc().get(); (cmp()(pair.first, cursor_key)) && (r_child))
+            if (node_type* r_child = cursor->read_rc().get(); (cmp()(cursor_key, pair.first)) && (r_child))
             {
                 cursor = r_child;
                 cursor_key = cursor->read_elem().first;
             }
             else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get();
-                     (cmp()(cursor_key, pair.first)) && (l_child))
+                     (cmp()(pair.first, cursor_key)) && (l_child))
             {
                 cursor = l_child;
                 cursor_key = cursor->read_elem().first;
@@ -281,13 +282,13 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pa
 
         while (true)
         {
-            if (node_type* r_child = cursor->read_rc().get(); (cmp()(pair.first, cursor_key)) && (r_child))
+            if (node_type* r_child = cursor->read_rc().get(); (cmp()(cursor_key, pair.first)) && (r_child))
             {
                 cursor = r_child;
                 cursor_key = cursor->read_elem().first;
             }
             else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get();
-                     (cmp()(cursor_key, pair.first)) && (l_child))
+                     (cmp()(pair.first, cursor_key)) && (l_child))
             {
                 cursor = l_child;
                 cursor_key = cursor->read_elem().first;
@@ -354,7 +355,7 @@ typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cbegin() const
 
 //I would use const_iterator inside leftmost, but then how to convert it in iterator?const_cast?
 template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::iterator leftmost(typename bst<kt, vt, cmp>::node_type* node)
+typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::leftmost(typename bst<kt, vt, cmp>::node_type* node)
 {
     typename bst<kt, vt, cmp>::iterator begin{node};
 
@@ -682,13 +683,13 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(T
         while (true)
         {
             if (Node<std::pair<const kt, vt>>* r_child = cursor->read_rc().get();
-                (cmp()(pair.first, cursor_key)) && (r_child))
+                (cmp()(cursor_key, pair.first)) && (r_child))
             {
                 cursor = r_child;
                 cursor_key = cursor->read_elem().first;
             }
             else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get();
-                     (cmp()(cursor_key, pair.first)) && (l_child))
+                     (cmp()(pair.first, cursor_key)) && (l_child))
             {
                 cursor = l_child;
                 cursor_key = cursor->read_elem().first;
