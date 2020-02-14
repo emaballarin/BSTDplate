@@ -13,7 +13,10 @@ int main()
     std::pair<int, int> ktest = std::pair<int, int>{10, 200};
 
 
-    pippo->insert(ktest);
+    auto getpair = pippo->insert(ktest);
+
+    std::cout << getpair.first->read_elem().first << getpair.first->read_elem().second << getpair.second << std::endl;
+
 
     (void)pippo;
 
