@@ -92,9 +92,7 @@ class bst
         while (iter != bstree.cend())
         {
             //check that keys and values are printable
-            os << "(" << iter->read_elem().first
-               << ":" << iter->read_elem().second
-               << ")" << s;
+            os << "(" << iter->read_elem().first << ":" << iter->read_elem().second << ")" << s;
             ++iter;
         }
         // Retline
@@ -194,8 +192,7 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(co
 
     while (true)
     {
-        if (node_type* r_child = cursor->read_rc().get();
-            (cmp()(pair.first, cursor_key)) && (r_child))
+        if (node_type* r_child = cursor->read_rc().get(); (cmp()(pair.first, cursor_key)) && (r_child))
         {
             cursor = r_child;
             cursor_key = cursor->read_elem().first;
@@ -676,7 +673,8 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key)
             cursor = r_child;
             cursor_key = cursor->read_elem().first;
         }
-        else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get(); (cmp()(key, cursor_key)) && (l_child))
+        else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get();
+                 (cmp()(key, cursor_key)) && (l_child))
         {
             cursor = l_child;
             cursor_key = cursor->read_elem().first;
@@ -713,7 +711,8 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(key_type&& key)
             cursor = r_child;
             cursor_key = cursor->read_elem().first;
         }
-        else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get(); (cmp()(key, cursor_key)) && (l_child))
+        else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get();
+                 (cmp()(key, cursor_key)) && (l_child))
         {
             cursor = l_child;
             cursor_key = cursor->read_elem().first;
