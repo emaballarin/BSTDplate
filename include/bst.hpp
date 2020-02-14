@@ -209,7 +209,10 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(co
             {
                 tree_iterator<Node<std::pair<kt, vt>>, false> found_key =
                   tree_iterator<Node<std::pair<kt, vt>>, false>(cursor);
-                to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, false};
+                //to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, false};
+                to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>();
+                to_be_ret.first = found_key;
+                to_be_ret.second = false;
                 break;
             }
             else
@@ -218,13 +221,19 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(co
                 {
                     cursor->set_rc(new node_type(pair));
                     tree_iterator<Node<std::pair<kt, vt>>, false> found_key{cursor->read_rc().get()};
-                    to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, true};
+                    //to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, true};
+                    to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>();
+                    to_be_ret.fisrt = found_key;
+                    to_be_ret.second = true;
                 }
                 else
                 {
                     cursor->set_lc(new node_type(pair));
                     tree_iterator<Node<std::pair<kt, vt>>, false> found_key{cursor->read_lc().get()};
-                    to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, true};
+                    //to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, true};
+                    to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>();
+                    to_be_ret.first = found_key;
+                    to_be_ret.second = true;
                 }
                 break;
             }
@@ -261,7 +270,10 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pa
             {
                 tree_iterator<Node<std::pair<kt, vt>>, false> found_key =
                   tree_iterator<Node<std::pair<kt, vt>>, false>(cursor);
-                to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, false};
+                //to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, false};
+                to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>();
+                to_be_ret.first = found_key;
+                to_be_ret.second = false;
                 break;
             }
             else
@@ -270,13 +282,19 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pa
                 {
                     cursor->set_rc(new node_type(pair));
                     tree_iterator<Node<std::pair<kt, vt>>, false> found_key{cursor->read_rc().get()};
-                    to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, true};
+                    //to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, true};
+                    to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>();
+                    to_be_ret.first = found_key;
+                    to_be_ret.second = true;
                 }
                 else
                 {
                     cursor->set_lc(new node_type(pair));
                     tree_iterator<Node<std::pair<kt, vt>>, false> found_key{cursor->read_lc().get()};
-                    to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, true};
+                    //to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, true};
+                    to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>();
+                    to_be_ret.first = found_key;
+                    to_be_ret.second = true;
                 }
                 break;
             }
@@ -638,7 +656,10 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(T
                 cursor->write_elem(pair);
                 tree_iterator<Node<std::pair<kt, vt>>, false> found_key =
                   tree_iterator<Node<std::pair<kt, vt>>, false>(cursor);
-                to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, false};
+                //to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, false};
+                to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>();
+                to_be_ret.first = found_key;
+                to_be_ret.second = false;
                 break;
             }
             else
@@ -647,13 +668,19 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(T
                 {
                     cursor->set_rc(new node_type(pair));
                     tree_iterator<Node<std::pair<kt, vt>>, false> found_key{cursor->read_rc().get()};
-                    to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, true};
+                    //to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, true};
+                    to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>();
+                    to_be_ret.first = found_key;
+                    to_be_ret.second = true;
                 }
                 else
                 {
                     cursor->set_lc(new node_type(pair));
                     tree_iterator<Node<std::pair<kt, vt>>, false> found_key{cursor->read_lc().get()};
-                    to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, true};
+                    //to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, true};
+                    to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>();
+                    to_be_ret.first = found_key;
+                    to_be_ret.second = true;
                 }
                 break;
             }
