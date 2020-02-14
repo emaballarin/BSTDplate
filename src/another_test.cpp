@@ -10,9 +10,7 @@
 int main()
 {
     auto pippo = new bst<int, int, std::less<int>>;
-    std::pair<int, int> ktest = std::pair<int, int>{};
-    ktest.first = 10;
-    ktest.second = 200;
+    std::pair<int, int> ktest = std::pair<int, int>{10, 200};
 
 
     pippo->insert(ktest);

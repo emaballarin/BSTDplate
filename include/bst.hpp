@@ -195,13 +195,13 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(co
     while (true)
     {
         if (node_type* r_child = cursor->read_rc().get();
-            (cmp(pair.first, cursor_key)) && (r_child))
+            (cmp()(pair.first, cursor_key)) && (r_child))
         {
             cursor = r_child;
             cursor_key = cursor->read_elem().first;
         }
         else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get();
-                 (cmp(cursor_key, pair.first)) && (l_child))
+                 (cmp()(cursor_key, pair.first)) && (l_child))
         {
             cursor = l_child;
             cursor_key = cursor->read_elem().first;
@@ -216,7 +216,7 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(co
             }
             else
             {
-                if (cmp(cursor_key, pair.first))
+                if (cmp()(cursor_key, pair.first))
                 {
                     cursor->set_rc(new node_type(pair));
                     tree_iterator<Node<std::pair<kt, vt>>, false> found_key{cursor->read_rc().get()};
@@ -246,13 +246,13 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pa
     while (true)
     {
         if (Node<std::pair<const kt, vt>>* r_child = cursor->read_rc().get();
-            (cmp(cursor_key, pair.first)) && (r_child))
+            (cmp()(cursor_key, pair.first)) && (r_child))
         {
             cursor = r_child;
             cursor_key = cursor->read_elem().first;
         }
         else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get();
-                 (cmp(cursor_key, pair.first)) && (l_child))
+                 (cmp()(cursor_key, pair.first)) && (l_child))
         {
             cursor = l_child;
             cursor_key = cursor->read_elem().first;
@@ -267,7 +267,7 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pa
             }
             else
             {
-                if (cmp(cursor_key, pair.first))
+                if (cmp()(cursor_key, pair.first))
                 {
                     cursor->set_rc(new node_type(pair));
                     tree_iterator<Node<std::pair<kt, vt>>, false> found_key{cursor->read_rc().get()};
@@ -621,13 +621,13 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(T
     while (true)
     {
         if (Node<std::pair<const kt, vt>>* r_child = cursor->read_rc().get();
-            (cmp(pair.first, cursor_key)) && (r_child))
+            (cmp()(pair.first, cursor_key)) && (r_child))
         {
             cursor = r_child;
             cursor_key = cursor->read_elem().first;
         }
         else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get();
-                 (cmp(cursor_key, pair.first)) && (l_child))
+                 (cmp()(cursor_key, pair.first)) && (l_child))
         {
             cursor = l_child;
             cursor_key = cursor->read_elem().first;
@@ -643,7 +643,7 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(T
             }
             else
             {
-                if (cmp(cursor_key, pair.first))
+                if (cmp()(cursor_key, pair.first))
                 {
                     cursor->set_rc(new node_type(pair));
                     tree_iterator<Node<std::pair<kt, vt>>, false> found_key{cursor->read_rc().get()};
@@ -671,12 +671,12 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key)
 
     while (true)
     {
-        if (Node<std::pair<const kt, vt>>* r_child = cursor->read_rc().get(); (cmp(key, cursor_key)) && (r_child))
+        if (Node<std::pair<const kt, vt>>* r_child = cursor->read_rc().get(); (cmp()(key, cursor_key)) && (r_child))
         {
             cursor = r_child;
             cursor_key = cursor->read_elem().first;
         }
-        else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get(); (cmp(key, cursor_key)) && (l_child))
+        else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get(); (cmp()(key, cursor_key)) && (l_child))
         {
             cursor = l_child;
             cursor_key = cursor->read_elem().first;
@@ -708,12 +708,12 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(key_type&& key)
 
     while (true)
     {
-        if (Node<std::pair<const kt, vt>>* r_child = cursor->read_rc().get(); (cmp(key, cursor_key)) && (r_child))
+        if (Node<std::pair<const kt, vt>>* r_child = cursor->read_rc().get(); (cmp()(key, cursor_key)) && (r_child))
         {
             cursor = r_child;
             cursor_key = cursor->read_elem().first;
         }
-        else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get(); (cmp(key, cursor_key)) && (l_child))
+        else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get(); (cmp()(key, cursor_key)) && (l_child))
         {
             cursor = l_child;
             cursor_key = cursor->read_elem().first;
@@ -752,5 +752,5 @@ void bst<kt, vt, cmp>::swap(bst<kt, vt, cmp>& given) noexcept
 template<typename kt, typename vt, typename cmp>
 bool bst<kt, vt, cmp>::ecmp(kt lhs, kt rhs)
 {
-    return (!cmp(lhs, rhs) && !cmp(rhs, lhs));
+    return (!cmp()(lhs, rhs) && !cmp()(rhs, lhs));
 }
