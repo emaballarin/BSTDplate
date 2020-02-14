@@ -246,6 +246,18 @@ template<typename kt, typename vt, typename cmp>
 std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pair_type&& pair)
 // COPY OF THE ABOVE
 {
+    if (!this->root.get())
+    {
+        std::cout << "OLEEEEEEEE!!!" << std::endl;
+        root.reset(new node_type{pair});
+        tree_iterator<Node<std::pair<key_type, value_type>>, false> found_key =
+          tree_iterator<Node<std::pair<key_type, value_type>>, false>(this->root.get());
+        std::pair<bst<kt, vt, cmp>::iterator, bool> to_be_ret;
+        to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>();
+        to_be_ret.first = found_key;
+        to_be_ret.second = true;
+        return to_be_ret;
+    }
     Node<std::pair<const kt, vt>>* cursor = this->root.get();
     kt cursor_key = cursor->read_elem().first;
     std::pair<bst<kt, vt, cmp>::iterator, bool> to_be_ret;
