@@ -237,7 +237,7 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(co
                           tree_iterator<Node<std::pair<key_type, value_type>>, false>(cursor->read_rc().get());
                         //to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, true};
                         //to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>();
-                        to_be_ret.fisrt = found_key;
+                        to_be_ret.first = found_key;
                         to_be_ret.second = true;
                     }
                     else
@@ -313,7 +313,7 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pa
                           tree_iterator<Node<std::pair<key_type, value_type>>, false>(cursor->read_rc().get());
                         //to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, true};
                         //to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>();
-                        to_be_ret.fisrt = found_key;
+                        to_be_ret.first = found_key;
                         to_be_ret.second = true;
                     }
                     else
