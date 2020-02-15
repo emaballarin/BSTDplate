@@ -752,7 +752,8 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key)
     if (!cursor)
     {
         // [FIX ATTEMPT 006] FIND NONCONST ->
-        iter_ret = end();
+        // [SUB HERE] iter_ret = end();
+        std::cout << "END RETURNED" << std::endl;
     }
     else
     {
@@ -760,7 +761,7 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key)
 
         while (true)
         {
-            if (Node<std::pair<const kt, vt>>* r_child = cursor->read_rc().get(); (cmp()(key, cursor_key)) && (r_child))
+            if (Node<std::pair<const kt, vt>>* r_child = cursor->read_rc().get(); (cmp()(cursor_key, key)) && (r_child))
             {
                 cursor = r_child;
                 cursor_key = cursor->read_elem().first;
@@ -782,7 +783,8 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key)
                 }
                 else
                 {
-                    iter_ret = end();
+                    // [SUB HERE] iter_ret = end();
+                    std::cout << "END RETURNED" << std::endl;
                     break;
                 }
             }
@@ -804,7 +806,8 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(key_type&& key)
     if (!cursor)
     {
         // [FIX ATTEMPT 006] FIND NONCONST ->
-        iter_ret = end();
+        // [SUB HERE] iter_ret = end();
+        std::cout << "END RETURNED" << std::endl;
     }
     else
     {
@@ -812,7 +815,7 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(key_type&& key)
 
         while (true)
         {
-            if (Node<std::pair<const kt, vt>>* r_child = cursor->read_rc().get(); (cmp()(key, cursor_key)) && (r_child))
+            if (Node<std::pair<const kt, vt>>* r_child = cursor->read_rc().get(); (cmp()(cursor_key, key)) && (r_child))
             {
                 cursor = r_child;
                 cursor_key = cursor->read_elem().first;
@@ -834,7 +837,8 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(key_type&& key)
                 }
                 else
                 {
-                    iter_ret = end();
+                    // [SUB HERE] iter_ret = end();
+                    std::cout << "END RETURNED" << std::endl;
                     break;
                 }
             }
