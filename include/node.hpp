@@ -37,10 +37,14 @@ class Node
 
     inline ~Node() noexcept = default;
 
+    template<typename FWR>
+    inline void write_elem(FWR&&);
+    
     inline const T& read_elem() const noexcept;
     inline const std::unique_ptr<Node<T>>& read_lc() const noexcept;
     inline const std::unique_ptr<Node<T>>& read_rc() const noexcept;
     inline const std::experimental::observer_ptr<Node<T>>& read_pr() const noexcept;
+
     inline bool is_left() const noexcept;
     inline bool is_right() const noexcept;
 

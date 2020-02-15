@@ -29,9 +29,21 @@ class tree_iterator
     using iterator_category = std::forward_iterator_tag;
     using difference_type = std::ptrdiff_t;  // Never used, but needed ;)
 
+
+    friend tree_iterator<node, !Const>;
+
     // Custom: ctor | Default: cpctor, mvctor, cpasst, mvasst, dtor
     tree_iterator() = default;
     inline explicit tree_iterator(value_type*) noexcept;
+
+    template<bool T>
+    tree_iterator(tree_iterator<node, T> given){
+      this->current = const_cast<pointer>(given.current);
+    }
+
+    // explicit tree_iterator(tree_iterator<node, false> given){
+    //   this->current = given.current;
+    // }
 
     inline reference operator*() const;
     inline pointer operator->() const;
@@ -39,17 +51,23 @@ class tree_iterator
     inline tree_iterator operator++();
     inline tree_iterator operator++(int);  // Acceptable warning (clang-tidy)
 
-    inline bool operator==(const tree_iterator&) const;
-    inline bool operator!=(const tree_iterator&) const;
+    template<bool T>
+    inline bool operator==(const tree_iterator<node, T>&) const;
+    template<bool T>
+    inline bool operator!=(const tree_iterator<node, T>&) const;
 
     inline tree_iterator next();
 
+    inline tree_iterator<node, true> constify(tree_iterator<node, false>);
+    inline tree_iterator<node, false> unconstify(tree_iterator<node, true>);
 
+    tree_iterator<node, true> constify(){
+       tree_iterator<node,true> iter{this.current};
+      return iter;
+    }
     private:
-    //pointer current;
+
     value_type* current;
-    //node* current;
-    //node* current;
 
     inline tree_iterator<node, Const> leftmost(tree_iterator<node, Const>&) noexcept;
 };
@@ -75,34 +93,28 @@ inline typename tree_iterator<node, Const>::pointer tree_iterator<node, Const>::
 template<typename node, bool Const>
 inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++()
 {
-
     tree_iterator<node, Const> next{current};
     //tree_iterator<node, false> next{const_cast<value_type*>(current)};
-
-    pointer ptr_r = next->read_rc().get();
-
-    if (ptr_r)
+    //std::cout << "BEGIN";
+    if (pointer ptr_r = next->read_rc().get(); ptr_r)
     {
         next.current = ptr_r;
         next = leftmost(next);
     }
-    else if (!(next->read_lc().get()) && next->is_left())
+    else if (!(next->read_lc().get()) && next->is_left() && (next->read_pr().get()==nullptr))
     {
         next.current = next->read_pr().get();
     }
     else
     {
-        next.current = next->read_pr().get();
-        while (!(next->is_left()) && !(next->read_pr()->read_rc()) && next->read_pr().get())
+        while (next->is_right())
         {
             next.current = next->read_pr().get();
         }
-        next.current = next.current ? next->read_pr().get()
-                                    : current++;  // Avoid returning a nullptr (parent of root) instead of tree end
+        next.current = (next->read_pr().get()!=nullptr) ? next->read_pr().get(): ++current;  // Avoid returning a nullptr (parent of root) instead of tree end
     }
 
     // Allow (N)RVO, however the compiler wants to perform it (Does it? Cool!)
-    //tree_iterator<node, Const> ret_next{current};
     *this = next;  // Pipelining
     return next;
 }
@@ -116,15 +128,17 @@ inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++(int)  /
 }
 
 template<typename node, bool Const>
-inline bool tree_iterator<node, Const>::operator==(const tree_iterator<node, Const>& given) const
+template<bool T>
+inline bool tree_iterator<node, Const>::operator==(const tree_iterator<node, T>& given) const
 {
-    return &*current == &*(given->current);  // Since nodes are uncopyable, it should just satisfy identity
+    return this->current == given.current;  // Since nodes are uncopyable, it should just satisfy identity
 }
 
 template<typename node, bool Const>
-inline bool tree_iterator<node, Const>::operator!=(const tree_iterator<node, Const>& given) const
+template<bool T>
+inline bool tree_iterator<node, Const>::operator!=(const tree_iterator<node, T>& given) const
 {
-    return &*current != &*(given->current);  // Since nodes are uncopyable, it should just satisfy non-identity
+    return !(this->current == given.current);  // Since nodes are uncopyable, it should just satisfy non-identity
 }
 
 template<typename node, bool Const>
@@ -144,16 +158,14 @@ inline tree_iterator<node, Const> tree_iterator<node, Const>::next()
     return tree_iterator<node, Const>{(++std::copy(*this)).current};  // Will it work ??
 }
 
-
-// NON-MEMBER FUNCTIONS
-template<typename node>
-inline tree_iterator<node, true> tree_iterator_constify(tree_iterator<node, false> given)
-{
-    return tree_iterator<node, true>{given.current};
-}
-
-template<typename node>
-inline tree_iterator<node, false> tree_iterator_unconstify(tree_iterator<node, true> given)
-{
-    return tree_iterator<node, false>{given.current};
-}
+// template<typename node, bool Const>
+// inline tree_iterator<node, true> tree_iterator<node, Const>::constify(tree_iterator<node, false> given)
+// {
+//     return tree_iterator<node, true>{given.current};
+// }
+//
+// template<typename node, bool Const>
+// inline tree_iterator<node, false> tree_iterator<node, Const>::unconstify(tree_iterator<node, true> given)
+// {
+//     return tree_iterator<node, false>{given.current};
+// }
