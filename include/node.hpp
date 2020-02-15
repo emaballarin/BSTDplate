@@ -39,7 +39,7 @@ class Node
 
     template<typename FWR>
     inline void write_elem(FWR&&);
-    
+
     inline const T& read_elem() const noexcept;
     inline const std::unique_ptr<Node<T>>& read_lc() const noexcept;
     inline const std::unique_ptr<Node<T>>& read_rc() const noexcept;
@@ -51,9 +51,6 @@ class Node
     inline void set_lc(Node<T>*);
     inline void set_rc(Node<T>*);
     inline void set_children(Node<T>*, Node<T>*) noexcept;
-
-    template<typename FWR>
-    inline void write_elem(FWR&&);
 
     template<typename XK, typename XV>
     inline void write_value_ofkey(std::pair<XK, XV>&);

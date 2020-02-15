@@ -188,7 +188,8 @@ bst<kt, vt, cmp>& bst<kt, vt, cmp>::operator=(const bst<kt, vt, cmp>& original)
 template<typename kt, typename vt, typename cmp>
 std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(const pair_type& pair)
 {
-    std::pair<iterator, bool> to_be_ret = std::pair<iterator, bool>();//[FIX]: why not directly constructor std::pair to_be_ret{}
+    std::pair<iterator, bool> to_be_ret =
+      std::pair<iterator, bool>();  //[FIX]: why not directly constructor std::pair to_be_ret{}
     node_type* cursor = this->root.get();
 
     // IFELSE //
@@ -344,14 +345,13 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::begin()
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::begin() const
 {
-  const_iterator iter{leftmost(this->root.get())};
-  return iter;
+    const_iterator iter{leftmost(this->root.get())};
+    return iter;
 }
 
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cbegin() const
 {
-    std::cout << "CBEGIN";
     const_iterator iter{leftmost(this->root.get())};
     return iter;
 }
@@ -360,7 +360,6 @@ typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cbegin() const
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::leftmost(typename bst<kt, vt, cmp>::node_type* node) const
 {
-    std::cout << "LEFTMOST";
     while (node->read_lc().get())
     {
         node = node->read_lc().get();
@@ -379,28 +378,27 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::end()
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::end() const
 {
-  const_iterator iter{rightmost(this->root.get())};
-  return iter;
+    const_iterator iter{rightmost(this->root.get())};
+    return iter;
 }
 
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cend() const
 {
-  const_iterator iter{rightmost(this->root.get())};
-  return iter;
+    const_iterator iter{rightmost(this->root.get())};
+    return iter;
 }
 
 template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::iterator
-bst<kt, vt, cmp>::rightmost(typename bst<kt, vt, cmp>::node_type* node) const
+typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::rightmost(typename bst<kt, vt, cmp>::node_type* node) const
 {
-  while (node->read_rc().get())
-  {
-      node = node->read_rc().get();
-  }
+    while (node->read_rc().get())
+    {
+        node = node->read_rc().get();
+    }
 
-  iterator rightmost{node};
-  return ++rightmost;
+    iterator rightmost{node};
+    return ++rightmost;
 }
 
 template<typename kt, typename vt, typename cmp>
@@ -409,56 +407,75 @@ void bst<kt, vt, cmp>::balance()
     //check that the tree is not void
 
     //initialize vec with iterators mantaining the tree order
-    for (iterator Iter{begin()}; Iter != cend(); ++Iter)
+    for (iterator Iter{this->begin()}; Iter != this->cend(); ++Iter)
     {
-        vec.push_back(iterator{*Iter});
+        //vec.push_back(iterator{*Iter});
+        vec.push_back(iterator(Iter));
     }
 
     //erase all relationships among the tree nodes
-    detach();
+    this->detach();
 
-    //set the new root
-    std::size_t middle_index = std::floor(vec.size() / 2.0);
+    //set the new root iterator
+    std::size_t middle_index = static_cast<std::size_t>(std::floor(vec.size() / 2.0));
+    this->root.reset(&(*(vec[middle_index])));
     iterator new_root = vec[middle_index];
-
+    std::cout << "this is root " << root->read_elem().first << std::endl
+              << "this is size " << vec.size()
+              << "this is index root: " << static_cast<std::size_t>(std::floor(vec.size() / 2.0)) << std::endl;
     //dividi et impera
     balance_sub_l(0, middle_index);
-    balance_sub_r(middle_index, vec.size());
+    std::cout << "END LEFT SUBTREE" << std::endl;
+    balance_sub_r(middle_index + 1, vec.size());
+    std::cout << "END RIGHT SUBTREE" << std::endl;
+    //vec.clear();
+    std::cout << "Print this" << *this;
 }
 
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::detach()
 {
-    std::queue<node_type*> queue{};
-    queue.push(this->root->get());
-
-    while (!queue.empty())
+    //    std::queue<node_type*> queue{};
+    //    queue.push(this->root.get());
+    //
+    //    while (!queue.empty())
+    //    {
+    //        // Sx case
+    //        if (queue.front()->read_lc().get())
+    //        {
+    //            queue.push(queue.front()->read_lc().get());
+    //        }
+    //
+    //        // Dx case
+    //        if (queue.front()->read_rc().get())
+    //        {
+    //            queue.push(queue.front()->read_rc().get());
+    //        }
+    //
+    //        queue.front()->detach_children();
+    //        queue.pop();
+    //    }
+    this->root.release();
+    for (iterator mynode_iter : this->vec)
     {
-        // Sx case
-        if (queue.front()->read_lc().get())
-        {
-            queue.push(queue.front()->read_lc().get());
-        }
-
-        // Dx case
-        if (queue.front()->read_rc().get())
-        {
-            queue.push(queue.front()->read_rc().get());
-        }
-
-        queue.front()->detach_children();
-        queue.pop();
+        mynode_iter->detach_children();
     }
 }
 
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::balance_sub_l(std::size_t left, std::size_t middle)
 {
+    //
+    std::cout << vec[middle]->read_elem().first << std::endl;
+    std::cout << "(left, middle)=" << left << middle << std::endl;
+    std::cout << "left child ptr" << vec[middle]->read_lc().get() << std::endl;
+    //
     std::size_t dis_ml = middle - left;
 
     auto l_child = left + static_cast<std::size_t>(std::floor(dis_ml / 2.0));
-    detach(vec[l_child]);
-    vec[middle]->set_lc(*vec[l_child]);
+    std::cout << "SET: " << l_child << std::endl;
+    std::cout << std::endl;
+    vec[middle]->set_lc(&(*vec[l_child]));
 
     if (l_child - left > 0)
     {
@@ -473,11 +490,18 @@ void bst<kt, vt, cmp>::balance_sub_l(std::size_t left, std::size_t middle)
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::balance_sub_r(std::size_t middle, std::size_t right)
 {
+    //
+    std::cout << vec[middle]->read_elem().first << std::endl;
+    std::cout << "(middle, right)=" << middle << right << std::endl;
+    std::cout << "right child ptr" << vec[middle]->read_rc().get() << std::endl;
+    std::cout << std::endl;
+    //
     std::size_t dis_rm = right - middle;
 
-    auto r_child = static_cast<std::size_t>(right - std::floor(dis_rm / 2.0));
-    detach(vec[r_child]);
-    vec[middle]->set_rc(*vec[r_child]);
+    auto r_child = middle + static_cast<std::size_t>(std::floor(dis_rm / 2.0));
+    std::cout << "SET: " << r_child << std::endl;
+    std::cout << std::endl;
+    vec[middle - 1]->set_rc(&(*vec[r_child]));
 
     if (r_child - middle > 0)
     {
@@ -485,7 +509,7 @@ void bst<kt, vt, cmp>::balance_sub_r(std::size_t middle, std::size_t right)
     }
     if (right - r_child > 1)
     {
-        balance_sub_l(++r_child, right);
+        balance_sub_r(++r_child, right);
     }
 }
 
@@ -757,8 +781,8 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key)
     if (!cursor)
     {
         // [FIX ATTEMPT 006] FIND NONCONST ->
-        // [SUB HERE] iter_ret = end();
-        std::cout << "END RETURNED" << std::endl;
+        iter_ret = end();
+        //std::cout << "END RETURNED" << std::endl;
     }
     else
     {
@@ -788,9 +812,9 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key)
                 }
                 else
                 {
-                    // [SUB HERE] iter_ret = end();
-                    std::cout << "END RETURNED" << std::endl;
-                    break;
+                    iter_ret = end();
+                    //std::cout << "END RETURNED" << std::endl;
+                    //break;
                 }
             }
         }
@@ -811,8 +835,8 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(key_type&& key)
     if (!cursor)
     {
         // [FIX ATTEMPT 006] FIND NONCONST ->
-        // [SUB HERE] iter_ret = end();
-        std::cout << "END RETURNED" << std::endl;
+        iter_ret = end();
+        //std::cout << "END RETURNED" << std::endl;
     }
     else
     {
@@ -842,9 +866,9 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(key_type&& key)
                 }
                 else
                 {
-                    // [SUB HERE] iter_ret = end();
-                    std::cout << "END RETURNED" << std::endl;
-                    break;
+                    iter_ret = end();
+                    //                    std::cout << "END RETURNED" << std::endl;
+                    //                    break;
                 }
             }
         }
@@ -855,7 +879,7 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(key_type&& key)
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find(const key_type& key) const
 {
-    const_iterator iter{find(key)};//const_cast
+    const_iterator iter{find(key)};  //const_cast
     return iter;
 }
 
