@@ -51,6 +51,9 @@ class Node
     template<typename FWR>
     inline void write_elem(FWR&&);
 
+    template<typename XK, typename XV>
+    inline void write_value_ofkey(std::pair<XK, XV>&);
+
     inline void detach_left() noexcept;
     inline void detach_right() noexcept;
     inline void detach_children() noexcept;
@@ -135,6 +138,16 @@ template<typename FWR>
 inline void Node<T>::write_elem(FWR&& given)
 {
     this->elem = std::forward<FWR>(given);
+};
+
+// Write value of given std::pair to value of this->elem, if both given and *this are std::pair of the same types
+template<typename T>
+template<typename XK, typename XV>
+inline void Node<T>::write_value_ofkey(std::pair<XK, XV>& given)
+{
+    static_assert(std::is_same<T, std::pair<XK, XV>>::value == true);
+
+    this->elem.second = std::forward<XV>(given.second);
 };
 
 // Ptr setters

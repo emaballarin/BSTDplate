@@ -664,11 +664,13 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(T
     Node<std::pair<const kt, vt>>* cursor = this->root.get();
 
     // Check for correctness, eventually.
-    std::pair pair = std::forward<std::pair<kt, vt>>(args...);
+    std::pair pair = std::forward<std::pair<key_type, value_type>>(args...);
+    //std::pair pair = std::pair{2, 23};
 
     // IFELSE //
     if (!cursor)
     {
+        std::cout << "HELLO" << std::endl;
         // [FIX ATTEMPT 006] EMPLACE ->
         root.reset(new node_type{pair});
         tree_iterator<Node<std::pair<key_type, value_type>>, false> found_key =
@@ -698,7 +700,8 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(T
             {
                 if (ecmp(cursor_key, pair.first))
                 {
-                    cursor->write_elem(pair);
+                    //cursor->write_elem(pair);
+                    cursor->write_value_ofkey(pair);
                     tree_iterator<Node<std::pair<key_type, value_type>>, false> found_key =
                       tree_iterator<Node<std::pair<key_type, value_type>>, false>(cursor);
                     //to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>{found_key, false};
