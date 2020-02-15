@@ -114,3 +114,6 @@ pip-selfcheck.json
 
 # D programming language
 *.d
+
+# Valgrind core dumps
+vgcore.*

@@ -850,7 +850,7 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(key_type&& key)
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find(const key_type& key) const
 {
-    return tree_iterator_constify(find(key));  // ?? does it work?
+    return (find(key)).constify();  // ?? does it work?
 }
 
 template<typename kt, typename vt, typename cmp>
