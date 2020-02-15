@@ -80,7 +80,7 @@ class Node
     std::unique_ptr<Node<T>> right_child;
     std::experimental::observer_ptr<Node<T>> parent;
 
-    bool childtype{false};  // left = false, right = true
+    bool childtype{false};  // left = false, right = true || By default the root is LEFT
     inline void set_childtype(bool) noexcept;
 
     inline void null_parent() noexcept;
