@@ -6,8 +6,8 @@ int main()
 {
     auto tree = new bst<int, int>();
 
-    auto pair_6 = tree->insert(std::pair<int, int>({6, 60}));
-    auto pair_6_bis = tree->insert(std::pair<int, int>({6, 60}));
+    auto pair_7 = tree->insert(std::pair<int, int>({7, 70}));
+    auto pair_7_bis = tree->insert(std::pair<int, int>({7, 70}));
 
 
     auto pair_3 = tree->insert(std::pair<int, int>({3, 30}));
@@ -29,8 +29,12 @@ int main()
     auto pair_4 = tree->insert(std::pair<int, int>({4, 40}));
     auto pair_4_bis = tree->insert(std::pair<int, int>({4, 40}));
 
-    auto pair_7 = tree->insert(std::pair<int, int>({7, 70}));
-    auto pair_7_bis = tree->insert(std::pair<int, int>({7, 70}));
+    auto pair_6 = tree->insert(std::pair<int, int>({6, 60}));
+    auto pair_6_bis = tree->insert(std::pair<int, int>({6, 60}));
+
+    auto pair_8 = tree->insert(std::pair<int, int>({8, 80}));
+    auto pair_8_bis = tree->insert(std::pair<int, int>({8, 80}));
+
 
 
     //test insert
@@ -76,11 +80,26 @@ int main()
     std::cout << "(" << pippo->read_elem().first << ":" << pippo->read_elem().second << ")" << std::endl;
     ++pippo;
     std::cout << "(" << pippo->read_elem().first << ":" << pippo->read_elem().second << ")" << std::endl;
-    // ++pippo;
-    // std::cout << "(" << pippo->read_elem().first << ":" << pippo->read_elem().second << ")" << std::endl;
+    ++pippo;
+    //std::cout << "(" << pippo->read_elem().first << ":" << pippo->read_elem().second << ")" << std::endl;
 
     std::cout << *tree << std::endl;
-
+    tree->erase(3);
+    std::cout << *tree << std::endl;
+    tree->erase(5);
+    std::cout << *tree << std::endl;
+    tree->erase(2);
+    std::cout << *tree << std::endl;
+    tree->erase(1);
+    std::cout << *tree << std::endl;
+    tree->erase(7);
+    std::cout << *tree << std::endl;
+    tree->erase(6);
+    std::cout << *tree << std::endl;
+    tree->erase(8);
+    std::cout << *tree << std::endl;
+    tree->erase(4);
+    //std::cout << *tree << std::endl;
 
     //delete tree;
     return 0;

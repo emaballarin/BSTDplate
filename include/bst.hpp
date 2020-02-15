@@ -88,11 +88,12 @@ class bst
     {
         const_iterator iter{bstree.cbegin()};
         const char s = ' ';
-
+        std::cout << "ROOT IS: " << bstree.root->read_elem().first<< std::endl;
         while (iter != bstree.cend())
         {
             //check that keys and values are printable
             os << "(" << iter->read_elem().first << ":" << iter->read_elem().second << ")" << s;
+            iter->info();
             ++iter;
         }
         //Retline
@@ -538,17 +539,17 @@ void bst<kt, vt, cmp>::erase(typename bst<kt, vt, cmp>::const_key_type& x)
         iterator next{erasing.next()};
         exchange(next);
         substitute(erasing, next);
-        delete *erasing;
+        delete &*erasing;
     }
     else if (erasing->read_lc() || erasing->read_rc())  //only one child
     {
         replace(erasing);
-        delete *erasing;
+        delete &*erasing;
     }
     else  //(!(erasing->read_lc()) && !(erasing->read_rc()))
     {
         detach_leaf(erasing);
-        delete *erasing;
+        delete &*erasing;
     }
 }
 
@@ -557,9 +558,10 @@ void bst<kt, vt, cmp>::exchange(typename bst<kt, vt, cmp>::iterator actual)
 {
     if (actual->read_lc() && actual->read_rc())  //both children present
     {
-        iterator next{actual.next()};
-        exchange(next);
-        substitute(actual, next);
+        std::cout << "SHOULD NOT BE USED" << std::endl;
+        // iterator next{actual.next()};
+        // exchange(next);
+        // substitute(actual, next);
     }
     else if (actual->read_lc() || actual->read_rc())  //only one child
     {
@@ -588,13 +590,13 @@ void bst<kt, vt, cmp>::replace(typename bst<kt, vt, cmp>::iterator substituting)
             {
                 iterator left{substituting->read_lc().get()};
                 substituting->detach_left();
-                father->set_lc(*left);
+                father->set_lc(&*left);
             }
             else  //substituting has right node
             {
                 iterator right{substituting->read_rc().get()};
                 substituting->detach_right();
-                father->set_lc(right);
+                father->set_lc(&*right);
             }
         }
         else
@@ -603,17 +605,17 @@ void bst<kt, vt, cmp>::replace(typename bst<kt, vt, cmp>::iterator substituting)
             iterator father{substituting->read_pr().get()};
             substituting->read_pr()->detach_right();
 
-            if (substituting->read_rc())
+            if (substituting->read_lc())
             {
                 iterator left{substituting->read_lc().get()};
                 substituting->detach_left();
-                father->set_rc(*left);
+                father->set_rc(&*left);
             }
             else  //substituting has right node
             {
                 iterator right{substituting->read_rc().get()};
                 substituting->detach_right();
-                father->set_rc(right);
+                father->set_rc(&*right);
             }
         }
     }
@@ -623,13 +625,13 @@ void bst<kt, vt, cmp>::replace(typename bst<kt, vt, cmp>::iterator substituting)
         {
             iterator left{substituting->read_lc().get()};
             substituting->detach_left();
-            root->reset(*left);  //destroys previous root
+            root.reset(&*left);  //destroys previous root
         }
         else
         {
             iterator right{substituting->read_rc().get()};
             substituting->detach_right();
-            root->reset(*right);  //destroys previous root
+            root.reset(&*right);  //destroys previous root
         }
     }
 }
@@ -641,32 +643,46 @@ template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::substitute(typename bst<kt, vt, cmp>::iterator to_be_substituted,
                                   typename bst<kt, vt, cmp>::iterator substituting)
 {
-    iterator left{to_be_substituted->read_lc()};
-    iterator right{to_be_substituted->read_rc()};
+    iterator left{to_be_substituted->read_lc().get()};
+    iterator right{to_be_substituted->read_rc().get()};
     to_be_substituted->detach_children();
 
     if (to_be_substituted->read_pr())  //if to_be_substituted is not the root
     {
-        iterator parent{to_be_substituted->read_pr()};
+        std::cout << "BUGGHISSIMO_IF\n";
+        iterator parent{to_be_substituted->read_pr().get()};
         if (to_be_substituted->is_left())
         {
             to_be_substituted->read_pr()->detach_left();
-            parent->set_lc(*substituting);
+            parent->set_lc(&*substituting);
         }
         else
         {
             to_be_substituted->read_pr()->detach_right();
-            parent->set_rc(*substituting);
+            parent->set_rc(&*substituting);
         }
+        std::cout << "BUGGHISSIMO\n";
+        substituting->set_lc(&*left);
+        substituting->set_rc(&*right);
+    } else
+    {
+      std::cout << "SET ROOT\n";
+      substituting->set_lc(&*left);
+      substituting->set_rc(&*right);
+      std::cout << "substitute children: " << substituting->read_lc()->read_elem().first
+                << substituting->read_rc().get() << std::endl;
+      this->root.release();
+      this->root.reset(&*substituting);
+      std::cout << "root is: " << this->root->read_elem().first << std::endl;
+      //std::cout << *this;
     }
 
-    substituting->set_lc(*left);
-    substituting->set_rc(*right);
 }
 
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::detach_leaf(typename bst<kt, vt, cmp>::iterator erasing)
 {
+    std::cout << "DETACH LEAF\n";
     if (erasing->read_pr())
     {
         if (erasing->is_left())
@@ -680,7 +696,8 @@ void bst<kt, vt, cmp>::detach_leaf(typename bst<kt, vt, cmp>::iterator erasing)
     }
     else
     {  //single root to erase
-        root.reset();
+        std::cout << "HELLOW\n";
+        root.release();
     }
 }
 

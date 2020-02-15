@@ -155,25 +155,37 @@ inline void Node<T>::write_value_ofkey(std::pair<XK, XV>& given)
 template<typename T>
 inline void Node<T>::set_lc(Node<T>* given)
 {
-    assert(given);                      // Can't set to nullptr this way; use null_left() instead
-    assert(!(this->left_child.get()));  // Can set only if free
-    assert(!(this->parent.get()) || this->parent.get() != given);  // Can't create cycles
+  assert(!(this->parent.get()) || this->parent.get() != given);  // Can't create cycles
+    if (!given)
+    {
+      this->null_left();
+    } else
+    {
+      assert(!(this->left_child.get()));  // Can set only if free
+      this->left_child.reset(given);
+      this->left_child.get()->set_parent(this);
+      this->left_child.get()->set_childtype(false);
+    }
 
-    this->left_child.reset(given);
-    this->left_child.get()->set_parent(this);
-    this->left_child.get()->set_childtype(false);
 };
 
 template<typename T>
 inline void Node<T>::set_rc(Node<T>* given)
 {
-    assert(given);                       // Can't set to nullptr this way; use null_right() instead
-    assert(!(this->right_child.get()));  // Can set only if free
+    //assert(given);                       // Can't set to nullptr this way; use null_right() instead
     assert(!(this->parent.get()) || this->parent.get() != given);  // Can't create cycles
 
-    this->right_child.reset(given);
-    this->right_child.get()->set_parent(this);
-    this->right_child.get()->set_childtype(true);
+    if (!given)
+    {
+      this->null_right();
+    } else
+    {
+      assert(!(this->right_child.get()));  // Can set only if free
+      this->right_child.reset(given);
+      this->right_child.get()->set_parent(this);
+      this->right_child.get()->set_childtype(true);
+    }
+
 };
 
 template<typename T>
@@ -242,6 +254,7 @@ template<typename T>
 inline void Node<T>::null_parent() noexcept
 {
     this->parent.reset();
+    this->childtype = false;
 }
 
 template<typename T>
@@ -274,7 +287,9 @@ void Node<T>::info() const noexcept
 {
     std::cout << "~~ A NODE ~~"
               << "\n"
-              << "Contained element: " << this->read_elem() << "\n"
+              << "Contained element: " << this->read_elem().first <<
+              this->read_elem().second
+              << "\n"
               << "Left child: ";
     if (this->left_child == nullptr)
     {
@@ -282,7 +297,7 @@ void Node<T>::info() const noexcept
     }
     else
     {
-        std::cout << this->read_lc().get();
+        std::cout << this->read_lc().get()->read_elem().first ;
     }
     std::cout << "\n";
     std::cout << "Right child: ";
@@ -292,7 +307,7 @@ void Node<T>::info() const noexcept
     }
     else
     {
-        std::cout << this->read_rc().get();
+        std::cout << this->read_rc().get()->read_elem().first;
     }
     std::cout << "\n";
     std::cout << "Parent: ";
@@ -302,7 +317,7 @@ void Node<T>::info() const noexcept
     }
     else
     {
-        std::cout << this->read_pr().get();
+        std::cout << this->read_pr().get()->read_elem().first;
     }
     std::cout << "\n";
     std::cout << "This is a ";

@@ -155,7 +155,8 @@ inline tree_iterator<node, Const> tree_iterator<node, Const>::leftmost(tree_iter
 template<typename node, bool Const>
 inline tree_iterator<node, Const> tree_iterator<node, Const>::next()
 {
-    return tree_iterator<node, Const>{(++std::copy(*this)).current};  // Will it work ??
+    tree_iterator<node, Const> this_copy{*this};
+    return tree_iterator<node, Const>{++this_copy};  // Will it work ??
 }
 
 // template<typename node, bool Const>
