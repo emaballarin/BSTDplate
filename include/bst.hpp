@@ -95,7 +95,7 @@ class bst
             os << "(" << iter->read_elem().first << ":" << iter->read_elem().second << ")" << s;
             ++iter;
         }
-        // Retline
+        //Retline
         return os;
     };
 
@@ -120,7 +120,8 @@ class bst
     void replace(iterator);
     void substitute(iterator, iterator);
     void detach_leaf(iterator);
-    iterator leftmost(node_type*);
+    iterator leftmost(node_type*) const;
+    iterator rightmost(node_type*) const;
 };
 
 
@@ -187,7 +188,7 @@ bst<kt, vt, cmp>& bst<kt, vt, cmp>::operator=(const bst<kt, vt, cmp>& original)
 template<typename kt, typename vt, typename cmp>
 std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(const pair_type& pair)
 {
-    std::pair<bst<kt, vt, cmp>::iterator, bool> to_be_ret = std::pair<bst<kt, vt, cmp>::iterator, bool>();
+    std::pair<iterator, bool> to_be_ret = std::pair<iterator, bool>();//[FIX]: why not directly constructor std::pair to_be_ret{}
     node_type* cursor = this->root.get();
 
     // IFELSE //
@@ -195,8 +196,7 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(co
     {
         // [FIX ATTEMPT 006] INSERT LVR ->
         root.reset(new node_type{pair});
-        tree_iterator<Node<std::pair<key_type, value_type>>, false> found_key =
-          tree_iterator<Node<std::pair<key_type, value_type>>, false>(this->root.get());
+        iterator found_key = iterator(this->root.get());
         to_be_ret.first = found_key;
         to_be_ret.second = true;
     }
@@ -344,27 +344,30 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::begin()
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::begin() const
 {
-    return const_iterator{leftmost(this->root.get())};
+  const_iterator iter{leftmost(this->root.get())};
+  return iter;
 }
 
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cbegin() const
 {
-    return const_iterator{leftmost(this->root.get())};
+    std::cout << "CBEGIN";
+    const_iterator iter{leftmost(this->root.get())};
+    return iter;
 }
 
-//I would use const_iterator inside leftmost, but then how to convert it in iterator?const_cast?
-template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::leftmost(typename bst<kt, vt, cmp>::node_type* node)
-{
-    typename bst<kt, vt, cmp>::iterator begin{node};
 
-    while (!(begin->is_left()))
+template<typename kt, typename vt, typename cmp>
+typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::leftmost(typename bst<kt, vt, cmp>::node_type* node) const
+{
+    std::cout << "LEFTMOST";
+    while (node->read_lc().get())
     {
-        *begin = begin->read_lc().get();
+        node = node->read_lc().get();
     }
 
-    return begin;
+    iterator leftmost{node};
+    return leftmost;
 }
 
 template<typename kt, typename vt, typename cmp>
@@ -376,26 +379,28 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::end()
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::end() const
 {
-    return const_iterator(rightmost(this->root.get()));
+  const_iterator iter{rightmost(this->root.get())};
+  return iter;
 }
 
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cend() const
 {
-    return const_iterator(rightmost(this->root.get()));
+  const_iterator iter{rightmost(this->root.get())};
+  return iter;
 }
 
 template<typename kt, typename vt, typename cmp>
-typename bst<kt, vt, cmp>::iterator rightmost(typename bst<kt, vt, cmp>::node_type* node)
+typename bst<kt, vt, cmp>::iterator
+bst<kt, vt, cmp>::rightmost(typename bst<kt, vt, cmp>::node_type* node) const
 {
-    typename bst<kt, vt, cmp>::iterator begin{node};
+  while (node->read_rc().get())
+  {
+      node = node->read_rc().get();
+  }
 
-    while (!(begin->is_right()))
-    {
-        *begin = begin->read_rc().get();
-    }
-
-    return begin;
+  iterator rightmost{node};
+  return ++rightmost;
 }
 
 template<typename kt, typename vt, typename cmp>
@@ -843,7 +848,8 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(key_type&& key)
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find(const key_type& key) const
 {
-    return tree_iterator_constify(find(key));  // ?? does it work?
+    const_iterator iter{find(key)};//const_cast
+    return iter;
 }
 
 template<typename kt, typename vt, typename cmp>
