@@ -360,6 +360,7 @@ typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cbegin() const
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::leftmost(typename bst<kt, vt, cmp>::node_type* node) const
 {
+    assert(node);
     while (node->read_lc().get())
     {
         node = node->read_lc().get();
@@ -392,6 +393,7 @@ typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cend() const
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::rightmost(typename bst<kt, vt, cmp>::node_type* node) const
 {
+    assert(node);
     while (node->read_rc().get())
     {
         node = node->read_rc().get();
@@ -699,7 +701,6 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(T
     // IFELSE //
     if (!cursor)
     {
-        std::cout << "HELLO" << std::endl;
         // [FIX ATTEMPT 006] EMPLACE ->
         root.reset(new node_type{pair});
         tree_iterator<Node<std::pair<key_type, value_type>>, false> found_key =
@@ -781,8 +782,8 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key)
     if (!cursor)
     {
         // [FIX ATTEMPT 006] FIND NONCONST ->
-        iter_ret = end();
         //std::cout << "END RETURNED" << std::endl;
+        iter_ret = end();
     }
     else
     {
@@ -813,8 +814,7 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key)
                 else
                 {
                     iter_ret = end();
-                    //std::cout << "END RETURNED" << std::endl;
-                    //break;
+                    break;
                 }
             }
         }
@@ -835,8 +835,8 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(key_type&& key)
     if (!cursor)
     {
         // [FIX ATTEMPT 006] FIND NONCONST ->
+        std::cout << "END RETURNED" << std::endl;
         iter_ret = end();
-        //std::cout << "END RETURNED" << std::endl;
     }
     else
     {
@@ -867,8 +867,7 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(key_type&& key)
                 else
                 {
                     iter_ret = end();
-                    //                    std::cout << "END RETURNED" << std::endl;
-                    //                    break;
+                    break;
                 }
             }
         }
