@@ -6,9 +6,17 @@ int main()
 {
     auto tree = new bst<int, int>();
 
+    //auto pair_3 = tree->emplace(std::pair<int, int>({3, 30}));
+
+    //std::cout << (tree->end());
+
+
     // LEAKS, as end() / cend() may be not implemented as of now
-    //std::cout << "RETEND:" << std::endl;
-    //auto pippopluto = tree->find(1);
+    tree->find(1);
+    std::cout << "START FIND:" << std::endl;
+
+    tree->end();
+    std::cout << "END FIND" << std::endl;
     //std::cout << pippopluto->read_elem().first << " " << pippopluto->read_elem().second << std::endl;
 
     auto pair_6 = tree->emplace(std::pair<int, int>({6, 60}));
@@ -62,7 +70,8 @@ int main()
               << pair_4_bis.second << std::endl;
 
     std::cout << "FIND TEST:" << std::endl;
-    pippopluto = tree->find(1);
+    //auto pippopluto = tree->find(1);
+    auto pippopluto = tree->find(1);
     std::cout << pippopluto->read_elem().first << " " << pippopluto->read_elem().second << std::endl;
     //
     pippopluto = tree->find(2);
@@ -76,12 +85,12 @@ int main()
     pippopluto = tree->find(6);
     std::cout << pippopluto->read_elem().first << " " << pippopluto->read_elem().second << std::endl;
     //
-    pippopluto = tree->find(10);
-    std::cout << pippopluto->read_elem().first << " " << pippopluto->read_elem().second << std::endl;
-    pippopluto = tree->find(60);
-    std::cout << pippopluto->read_elem().first << " " << pippopluto->read_elem().second << std::endl;
-    pippopluto = tree->find(600);
-    std::cout << pippopluto->read_elem().first << " " << pippopluto->read_elem().second << std::endl;
+    //pippopluto = tree->find(10);
+    //std::cout << pippopluto->read_elem().first << " " << pippopluto->read_elem().second << std::endl;
+    //pippopluto = tree->find(60);
+    //std::cout << pippopluto->read_elem().first << " " << pippopluto->read_elem().second << std::endl;
+    //pippopluto = tree->find(600);
+    //std::cout << pippopluto->read_elem().first << " " << pippopluto->read_elem().second << std::endl;
 
 
     delete tree;

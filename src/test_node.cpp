@@ -1,10 +1,11 @@
 #include "bst.hpp"
 #include "iterator.hpp"
 #include "node.hpp"
+
 #include <cassert>
+#include <experimental/memory>
 #include <type_traits>
 #include <utility>
-#include <experimental/memory>
 
 using Node_t = Node<int>;
 
@@ -41,92 +42,101 @@ int main()
     return 0;
 }
 
-void default_constructor(){
-  Node_t node;
-  std::unique_ptr<Node_t> unique;
-  std::experimental::observer_ptr<Node_t> obs;
-  assert(node.read_rc()==unique);
-  assert(node.read_lc()==unique);
-  assert(node.read_pr()==obs);
-  std::cout << "pass deafault constructor" << '\n';
+void default_constructor()
+{
+    Node_t node;
+    std::unique_ptr<Node_t> unique;
+    std::experimental::observer_ptr<Node_t> obs;
+    assert(node.read_rc() == unique);
+    assert(node.read_lc() == unique);
+    assert(node.read_pr() == obs);
+    std::cout << "pass deafault constructor" << '\n';
 }
 
-void constructor(){
-  Node_t node;
-  std::unique_ptr<Node_t> unique;
-  std::experimental::observer_ptr<Node_t> obs;
-  assert(node.read_rc()==unique);
-  assert(node.read_lc()==unique);
-  assert(node.read_pr()==obs);
-  std::cout << "pass deafault constructor" << '\n';
+void constructor()
+{
+    Node_t node;
+    std::unique_ptr<Node_t> unique;
+    std::experimental::observer_ptr<Node_t> obs;
+    assert(node.read_rc() == unique);
+    assert(node.read_lc() == unique);
+    assert(node.read_pr() == obs);
+    std::cout << "pass deafault constructor" << '\n';
 }
 
-void move(){
-  Node_t node;
-  std::unique_ptr<Node_t> unique;
-  std::experimental::observer_ptr<Node_t> obs;
-  assert(node.read_rc()==unique);
-  assert(node.read_lc()==unique);
-  assert(node.read_pr()==obs);
-  std::cout << "pass deafault constructor" << '\n';
+void move()
+{
+    Node_t node;
+    std::unique_ptr<Node_t> unique;
+    std::experimental::observer_ptr<Node_t> obs;
+    assert(node.read_rc() == unique);
+    assert(node.read_lc() == unique);
+    assert(node.read_pr() == obs);
+    std::cout << "pass deafault constructor" << '\n';
 }
 
-void copy(){
-  Node_t node;
-  std::unique_ptr<Node_t> unique;
-  std::experimental::observer_ptr<Node_t> obs;
-  assert(node.read_rc()==unique);
-  assert(node.read_lc()==unique);
-  assert(node.read_pr()==obs);
-  std::cout << "pass deafault constructor" << '\n';
+void copy()
+{
+    Node_t node;
+    std::unique_ptr<Node_t> unique;
+    std::experimental::observer_ptr<Node_t> obs;
+    assert(node.read_rc() == unique);
+    assert(node.read_lc() == unique);
+    assert(node.read_pr() == obs);
+    std::cout << "pass deafault constructor" << '\n';
 }
 
-void read(){
-  Node_t node;
-  std::unique_ptr<Node_t> unique;
-  std::experimental::observer_ptr<Node_t> obs;
-  assert(node.read_rc()==unique);
-  assert(node.read_lc()==unique);
-  assert(node.read_pr()==obs);
-  std::cout << "pass deafault constructor" << '\n';
+void read()
+{
+    Node_t node;
+    std::unique_ptr<Node_t> unique;
+    std::experimental::observer_ptr<Node_t> obs;
+    assert(node.read_rc() == unique);
+    assert(node.read_lc() == unique);
+    assert(node.read_pr() == obs);
+    std::cout << "pass deafault constructor" << '\n';
 }
 
-void is_children(){
-  Node_t node;
-  std::unique_ptr<Node_t> unique;
-  std::experimental::observer_ptr<Node_t> obs;
-  assert(node.read_rc()==unique);
-  assert(node.read_lc()==unique);
-  assert(node.read_pr()==obs);
-  std::cout << "pass deafault constructor" << '\n';
+void is_children()
+{
+    Node_t node;
+    std::unique_ptr<Node_t> unique;
+    std::experimental::observer_ptr<Node_t> obs;
+    assert(node.read_rc() == unique);
+    assert(node.read_lc() == unique);
+    assert(node.read_pr() == obs);
+    std::cout << "pass deafault constructor" << '\n';
 }
 
-void set(){
-  Node_t node;
-  std::unique_ptr<Node_t> unique;
-  std::experimental::observer_ptr<Node_t> obs;
-  assert(node.read_rc()==unique);
-  assert(node.read_lc()==unique);
-  assert(node.read_pr()==obs);
-  std::cout << "pass deafault constructor" << '\n';
+void set()
+{
+    Node_t node;
+    std::unique_ptr<Node_t> unique;
+    std::experimental::observer_ptr<Node_t> obs;
+    assert(node.read_rc() == unique);
+    assert(node.read_lc() == unique);
+    assert(node.read_pr() == obs);
+    std::cout << "pass deafault constructor" << '\n';
 }
 
-void detach(){
-  Node_t node;
-  std::unique_ptr<Node_t> unique;
-  std::experimental::observer_ptr<Node_t> obs;
-  assert(node.read_rc()==unique);
-  assert(node.read_lc()==unique);
-  assert(node.read_pr()==obs);
-  std::cout << "pass deafault constructor" << '\n';
+void detach()
+{
+    Node_t node;
+    std::unique_ptr<Node_t> unique;
+    std::experimental::observer_ptr<Node_t> obs;
+    assert(node.read_rc() == unique);
+    assert(node.read_lc() == unique);
+    assert(node.read_pr() == obs);
+    std::cout << "pass deafault constructor" << '\n';
 }
 
-void null(){
-  Node_t node;
-  std::unique_ptr<Node_t> unique;
-  std::experimental::observer_ptr<Node_t> obs;
-  assert(node.read_rc()==unique);
-  assert(node.read_lc()==unique);
-  assert(node.read_pr()==obs);
-  std::cout << "pass deafault constructor" << '\n';
+void null()
+{
+    Node_t node;
+    std::unique_ptr<Node_t> unique;
+    std::experimental::observer_ptr<Node_t> obs;
+    assert(node.read_rc() == unique);
+    assert(node.read_lc() == unique);
+    assert(node.read_pr() == obs);
+    std::cout << "pass deafault constructor" << '\n';
 }

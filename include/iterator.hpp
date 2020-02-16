@@ -59,8 +59,8 @@ class tree_iterator
 
     inline tree_iterator next();
 
-    inline tree_iterator<node, true> constify(tree_iterator<node, false>);
-    inline tree_iterator<node, false> unconstify(tree_iterator<node, true>);
+    //    inline tree_iterator<node, true> constify(tree_iterator<node, false>);
+    //    inline tree_iterator<node, false> unconstify(tree_iterator<node, true>);
 
     tree_iterator<node, true> constify()
     {
@@ -75,7 +75,6 @@ class tree_iterator
 };
 
 template<typename node, bool Const>
-//inline tree_iterator<node, Const>::tree_iterator(node* given) noexcept : current{given} {};
 inline tree_iterator<node, Const>::tree_iterator(value_type* given) noexcept : current{given} {};
 
 
@@ -96,8 +95,6 @@ template<typename node, bool Const>
 inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++()
 {
     tree_iterator<node, Const> next{current};
-    //tree_iterator<node, false> next{const_cast<value_type*>(current)};
-    //std::cout << "BEGIN";
     if (pointer ptr_r = next->read_rc().get(); ptr_r)
     {
         next.current = ptr_r;
