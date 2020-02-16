@@ -37,8 +37,9 @@ class tree_iterator
     inline explicit tree_iterator(value_type*) noexcept;
 
     template<bool T>
-    tree_iterator(tree_iterator<node, T> given){
-      this->current = const_cast<pointer>(given.current);
+    tree_iterator(tree_iterator<node, T> given)
+    {
+        this->current = const_cast<pointer>(given.current);
     }
 
     // explicit tree_iterator(tree_iterator<node, false> given){
@@ -61,12 +62,13 @@ class tree_iterator
     inline tree_iterator<node, true> constify(tree_iterator<node, false>);
     inline tree_iterator<node, false> unconstify(tree_iterator<node, true>);
 
-    tree_iterator<node, true> constify(){
-       tree_iterator<node,true> iter{this.current};
-      return iter;
+    tree_iterator<node, true> constify()
+    {
+        tree_iterator<node, true> iter{this.current};
+        return iter;
     }
-    private:
 
+    private:
     value_type* current;
 
     inline tree_iterator<node, Const> leftmost(tree_iterator<node, Const>&) noexcept;
@@ -101,7 +103,7 @@ inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++()
         next.current = ptr_r;
         next = leftmost(next);
     }
-    else if (!(next->read_lc().get()) && next->is_left() && (next->read_pr().get()==nullptr))
+    else if (!(next->read_lc().get()) && next->is_left() && (next->read_pr().get() == nullptr))
     {
         next.current = next->read_pr().get();
     }
@@ -111,7 +113,9 @@ inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++()
         {
             next.current = next->read_pr().get();
         }
-        next.current = (next->read_pr().get()!=nullptr) ? next->read_pr().get(): ++current;  // Avoid returning a nullptr (parent of root) instead of tree end
+        next.current = (next->read_pr().get() != nullptr)
+                         ? next->read_pr().get()
+                         : ++current;  // Avoid returning a nullptr (parent of root) instead of tree end
     }
 
     // Allow (N)RVO, however the compiler wants to perform it (Does it? Cool!)

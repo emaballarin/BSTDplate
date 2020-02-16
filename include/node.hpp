@@ -155,18 +155,18 @@ inline void Node<T>::write_value_ofkey(std::pair<XK, XV>& given)
 template<typename T>
 inline void Node<T>::set_lc(Node<T>* given)
 {
-  assert(!(this->parent.get()) || this->parent.get() != given);  // Can't create cycles
+    assert(!(this->parent.get()) || this->parent.get() != given);  // Can't create cycles
     if (!given)
     {
-      this->null_left();
-    } else
-    {
-      assert(!(this->left_child.get()));  // Can set only if free
-      this->left_child.reset(given);
-      this->left_child.get()->set_parent(this);
-      this->left_child.get()->set_childtype(false);
+        this->null_left();
     }
-
+    else
+    {
+        assert(!(this->left_child.get()));  // Can set only if free
+        this->left_child.reset(given);
+        this->left_child.get()->set_parent(this);
+        this->left_child.get()->set_childtype(false);
+    }
 };
 
 template<typename T>
@@ -177,15 +177,15 @@ inline void Node<T>::set_rc(Node<T>* given)
 
     if (!given)
     {
-      this->null_right();
-    } else
-    {
-      assert(!(this->right_child.get()));  // Can set only if free
-      this->right_child.reset(given);
-      this->right_child.get()->set_parent(this);
-      this->right_child.get()->set_childtype(true);
+        this->null_right();
     }
-
+    else
+    {
+        assert(!(this->right_child.get()));  // Can set only if free
+        this->right_child.reset(given);
+        this->right_child.get()->set_parent(this);
+        this->right_child.get()->set_childtype(true);
+    }
 };
 
 template<typename T>
@@ -287,9 +287,7 @@ void Node<T>::info() const noexcept
 {
     std::cout << "~~ A NODE ~~"
               << "\n"
-              << "Contained element: " << this->read_elem().first <<
-              this->read_elem().second
-              << "\n"
+              << "Contained element: " << this->read_elem().first << this->read_elem().second << "\n"
               << "Left child: ";
     if (this->left_child == nullptr)
     {
@@ -297,7 +295,7 @@ void Node<T>::info() const noexcept
     }
     else
     {
-        std::cout << this->read_lc().get()->read_elem().first ;
+        std::cout << this->read_lc().get()->read_elem().first;
     }
     std::cout << "\n";
     std::cout << "Right child: ";

@@ -88,7 +88,7 @@ class bst
     {
         const_iterator iter{bstree.cbegin()};
         const char s = ' ';
-        std::cout << "ROOT IS: " << bstree.root->read_elem().first<< std::endl;
+        std::cout << "ROOT IS: " << bstree.root->read_elem().first << std::endl;
         while (iter != bstree.cend())
         {
             //check that keys and values are printable
@@ -666,19 +666,19 @@ void bst<kt, vt, cmp>::substitute(typename bst<kt, vt, cmp>::iterator to_be_subs
         std::cout << "BUGGHISSIMO\n";
         substituting->set_lc(&*left);
         substituting->set_rc(&*right);
-    } else
-    {
-      std::cout << "SET ROOT\n";
-      substituting->set_lc(&*left);
-      substituting->set_rc(&*right);
-      std::cout << "substitute children: " << substituting->read_lc()->read_elem().first
-                << substituting->read_rc().get() << std::endl;
-      this->root.release();
-      this->root.reset(&*substituting);
-      std::cout << "root is: " << this->root->read_elem().first << std::endl;
-      //std::cout << *this;
     }
-
+    else
+    {
+        std::cout << "SET ROOT\n";
+        substituting->set_lc(&*left);
+        substituting->set_rc(&*right);
+        std::cout << "substitute children: " << substituting->read_lc()->read_elem().first
+                  << substituting->read_rc().get() << std::endl;
+        this->root.release();
+        this->root.reset(&*substituting);
+        std::cout << "root is: " << this->root->read_elem().first << std::endl;
+        //std::cout << *this;
+    }
 }
 
 template<typename kt, typename vt, typename cmp>
