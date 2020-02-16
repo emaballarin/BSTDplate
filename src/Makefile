@@ -17,7 +17,7 @@ SRC = test_node.cpp test_iterator.cpp test_bst.cpp bench_bst.cpp test.cpp \
 ################################################################################
 
 CXX = c++
-CXXFLAGS = -W -Wall -Wextra -g -std=c++17 -I./ -I../include/
+CXXFLAGS = -W -Wall -Wextra -std=c++17 -Ofast -I./ -I../include/
 
 EXE = $(SRC:.cpp=.x)
 

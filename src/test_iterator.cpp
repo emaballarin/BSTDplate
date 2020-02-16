@@ -1,6 +1,7 @@
 #include "bst.hpp"
 #include "iterator.hpp"
 #include "node.hpp"
+
 #include <iostream>
 
 template<typename T>
@@ -31,9 +32,9 @@ int main()
     tree_iterator<Node<int>, true> pippo_const{pippo};
     tree_iterator<Node<int>, false> pippo_const_cast{pippo_const};
     tree_iterator<Node<int>, false> pippo_assign = pippo_copy;
-    tree_iterator<Node<int>, false> pippo_assign_c = pippo_const;//it works default copy assign
-    auto pippo_move = new tree_iterator<Node<int>, false>{test_1};//default move constr
-    pippo_copy = *pippo_move;//default move assign
+    tree_iterator<Node<int>, false> pippo_assign_c = pippo_const;   //it works default copy assign
+    auto pippo_move = new tree_iterator<Node<int>, false>{test_1};  //default move constr
+    pippo_copy = *pippo_move;                                       //default move assign
     //debug(pippo_copy);
 
     //OK:error invalid conversion from ‘tree_iterator<Node<int>, true>::value_type*’ {aka ‘const Node<int>*’} to ‘tree_iterator<Node<int>, false>::value_type*’ {aka ‘Node<int>*’}
@@ -44,8 +45,6 @@ int main()
     auto end_pippo_const = tree_iterator<Node<int>, true>{test_7};
 
 
-
-
     std::cout << pippo->read_elem() << std::endl;
     ++pippo;
     std::cout << pippo->read_elem() << std::endl;
@@ -60,8 +59,8 @@ int main()
     ++pippo;
     std::cout << pippo->read_elem() << std::endl;
 
-    std::cout << "Should be true: " <<(pippo==end_pippo) << '\n'
-              << "Should be true: " <<(pippo==end_pippo_const) << '\n';
+    std::cout << "Should be true: " << (pippo == end_pippo) << '\n'
+              << "Should be true: " << (pippo == end_pippo_const) << '\n';
 
     //static_cast<void>(iter_const);
     //static_cast<void>(end_pippo);
