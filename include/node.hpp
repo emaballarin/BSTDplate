@@ -299,7 +299,7 @@ void Node<T>::info() const noexcept
 {
     std::cout << "~~ A NODE ~~"
               << "\n"
-              << "Contained element: " << this->read_elem().first << this->read_elem().second << "\n"
+              << "Contained element: " << this->read_elem() << this->read_elem() << "\n"
               << "Left child: ";
     if (this->left_child == nullptr)
     {
@@ -307,7 +307,7 @@ void Node<T>::info() const noexcept
     }
     else
     {
-        std::cout << this->read_lc().get()->read_elem().first;
+        std::cout << this->read_lc().get()->read_elem();
     }
     std::cout << "\n";
     std::cout << "Right child: ";
@@ -317,7 +317,7 @@ void Node<T>::info() const noexcept
     }
     else
     {
-        std::cout << this->read_rc().get()->read_elem().first;
+        std::cout << this->read_rc().get()->read_elem();
     }
     std::cout << "\n";
     std::cout << "Parent: ";
@@ -327,7 +327,7 @@ void Node<T>::info() const noexcept
     }
     else
     {
-        std::cout << this->read_pr().get()->read_elem().first;
+        std::cout << this->read_pr().get()->read_elem();
     }
     std::cout << "\n";
     std::cout << "This is a ";

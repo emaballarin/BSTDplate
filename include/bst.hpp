@@ -88,15 +88,26 @@ class bst
     {
         const_iterator iter{bstree.cbegin()};
         const char s = ' ';
-        std::cout << "ROOT IS: " << bstree.root->read_elem().first << std::endl;
+
         while (iter != bstree.cend())
         {
-            //check that keys and values are printable <- should happen automatically at compile-time
+            //check that keys and values are printable
             os << "(" << iter->read_elem().first << ":" << iter->read_elem().second << ")" << s;
-            iter->info();
             ++iter;
         }
+        // Retline
         return os;
+        //        const_iterator iter{bstree.cbegin()};
+        //        const char s = ' ';
+        //        std::cout << "ROOT IS: " << bstree.root->read_elem().first << std::endl;
+        //        while (iter != bstree.cend())
+        //        {
+        //            //check that keys and values are printable <- should happen automatically at compile-time
+        //            os << "(" << iter->read_elem().first << ":" << iter->read_elem().second << ")" << s;
+        //            iter->info();
+        //            ++iter;
+        //        }
+        //        return os;
     };
 
     //erase
@@ -140,6 +151,8 @@ inline bst<kt, vt, cmp>::bst(const bst<kt, vt, cmp>& original)
     }
     else
     {
+        this->root.reset(new Node<pair_type>(original.root.get()->read_elem()));
+
         std::queue<node_type*> queue_original{};
         std::queue<node_type*> queue_this{};
 
@@ -178,7 +191,7 @@ inline bst<kt, vt, cmp>& bst<kt, vt, cmp>::operator=(const bst<kt, vt, cmp>& ori
 {
     if (this != &original)  // Optimize against self-assignment
     {
-        bst<kt, vt, cmp> copy{original};
+        bst<kt, vt, cmp> copy = bst<kt, vt, cmp>(original);
         this->swap(copy);
     }
     return *this;
@@ -875,7 +888,8 @@ inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find(const ke
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::swap(bst<kt, vt, cmp>& given) noexcept
 {
-    given.root.swap(this->root);
+    //given.root.swap(this->root);
+    this->root.swap(given.root);
 }
 
 // User provided cmp-equality

@@ -8,6 +8,7 @@
 int main()
 {
     auto tree = new bst<int, int>();
+    auto tree_CP = new bst<int, int>();
 
     //auto pair_3 = tree->emplace(std::pair<int, int>({3, 30}));
 
@@ -99,7 +100,10 @@ int main()
     (*tree)[3] = 2;
     std::cout << (*tree)[3] << std::endl;
 
+    *tree_CP = *tree;
 
-    delete tree;
+    std::cout << *tree << std::endl;
+
+
     return 0;
 }
