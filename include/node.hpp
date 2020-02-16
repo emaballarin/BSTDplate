@@ -55,6 +55,9 @@ class Node
     template<typename XK, typename XV>
     inline void write_value_ofkey(std::pair<XK, XV>&);
 
+    template<typename XK, typename XV>
+    inline XV& value_refrw();
+
     inline void detach_left() noexcept;
     inline void detach_right() noexcept;
     inline void detach_children() noexcept;
@@ -149,6 +152,15 @@ inline void Node<T>::write_value_ofkey(std::pair<XK, XV>& given)
     static_assert(std::is_same<T, std::pair<XK, XV>>::value == true);
 
     this->elem.second = std::forward<XV>(given.second);
+};
+
+template<typename T>
+template<typename XK, typename XV>
+inline XV& Node<T>::value_refrw()
+{
+    static_assert(std::is_same<T, std::pair<XK, XV>>::value == true);
+
+    return this->elem.second;
 };
 
 // Ptr setters

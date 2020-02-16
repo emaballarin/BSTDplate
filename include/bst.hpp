@@ -496,14 +496,14 @@ template<typename kt, typename vt, typename cmp>
 inline typename bst<kt, vt, cmp>::value_type& bst<kt, vt, cmp>::operator[](typename bst<kt, vt, cmp>::const_key_type& x)
 {
     iterator found = this->find(x);
-    return found->read_elem().second;  //not range checked
+    return found->template value_refrw<key_type, vt>();
 }
 
 template<typename kt, typename vt, typename cmp>
 inline typename bst<kt, vt, cmp>::value_type& bst<kt, vt, cmp>::operator[](typename bst<kt, vt, cmp>::key_type&& x)
 {
     iterator found = this->find(x);
-    return found->read_elem().second;  //not range checked
+    return found->template value_refrw<key_type, vt>();
 }
 
 template<typename kt, typename vt, typename cmp>
