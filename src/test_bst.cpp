@@ -98,6 +98,7 @@ int main()
     std::cout << *tree << std::endl;
     tree->erase(8);
     std::cout << *tree << std::endl;
+    std::cout << "CORRECT TILL NOW\n";
     tree->erase(4);
     //std::cout << *tree << std::endl;
 

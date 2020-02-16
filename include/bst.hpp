@@ -625,12 +625,14 @@ void bst<kt, vt, cmp>::replace(typename bst<kt, vt, cmp>::iterator substituting)
         {
             iterator left{substituting->read_lc().get()};
             substituting->detach_left();
+            root.release();
             root.reset(&*left);  //destroys previous root
         }
         else
         {
             iterator right{substituting->read_rc().get()};
             substituting->detach_right();
+            root.release();
             root.reset(&*right);  //destroys previous root
         }
     }
