@@ -36,7 +36,6 @@ int main()
     auto pair_8_bis = tree->insert(std::pair<int, int>({8, 80}));
 
 
-
     //test insert
     std::cout << pair_6.first->read_elem().first << " " << pair_6.first->read_elem().second << " " << pair_6.second
               << std::endl;
