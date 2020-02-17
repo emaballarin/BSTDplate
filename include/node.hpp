@@ -7,34 +7,69 @@
  *                                                                            *
 \******************************************************************************/
 
-#pragma once
-#define DIAG  // Remove/comment this before "shipping to production"
+/**
+ * @file node.hpp
+ * @author Leonardo Arrighi
+ * @author Francesco Romor
+ * @author Emanuele Ballarin
+ * @date 18 February 2020
+ * @brief Header file containing the implementation of a type-templated binary node, whith auxiliary functions.
+ */
+
+#pragma once  // Easy ODR
+//#define DIAG  // Remove/comment this before "shipping to production" (e.g. to disable asserts)
 
 #include <cassert>              // Safety tests
-#include <experimental/memory>  // Use: observer_ptr | we REALLY want a raw ptr with the same semantics as smart ptr
+#include <experimental/memory>  // Use: observer_ptr | we really want a raw ptr with the same semantics as smart ptr
 #include <memory>               // Use: unique_ptr
 
 #if defined(DIAG)
-    #include <iostream>  // Use: cout, endl
+    #include <iostream>  // Output to STDOUT
 #endif
 
+/**
+ * @brief Type-templated binary node
+ * @tparam T Typename of the element belonging to a node
+ */
 template<typename T>
 class Node
 {
     public:
     using elem_type = T;
 
+    /**
+     * @brief Default constructor for a type-templated node
+     *
+     * Calls the default constructor on all private variables
+     */
     inline Node() noexcept = default;
 
     template<typename FWR>
-    inline explicit Node(FWR&&) noexcept;  // We're very lucky it doesn't happen ;)
+    inline explicit Node(FWR&&) noexcept;  // Acceptable warning (clang-tidy)
 
+    /**
+     * @brief Copy constructor for a type-templated node
+     *
+     * Deleted for performance reasons and on philosophical grounds: what does it mean to copy a node without its mutual relationships?
+     */
     Node(Node&) = delete;  // Explicit deletion as in GNU unique_ptr.h
+
     inline Node(Node&&) noexcept;
 
+    /**
+     * @brief Copy assignment for a type-templated node
+     *
+     * Deleted for performance reasons and on philosophical grounds: what does it mean to copy a node without its mutual relationships?
+     */
     Node& operator=(const Node&) = delete;  // Explicit deletion as in GNU unique_ptr.h
+
     inline Node& operator=(Node&&) noexcept;
 
+    /**
+     * @brief Default destructor for a type-templated node
+     *
+     * Calls the default destructor on all members
+     */
     inline ~Node() noexcept = default;
 
     template<typename FWR>
@@ -50,7 +85,7 @@ class Node
 
     inline void set_lc(Node<T>*);
     inline void set_rc(Node<T>*);
-    inline void set_children(Node<T>*, Node<T>*) noexcept;
+    inline void set_children(Node<T>*, Node<T>*);
 
     template<typename XK, typename XV>
     inline void write_value_ofkey(std::pair<XK, XV>&);
@@ -70,38 +105,57 @@ class Node
 #if defined(DIAG)
     void info() const noexcept;  // If you wanted this inline, you're using it wrong ;)
 #endif
-    //    friend std::ostream& operator<<(std::ostream& os, const Node& node)
-    //    {
-    //        os << "(" << node.read_elem().first << "," << node.read_elem().second << ")";
-    //        return os;
-    //    }
 
 
     private:
+    /** The element belonging to a node */
     T elem;
 
+    /** The std::unique_ptr pointing to the node that is the left child */
     std::unique_ptr<Node<T>> left_child;
+
+    /** The std::unique_ptr pointing to the node that is the right child */
     std::unique_ptr<Node<T>> right_child;
+
+    /** The std::experimental::observer_ptr that points to the node that is the parent */
     std::experimental::observer_ptr<Node<T>> parent;
 
-    bool childtype{false};  // left = false, right = true || By default the root is LEFT
-    inline void set_childtype(bool) noexcept;
+    /** Right-/left- - ness of node-childship as a boolean; left is represented by the false value; a root is false by default */
+    bool childtype{false};  // left = false, right = true; by default the root is a left child
 
+    inline void set_childtype(bool) noexcept;
     inline void null_parent() noexcept;
     inline void set_parent(Node<T>*) noexcept;
 };
 
+/**
+ * @brief Custom constructor for a type-templated node, with perfect forwarding of the element to be contained in the node
+ * @tparam T Typename of the element belonging to a node
+ * @tparam FWR Typename of the element belonging to a type-tamplated node
+ * @param given The node-element-likely-typed object to be set as the new-node element
+ *
+ * It is not possible to use it to construct nodes containing a node.
+ */
 template<typename T>
 template<typename FWR>
 inline Node<T>::Node(FWR&& given) noexcept :
     elem{std::forward<FWR>(given)} {};  // We're very lucky it doesn't happen ;)
 
+/**
+ * @brief Move constructor for a type-templated node
+ * @tparam T Typename of the element belonging to a node
+ * @param node The node to be moved
+ */
 template<typename T>
 inline Node<T>::Node(Node&& node) noexcept :
     elem{std::move(node.elem)}, left_child{std::move(node.left_child)},
     right_child{std::move(node.right_child)}, parent{std::move(node.parent)} {};
 
-
+/**
+ * @brief Move assignment for a type-templated node
+ * @tparam T Typename of the element belonging to a node
+ * @param node The node to be move-assigned
+ */
 template<typename T>
 inline Node<T>& Node<T>::operator=(Node<T>&& node) noexcept
 {
@@ -112,31 +166,60 @@ inline Node<T>& Node<T>::operator=(Node<T>&& node) noexcept
     return *this;
 };
 
-// Read-only access...
+/**
+ * @brief Getter for the element contained into a type-templated node
+ * @tparam T Typename of the element belonging to a node
+ * @return Const-qualified reference to the element contained into the node
+ */
 template<typename T>
 inline const T& Node<T>::read_elem() const noexcept
 {
     return this->elem;
 };
 
+/**
+ * @brief Getter for the std::unique_ptr pointing to the node constituting the left child
+ * @tparam T Typename of the element belonging to a node
+ * @return Const-qualified reference to the std::unique_ptr pointing to the node constituting the left child
+ */
 template<typename T>
 inline const std::unique_ptr<Node<T>>& Node<T>::read_lc() const noexcept
 {
     return this->left_child;
 };
 
+/**
+ * @brief Getter for the std::unique_ptr pointing to the node constituting the right child
+ * @tparam T Typename of the element belonging to a node
+ * @return Const-qualified reference to the std::unique_ptr pointing to the node constituting the right child
+ */
 template<typename T>
 inline const std::unique_ptr<Node<T>>& Node<T>::read_rc() const noexcept
 {
     return this->right_child;
 };
 
+/**
+ * @brief Getter for the std::experimental::unique_ptr pointing to the node constituting the parent
+ * @tparam T Typename of the element belonging to a node
+ * @return Const-qualified reference to the std::experimental::unique_ptr pointing to the node constituting the parent
+ *
+ * The use of the experimental "world's dumbest smart pointer" (a.k.a. observer pointer) ensures a consistent semantic among smart pointers, without implementing the concept of ownership or uniqueness. If a node is a root (parentless node), it points to nullptr
+ */
 template<typename T>
 inline const std::experimental::observer_ptr<Node<T>>& Node<T>::read_pr() const noexcept
 {
     return this->parent;
 };
 
+/**
+ * @brief Setter for the element contained into a type-templated node, with perfect forwarding of the element passed
+ * @tparam T Typename of the element belonging to a node
+ * @tparam FWR Typename of the element belonging to a type-tamplated node
+ * @param given The element you want the node to contain, perfectly-forwarded
+ *
+ * It is not possible to use it to assign nodes as elements of other nodes.
+ */
 template<typename T>
 template<typename FWR>
 inline void Node<T>::write_elem(FWR&& given)
@@ -144,7 +227,15 @@ inline void Node<T>::write_elem(FWR&& given)
     this->elem = std::forward<FWR>(given);
 };
 
-// Write value of given std::pair to value of this->elem, if both given and *this are std::pair of the same types
+/**
+ * @brief Setter for the value of the element contained in a node, if the node is std::pair-typed
+ * @tparam T Typename of the element belonging to a node
+ * @tparam XK Typename of the key of the element of the node, if the node is std::pair-typed
+ * @tparam XV Typename of the value of the element of the node, if the node is std::pair-typed
+ * @param given std::pair whose value you want to set as the value of the element of the node, if the node is std::pair-typed
+ *
+ * The use of nested templates ensures availability of the member function only with adequate types, while avoiding to resort to more sophisticate template idioms
+ */
 template<typename T>
 template<typename XK, typename XV>
 inline void Node<T>::write_value_ofkey(std::pair<XK, XV>& given)
@@ -154,6 +245,15 @@ inline void Node<T>::write_value_ofkey(std::pair<XK, XV>& given)
     this->elem.second = std::forward<XV>(given.second);
 };
 
+/**
+ * @brief Getter for a reference (eventually writable) to the value of the element of the node, if the node is std::pair-typed
+ * @tparam T Typename of the element belonging to a node
+ * @tparam XK Typename of the key of the element of the node, if the node is std::pair-typed
+ * @tparam XV Typename of the value of the element of the node, if the node is std::pair-typed
+ * @return Reference (eventually writable) to the value of the element of the node, if the node is std::pair-typed
+ *
+ * The use of nested templates ensures availability of the member function only with adequate types, while avoiding to resort to more sophisticate template idioms
+ */
 template<typename T>
 template<typename XK, typename XV>
 inline XV& Node<T>::value_refrw()
@@ -163,7 +263,15 @@ inline XV& Node<T>::value_refrw()
     return this->elem.second;
 };
 
-// Ptr setters
+/**
+ * @brief Setter for the std::unique_ptr pointing to the left child
+ * @tparam T Typename of the element belonging to a node
+ * @param given Raw pointer to the node you want to assign as the left child. Can be used with operator new
+ *
+ * It is not possible to set as a child the parent itself. If a nullptr is passed, the child-pointing std::unique_ptr is nulled.
+ * When a child is assigned, its pointer pointing to parent is automatically set as pointing to the caller.
+ * By default, for implementation efficiency reasons, a root is a left child. Discrimination among left children and roots can happen by checking explicitly the value of the parent pointer
+ */
 template<typename T>
 inline void Node<T>::set_lc(Node<T>* given)
 {
@@ -181,10 +289,17 @@ inline void Node<T>::set_lc(Node<T>* given)
     }
 };
 
+/**
+ * @brief Setter for the std::unique_ptr pointing to the right child
+ * @tparam T Typename of the element belonging to a node
+ * @param given Raw pointer to the node you want to assign as the right child. Can be used with operator new
+ *
+ * It is not possible to set as a child the parent itself. If a nullptr is passed, the child-pointing std::unique_ptr is nulled.
+ * When a child is assigned, its pointer pointing to parent is automatically set as pointing to the caller.
+ */
 template<typename T>
 inline void Node<T>::set_rc(Node<T>* given)
 {
-    //assert(given);                       // Can't set to nullptr this way; use null_right() instead
     assert(!(this->parent.get()) || this->parent.get() != given);  // Can't create cycles
 
     if (!given)
@@ -200,13 +315,25 @@ inline void Node<T>::set_rc(Node<T>* given)
     }
 };
 
+/**
+ * @brief Setter for both the std::unique_ptr pointing to the children
+ * @tparam T Typename of the element belonging to a node
+ * @param l_given Raw pointer to the node you want to assign as the left child. Can be used with operator new
+ * @param r_given Raw pointer to the node you want to assign as the right child. Can be used with operator new
+ */
 template<typename T>
-inline void Node<T>::set_children(Node<T>* l_given, Node<T>* r_given) noexcept
+inline void Node<T>::set_children(Node<T>* l_given, Node<T>* r_given)
 {
     this->set_lc(l_given);
     this->set_rc(r_given);
 }
 
+/**
+ * @brief Releases the std::unique_ptr pointing to both the children, making them roots.
+ * @tparam T Typename of the element belonging to a node
+ *
+ * The function called on a node having a nullptr as children (or any of them), does not throw
+ */
 template<typename T>
 inline void Node<T>::detach_children() noexcept
 {
@@ -214,6 +341,12 @@ inline void Node<T>::detach_children() noexcept
     this->detach_right();
 }
 
+/**
+ * @brief Setter to null for both the std::unique_ptr pointing to both the left and right child, triggering memory release
+ * @tparam T Typename of the element belonging to a node
+ *
+ * The function called on a node having a nullptr as children (or any of them), does not throw
+ */
 template<typename T>
 inline void Node<T>::null_children() noexcept
 {
@@ -221,7 +354,12 @@ inline void Node<T>::null_children() noexcept
     this->null_right();
 };
 
-// Utility
+/**
+ * @brief Releases the std::unique_ptr pointing to the left child, making the child a root.
+ * @tparam T Typename of the element belonging to a node
+ *
+ * The function called on a node having a nullptr as child, does not throw
+ */
 template<typename T>
 inline void Node<T>::detach_left() noexcept
 {
@@ -233,6 +371,12 @@ inline void Node<T>::detach_left() noexcept
     }
 }
 
+/**
+ * @brief Releases the std::unique_ptr pointing to the right child, making the child a root.
+ * @tparam T Typename of the element belonging to a node
+ *
+ * The function called on a node having a nullptr as child, does not throw
+ */
 template<typename T>
 inline void Node<T>::detach_right() noexcept
 {
@@ -244,6 +388,12 @@ inline void Node<T>::detach_right() noexcept
     }
 }
 
+/**
+ * @brief Setter to null for the std::unique_ptr pointing to the left child, triggering memory release
+ * @tparam T Typename of the element belonging to a node
+ *
+ * The function called on a node having a nullptr as child, does not throw
+ */
 template<typename T>
 inline void Node<T>::null_left() noexcept
 {
@@ -253,6 +403,12 @@ inline void Node<T>::null_left() noexcept
     }
 }
 
+/**
+ * @brief Setter to null for the std::unique_ptr pointing to the right child, triggering memory release
+ * @tparam T Typename of the element belonging to a node
+ *
+ * The function called on a node having a nullptr as child, does not throw
+ */
 template<typename T>
 inline void Node<T>::null_right() noexcept
 {
@@ -262,6 +418,10 @@ inline void Node<T>::null_right() noexcept
     }
 }
 
+/**
+ * @brief Setter to null for the std::experimental::observer_ptr pointing to the parent, by reset
+ * @tparam T Typename of the element belonging to a node
+ */
 template<typename T>
 inline void Node<T>::null_parent() noexcept
 {
@@ -269,24 +429,46 @@ inline void Node<T>::null_parent() noexcept
     this->childtype = false;
 }
 
+/**
+ * @brief Setter of the std::experimental::observer_ptr pointing to the parent, by reset
+ * @tparam T Typename of the element belonging to a node
+ * @param newparent The raw pointer to the node to be set as the parent
+ */
 template<typename T>
 inline void Node<T>::set_parent(Node<T>* newparent) noexcept
 {
     this->parent.reset(newparent);
 }
 
+/**
+ * @brief Setter of right-/left- -ness of a node upon parent selection
+ * @tparam T Typename of the element belonging to a node
+ * @param newparent The node to be set as the new node
+ */
 template<typename T>
 inline void Node<T>::set_childtype(bool childbool) noexcept
 {
     this->childtype = childbool;
 }
 
+/**
+ * @brief Checks if the node is a left child
+ * @tparam T Typename of the element belonging to a node
+ * @return Boolean value answering to the question if the node is a left child
+ *
+ * By default, for implementation efficiency reasons, a root is a left child. Discrimination among left children and roots can happen by checking explicitly the value of the parent pointer
+ */
 template<typename T>
 inline bool Node<T>::is_left() const noexcept
 {
     return !(this->childtype);
 }
 
+/**
+ * @brief Checks if the node is a right child
+ * @tparam T Typename of the element belonging to a node
+ * @return Boolean value answering to the question if the node is a right child
+ */
 template<typename T>
 inline bool Node<T>::is_right() const noexcept
 {
@@ -294,6 +476,10 @@ inline bool Node<T>::is_right() const noexcept
 }
 
 #if defined(DIAG)
+/**
+ * @brief Prints diagnostic information about a node
+ * @tparam T Typename of the element belonging to a node
+ */
 template<typename T>
 void Node<T>::info() const noexcept
 {
