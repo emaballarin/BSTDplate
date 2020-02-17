@@ -7,6 +7,15 @@
  *                                                                            *
 \******************************************************************************/
 
+/**
+ * @file node.hpp
+ * @author Leonardo Arrighi
+ * @author Francesco Romor
+ * @author Emanuele Ballarin
+ * @date 18 February 2020
+ * @brief Header file containing the implementation of a type-templated binary search tree (bst), whith auxiliary functions.
+ */
+
 #pragma once  // Easy ODR
 
 #include "iterator.hpp"

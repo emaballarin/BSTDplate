@@ -25,6 +25,12 @@
 #include <memory>
 #include <type_traits>
 
+
+/**
+ * @brief Type-templated forward tree_iterator
+ * @tparam node Typename of the node
+ * @tparam Const Bool to represent a const iterator (true) or an iterator (false)
+ */
 template<typename node,
          bool Const = true>  // Cfr.: https://stackoverflow.com/questions/2150192
 class tree_iterator
