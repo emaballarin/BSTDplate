@@ -7,9 +7,16 @@
  *                                                                            *
 \******************************************************************************/
 
-#pragma once
+/**
+ * @file iterator.hpp
+ * @author Leonardo Arrighi
+ * @author Francesco Romor
+ * @author Emanuele Ballarin
+ * @date 18 February 2020
+ * @brief Header file containing the implementation of an iterator iterating over a graph composed of type-templated binary nodes.
+ */
 
-// SET NOEXCEPT WHERE NEEDED!
+#pragma once  // Easy ODR
 
 #include "node.hpp"
 
@@ -19,7 +26,7 @@
 #include <type_traits>
 
 template<typename node,
-         bool Const = true>  // Source: https://stackoverflow.com/questions/2150192
+         bool Const = true>  // Cfr.: https://stackoverflow.com/questions/2150192
 class tree_iterator
 {
     public:
@@ -27,46 +34,32 @@ class tree_iterator
     using reference = typename std::conditional<Const, const node&, node&>::type;
     using pointer = typename std::conditional<Const, const node*, node*>::type;
     using iterator_category = std::forward_iterator_tag;
-    using difference_type = std::ptrdiff_t;  // Never used, but needed ;)
+    using difference_type = std::ptrdiff_t;
 
 
     friend tree_iterator<node, !Const>;
 
-    // Custom: ctor | Default: cpctor, mvctor, cpasst, mvasst, dtor
-    tree_iterator() = default;
+    inline tree_iterator() noexcept = default;
     inline explicit tree_iterator(value_type*) noexcept;
 
     template<bool T>
-    tree_iterator(tree_iterator<node, T> given)
+    inline tree_iterator(tree_iterator<node, T> given) noexcept
     {
         this->current = const_cast<pointer>(given.current);
     }
 
-    // explicit tree_iterator(tree_iterator<node, false> given){
-    //   this->current = given.current;
-    // }
-
     inline reference operator*() const;
     inline pointer operator->() const;
 
-    inline tree_iterator operator++();
-    inline tree_iterator operator++(int);  // Acceptable warning (clang-tidy)
+    inline tree_iterator operator++() noexcept;
+    inline tree_iterator operator++(int) noexcept;  // Acceptable warning (clang-tidy)
 
     template<bool T>
-    inline bool operator==(const tree_iterator<node, T>&) const;
+    inline bool operator==(const tree_iterator<node, T>&) const noexcept;
     template<bool T>
-    inline bool operator!=(const tree_iterator<node, T>&) const;
+    inline bool operator!=(const tree_iterator<node, T>&) const noexcept;
 
-    inline tree_iterator next();
-
-    //    inline tree_iterator<node, true> constify(tree_iterator<node, false>);
-    //    inline tree_iterator<node, false> unconstify(tree_iterator<node, true>);
-
-    tree_iterator<node, true> constify()
-    {
-        tree_iterator<node, true> iter{this.current};
-        return iter;
-    }
+    inline tree_iterator next() noexcept;
 
     private:
     value_type* current;
@@ -88,11 +81,10 @@ template<typename node, bool Const>
 inline typename tree_iterator<node, Const>::pointer tree_iterator<node, Const>::operator->() const
 {
     return &(*(*this));
-    //return &(current);
 }
 
 template<typename node, bool Const>
-inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++()
+inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++() noexcept
 {
     tree_iterator<node, Const> next{current};
     if (pointer ptr_r = next->read_rc().get(); ptr_r)
@@ -115,13 +107,14 @@ inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++()
                          : ++current;  // Avoid returning a nullptr (parent of root) instead of tree end
     }
 
-    // Allow (N)RVO, however the compiler wants to perform it (Does it? Cool!)
-    *this = next;  // Pipelining
+    // Allow (N)RVO
+    *this = next;  // Allow optimization by pipelining
     return next;
 }
 
 template<typename node, bool Const>
-inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++(int)  // Acceptable warning (clang-tidy)
+inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++(
+  int) noexcept  // Acceptable warning (clang-tidy)
 {
     tree_iterator<node, Const> old{current};  // Always possible if called from in-range
     ++*this;                                  // May result in UB (but not our problem; crf.: N.M. Josuttis, 1999)
@@ -130,14 +123,14 @@ inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++(int)  /
 
 template<typename node, bool Const>
 template<bool T>
-inline bool tree_iterator<node, Const>::operator==(const tree_iterator<node, T>& given) const
+inline bool tree_iterator<node, Const>::operator==(const tree_iterator<node, T>& given) const noexcept
 {
     return this->current == given.current;  // Since nodes are uncopyable, it should just satisfy identity
 }
 
 template<typename node, bool Const>
 template<bool T>
-inline bool tree_iterator<node, Const>::operator!=(const tree_iterator<node, T>& given) const
+inline bool tree_iterator<node, Const>::operator!=(const tree_iterator<node, T>& given) const noexcept
 {
     return !(this->current == given.current);  // Since nodes are uncopyable, it should just satisfy non-identity
 }
@@ -154,20 +147,8 @@ inline tree_iterator<node, Const> tree_iterator<node, Const>::leftmost(tree_iter
 }
 
 template<typename node, bool Const>
-inline tree_iterator<node, Const> tree_iterator<node, Const>::next()
+inline tree_iterator<node, Const> tree_iterator<node, Const>::next() noexcept
 {
     tree_iterator<node, Const> this_copy{*this};
-    return tree_iterator<node, Const>{++this_copy};  // Will it work ??
+    return tree_iterator<node, Const>{++this_copy};
 }
-
-// template<typename node, bool Const>
-// inline tree_iterator<node, true> tree_iterator<node, Const>::constify(tree_iterator<node, false> given)
-// {
-//     return tree_iterator<node, true>{given.current};
-// }
-//
-// template<typename node, bool Const>
-// inline tree_iterator<node, false> tree_iterator<node, Const>::unconstify(tree_iterator<node, true> given)
-// {
-//     return tree_iterator<node, false>{given.current};
-// }
