@@ -33,7 +33,7 @@ class bst
     using const_iterator = tree_iterator<node_type, true>;
 
     // default ctor
-    inline bst() = default;
+    inline bst() noexcept= default;
 
     // cpctor
     inline bst(const bst&);
@@ -57,7 +57,7 @@ class bst
     inline std::pair<iterator, bool> emplace(Types&&...);
 
     //clear
-    inline void clear();
+    inline void clear() noexcept;
 
     //(c)begin
     inline iterator begin();
@@ -113,24 +113,24 @@ class bst
     inline bool ecmp(kt, kt);
 
     //helpers for balance
-    inline void detach();
-    inline void balance_sub_l(std::size_t, std::size_t);
-    inline void balance_sub_r(std::size_t, std::size_t);
+    inline void detach() noexcept;
+    inline void balance_sub_l(std::size_t, std::size_t);//Node::set
+    inline void balance_sub_r(std::size_t, std::size_t);//Node::set
 
     //helpers for erase
-    inline void exchange(iterator);
-    inline void replace(iterator);
-    inline void substitute(iterator, iterator);
-    inline void detach_leaf(iterator);
+    inline void exchange(iterator);//Node::set
+    inline void replace(iterator);//Node::set
+    inline void substitute(iterator, iterator);//Node::set
+    inline void detach_leaf(iterator) noexcept;
 
     //helpers for begin and end
-    inline iterator leftmost(node_type*) const;
-    inline iterator rightmost(node_type*) const;
+    inline iterator leftmost(node_type*) const;//assert
+    inline iterator rightmost(node_type*) const;//assert
 };
 
 
 template<typename kt, typename vt, typename cmp>
-inline void bst<kt, vt, cmp>::clear()
+inline void bst<kt, vt, cmp>::clear() noexcept
 {
     root.reset();
 }
@@ -413,7 +413,7 @@ inline void bst<kt, vt, cmp>::balance()
 }
 
 template<typename kt, typename vt, typename cmp>
-inline void bst<kt, vt, cmp>::detach()
+inline void bst<kt, vt, cmp>::detach() noexcept
 {
     this->root.release();
     for (iterator mynode_iter : this->vec)
@@ -611,7 +611,7 @@ inline void bst<kt, vt, cmp>::substitute(typename bst<kt, vt, cmp>::iterator to_
 }
 
 template<typename kt, typename vt, typename cmp>
-inline void bst<kt, vt, cmp>::detach_leaf(typename bst<kt, vt, cmp>::iterator erasing)
+inline void bst<kt, vt, cmp>::detach_leaf(typename bst<kt, vt, cmp>::iterator erasing) noexcept
 {
     if (erasing->read_pr())
     {

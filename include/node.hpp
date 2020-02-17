@@ -224,6 +224,7 @@ template<typename T>
 template<typename FWR>
 inline void Node<T>::write_elem(FWR&& given)
 {
+    static_assert(std::is_same<T, std::remove_reference<FWR>>::value == true);
     this->elem = std::forward<FWR>(given);
 };
 
