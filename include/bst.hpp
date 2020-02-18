@@ -544,7 +544,6 @@ void bst<kt, vt, cmp>::balance()
     //set the new root iterator
     std::size_t middle_index = static_cast<std::size_t>(std::floor(vec.size() / 2.0));
     this->root.reset(&(*(vec[middle_index])));
-    iterator new_root = vec[middle_index];
 
     //dividi et impera
     balance_sub_l(0, middle_index);
