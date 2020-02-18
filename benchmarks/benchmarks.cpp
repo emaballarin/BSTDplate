@@ -2,7 +2,6 @@
 #include "timing.hpp"
 
 #include <bst.hpp>
-#include <c++/9.2.1/x86_64-pc-linux-gnu/bits/c++config.h>
 #include <fstream>
 #include <functional>
 #include <iostream>
@@ -36,7 +35,7 @@ void benchmarks(Rand_int r, std::string title, std::size_t max)
     file.open("./results/" + title + ".txt");
 
     //    for (std::size_t j{1}; j < max; ++j)
-    for (std::size_t j{1}; j < max; j += 100000)
+    for (std::size_t j{1}; j < max; j += 10000)
     {
         auto tree = new Tree();
 
@@ -50,6 +49,7 @@ void benchmarks(Rand_int r, std::string title, std::size_t max)
         t.start();
         tree->find(temp);
         t.stop(file);
+        delete tree;
     }
     file.close();
 }
@@ -62,7 +62,7 @@ void benchmarks(Rand_double r, std::string title, std::size_t max)
     file.open("./results/" + title + ".txt");
 
     //    for (std::size_t j{1}; j < max; ++j)
-    for (std::size_t j{1}; j < max; j += 100000)
+    for (std::size_t j{1}; j < max; j += 10000)
     {
         auto tree = new Tree();
 
@@ -78,6 +78,7 @@ void benchmarks(Rand_double r, std::string title, std::size_t max)
         t.start();
         tree->find(temp);
         t.stop(file);
+        delete tree;
     }
     file.close();
 }
@@ -85,20 +86,21 @@ void benchmarks(Rand_double r, std::string title, std::size_t max)
 
 int main()
 {
-    constexpr std::size_t xmax{10000000};
+    constexpr std::size_t max{1000000};
 
-    Rand_int ri{1, xmax * static_cast<unsigned long int>(xmax / 10), 0};
+    Rand_int ri{1, max * static_cast<unsigned long int>(max / 10), 0};
     Rand_double rd{0, 1, 0};
+    Rand_int rc{97, 122, 0};
 
-    benchmarks<bst<int, int>, std::pair<int, int>>(ri, "bst_int_int", xmax);
-    benchmarks<std::map<int, int>, std::pair<int, int>>(ri, "map_int_int", xmax);
-    //  benchmarks<std::unordered_map<int, int>, std::pair<int, int>>(ri, "umap_int_int", max);
-    //
-    //  benchmarks<bst<double, double>,std::pair<double, double>>(rd, "bst_double_double", max);
-    //  benchmarks<std::map<double, double>,std::pair<double, double>>(rd, "map_double_double", max);
-    //  benchmarks<std::unordered_map<double, double>,std::pair<double, double>>(rd, "umap_double_double", max);
-    //
-    //  benchmarks<bst<char, char>, std::pair<char, char>>(ri, "bst_char_char", max);
-    //  benchmarks<std::map<char, char>, std::pair<char, char>>(ri, "map_char_char", max);
-    //  benchmarks<std::unordered_map<char, char>,std::pair<char, char>>(ri, "umap_char_char", max);
+    benchmarks<bst<int, int>, std::pair<int, int>>(ri, "bst_int_int", max);
+    benchmarks<std::map<int, int>, std::pair<int, int>>(ri, "map_int_int", max);
+    benchmarks<std::unordered_map<int, int>, std::pair<int, int>>(ri, "umap_int_int", max);
+
+    benchmarks<bst<double, double>,std::pair<double, double>>(rd, "bst_double_double", max);
+    benchmarks<std::map<double, double>,std::pair<double, double>>(rd, "map_double_double", max);
+    benchmarks<std::unordered_map<double, double>,std::pair<double, double>>(rd, "umap_double_double", max);
+
+    benchmarks<bst<char, char>, std::pair<char, char>>(rc, "bst_char_char", max);
+    benchmarks<std::map<char, char>, std::pair<char, char>>(rc, "map_char_char", max);
+    benchmarks<std::unordered_map<char, char>,std::pair<char, char>>(rc, "umap_char_char", max);
 }

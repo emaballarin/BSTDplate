@@ -6,22 +6,28 @@
 
 #include <iostream>
 
-template<typename T>
-void debug(T);
+bool pippocmp(int pippo, int pluto)
+{
+
+    return pippo < pluto;
+}
+
 
 int main()
 {
-    tree_iterator<Node<int>, false> iter{new Node<int>{2}};
-    std::experimental::observer_ptr<int> ptr;
+
+    auto plutocmp = &pippocmp;
 
 
-    std::cout << "Hello, world!" << std::endl << ptr.get() << iter->read_elem() << '\n';
-    ++iter;
-    //debug(*iter);
+    auto treetest = new bst<int, int>();
 
-    // std::cout << "Hello, world!" << std::endl
-    //           << *iter << '\n';
-    // std::cout << "Hello, world!" << std::endl
-    //           << *(++iter) << '\n';
+    treetest->emplace(std::move(50), std::move(1223));
+    treetest->emplace(std::move(565), std::move(99999));
+    treetest->emplace(std::move(5440), std::move(1223));
+
+    std::cout << treetest->find(565)->read_elem().second << std::endl;
+
+    delete treetest;
+
     return 0;
 }

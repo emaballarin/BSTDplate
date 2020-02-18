@@ -51,6 +51,9 @@ endif
 
 .PHONY: valgrind
 
+documentation: ../doc/doxy.in
+	doxygen $^
+
 clean:
 	rm -f $(EXE) *~
 

@@ -37,8 +37,8 @@ int main()
     pippo_copy = *pippo_move;                                       //default move assign
     //debug(pippo_copy);
 
-    //OK:error invalid conversion from ‘tree_iterator<Node<int>, true>::value_type*’ {aka ‘const Node<int>*’} to ‘tree_iterator<Node<int>, false>::value_type*’ {aka ‘Node<int>*’}
     pippo_const = pippo_copy;
+    //debug(pippo_const);
 
     //test ==
     auto end_pippo = tree_iterator<Node<int>, false>{test_7};

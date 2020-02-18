@@ -88,9 +88,6 @@ class Node
     inline void set_children(Node<T>*, Node<T>*);
 
     template<typename XK, typename XV>
-    inline void write_value_ofkey(std::pair<XK, XV>&);
-
-    template<typename XK, typename XV>
     inline XV& value_refrw();
 
     inline void detach_left() noexcept;
@@ -226,24 +223,6 @@ inline void Node<T>::write_elem(FWR&& given)
 {
     static_assert(std::is_same<T, std::remove_reference<FWR>>::value == true);
     this->elem = std::forward<FWR>(given);
-};
-
-/**
- * @brief Setter for the value of the element contained in a node, if the node is std::pair-typed
- * @tparam T Typename of the element belonging to a node
- * @tparam XK Typename of the key of the element of the node, if the node is std::pair-typed
- * @tparam XV Typename of the value of the element of the node, if the node is std::pair-typed
- * @param given std::pair whose value you want to set as the value of the element of the node, if the node is std::pair-typed
- *
- * The use of nested templates ensures availability of the member function only with adequate types, while avoiding to resort to more sophisticate template idioms
- */
-template<typename T>
-template<typename XK, typename XV>
-inline void Node<T>::write_value_ofkey(std::pair<XK, XV>& given)
-{
-    static_assert(std::is_same<T, std::pair<XK, XV>>::value == true);
-
-    this->elem.second = std::forward<XV>(given.second);
 };
 
 /**
