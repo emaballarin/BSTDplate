@@ -112,6 +112,10 @@ class bst
     inline void erase(const_key_type&);
 
     private:
+    friend tree_iterator<node_type, false>;
+    friend tree_iterator<node_type, true>;
+
+    const node_type end_node{};
     std::unique_ptr<node_type> root;
     std::vector<iterator> vec;
 
