@@ -42,7 +42,7 @@ class bst
     using const_iterator = tree_iterator<node_type, true>;
 
     // default ctor
-    inline bst() noexcept= default;
+    inline bst() noexcept = default;
 
     // cpctor
     inline bst(const bst&);
@@ -92,6 +92,9 @@ class bst
     inline value_type& operator[](const_key_type&);
     inline value_type& operator[](key_type&&);
 
+    // ...
+    friend tree_iterator<pair_type>;
+
     //Put-to operator
     friend std::ostream& operator<<(std::ostream& os, const bst<kt, vt, cmp>& bstree)
     {
@@ -123,18 +126,18 @@ class bst
 
     //helpers for balance
     inline void detach() noexcept;
-    inline void balance_sub_l(std::size_t, std::size_t);//Node::set
-    inline void balance_sub_r(std::size_t, std::size_t);//Node::set
+    inline void balance_sub_l(std::size_t, std::size_t);  //Node::set
+    inline void balance_sub_r(std::size_t, std::size_t);  //Node::set
 
     //helpers for erase
-    inline void exchange(iterator);//Node::set
-    inline void replace(iterator);//Node::set
-    inline void substitute(iterator, iterator);//Node::set
+    inline void exchange(iterator);              //Node::set
+    inline void replace(iterator);               //Node::set
+    inline void substitute(iterator, iterator);  //Node::set
     inline void detach_leaf(iterator) noexcept;
 
     //helpers for begin and end
-    inline iterator leftmost(node_type*) const;//assert
-    inline iterator rightmost(node_type*) const;//assert
+    inline iterator leftmost(node_type*) const;   //assert
+    inline iterator rightmost(node_type*) const;  //assert
 };
 
 
@@ -219,8 +222,7 @@ inline std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::in
 
         while (true)
         {
-            if (node_type* r_child = cursor->read_rc().get();
-               (cmp()(cursor_key, pair.first)) && (r_child))
+            if (node_type* r_child = cursor->read_rc().get(); (cmp()(cursor_key, pair.first)) && (r_child))
             {
                 cursor = r_child;
                 cursor_key = cursor->read_elem().first;
@@ -813,7 +815,10 @@ inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find(const ke
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::swap(bst<kt, vt, cmp>& given) noexcept
 {
-    if (*this!=given){this->root.swap(given.root);}
+    if (*this != given)
+    {
+        this->root.swap(given.root);
+    }
 }
 
 // User provided cmp-equality
