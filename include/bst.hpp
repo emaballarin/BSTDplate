@@ -104,7 +104,9 @@ class bst
             os << "(" << iter->read_elem().first << ":" << iter->read_elem().second << ")" << s;
             ++iter;
         }
-        // Retline
+        
+        os << std::endl;
+        //Retline
         return os;
     };
 
@@ -114,7 +116,6 @@ class bst
     private:
     cmp mycmp{};
 
-    const node_type end_node{};
     std::unique_ptr<node_type> root;
     std::vector<iterator> vec;
 
@@ -652,8 +653,7 @@ template<typename kt, typename vt, typename cmp>
 template<typename... Types>
 inline std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(Types&&... args)
 {
-    std::pair<iterator, bool> to_be_ret = std::pair<iterator, bool>();
-    to_be_ret = insert(std::move(pair_type(std::forward<Types>(args)...)));
+    std::pair<iterator, bool> to_be_ret = insert(std::move(pair_type(std::forward<Types>(args)...)));
     return to_be_ret;
 }
 
