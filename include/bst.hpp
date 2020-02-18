@@ -146,9 +146,6 @@ class bst
 	/** PETOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
     cmp mycmp{};
 
-	/** The node-pair-type PETOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
-    const node_type end_node{};
-
 	/** The std::unique_ptr pointing to the root of the binary search tree */
     std::unique_ptr<node_type> root;
 
