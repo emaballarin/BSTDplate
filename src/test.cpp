@@ -6,16 +6,28 @@
 
 #include <iostream>
 
-template<typename T>
-void debug(T);
+bool pippocmp(int pippo, int pluto)
+{
+
+    return pippo < pluto;
+}
+
 
 int main()
 {
+
+    auto plutocmp = &pippocmp;
+
+
     auto treetest = new bst<int, int>();
 
-    treetest->kv_insert(std::move(50), std::move(1223));
+    treetest->emplace(std::move(50), std::move(1223));
+    treetest->emplace(std::move(565), std::move(99999));
+    treetest->emplace(std::move(5440), std::move(1223));
 
-    std::cout << treetest->find(50)->read_elem().second << std::endl;
+    std::cout << treetest->find(565)->read_elem().second << std::endl;
+
+    delete treetest;
 
     return 0;
 }
