@@ -13,7 +13,7 @@ default: all
 
 ################################################################################
 SRC = test_node.cpp test_iterator.cpp test_bst.cpp bench_bst.cpp test.cpp \
-      another_test.cpp
+      another_test.cpp test_bst_balance.cpp
 ################################################################################
 
 CXX = c++

@@ -44,7 +44,7 @@ class tree_iterator
 
     friend tree_iterator<node, !Const>;
 
-    tree_iterator() noexcept = delete; //deleted since it would coincide with end
+    inline tree_iterator()= default; //deleted since it would coincide with end
     /**
      * @brief custom constructor
      * @param given The pointer to the node
