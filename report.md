@@ -16,7 +16,7 @@ Results show that, if supported by adequate compiler optimizations, the final im
 
 ## Code structure and relevant design choices
 
-The whole codebase – as well as the project development itself – has been organized into three main building blocks, which inter-operate in the global design of the template BST. Nominally: the *Binary Node*, the *Tree Iterator* (more precisely: an iterator over a structure of *binary nodes*) and the *Binary Search Tree* itself. 
+The whole codebase – as well as the project development itself – has been organized into three main building blocks, which inter-operate in the global design of the template BST. Nominally: the *Binary Node*, the *Tree Iterator* (more precisely: an iterator over a structure of *binary nodes*) and the *Binary Search Tree* itself.
 
 As a general design rule, implementations have been initially concieved to be the most general possible – delaying eventual project-specific specializations or additions to the actual moment a different or more peculiar necessity emerged. As an example, this led to the creation of a *Binary Node* class, which is usable in both the case of a *tree composed of nodes* and that of a *generic structure composed of nodes*; likewise, the *Binary Node* class is capable of handling both generic data types – and `std::pair`s – as elements contained. In a similar fashion, the *Tree iterator* class is capable of iterating – with just minor modifications – over a generic graph composed of binary nodes.
 
@@ -42,7 +42,7 @@ On the implementation side, these properties (or invariants) have been enforced 
 
 -   Explicitly making impossible (through the interface) to copy nodes *as nodes*, that is without their defining relationships. In particular, deleting the copy-constructor and copy-assignment operator for a binary node still allows to copy and copy-assign the element contained (according to the specific data type specifications), but also guards against copies of *nodes as data*, requiring copy operations to be defined inside the eventual further classes making use of the nodes. This also improves performance on such derived structures, as a means of forcing copy-elision (as it has been implemented in `bst.hpp`).
 -   Implementing the concept of *parent-child relationship* with two unique pointers pointing from parents to children, and one `std::experimental::observer_ptr` pointing from children to the parent. That way, each parent *becomes responsible* of the children, of setting itself as their parent, and to manage its memory.
--   Allowing to set children 
+-   Allowing to set children
 
 ### `iterator.hpp`: An iterator over tree-like graph composed of binary nodes
 
@@ -66,8 +66,28 @@ On the implementation side, these properties (or invariants) have been enforced 
 
 
 
-### APPENDIX I: How to obtain and compile the code
+### APPENDIX I: Folder structure and execution steps
 
+Folder structure
+The doc folder includes the doxy.in used to generate the documentation. Run the following to generate the Doxygen documentation,
+```
+make documentation
+```
+it will be contained in the subfolders html and latex.
+
+The include folder contains the implementation of the class binary search tree (bst.hpp), class node(node.hpp) and class tree_iterator (iterator.hpp).
+Some basic tests are performed in the folder src to compile run
+```
+make
+```
+in the src directory.
+
+The benchmarks folder contains the timings of the algorithm find implemented for our class bst and the std classes map and unordered map. The plots are saved in the directory bencharks/results along with the timings of the simulations for binary search tree, map and unordered map. To get the plots run the following in the results directory
+```
+python script.py
+```
+
+The Makefile is used to compile automatically our project in its various steps.
 
 
 
@@ -100,11 +120,11 @@ general design in three templated classes
 2)avoid code duplication for iterator and const iterator with conditional and templated constructor
 
 node
-1)RAII to handle memory resources. 
-2)invariants: parent has ownership of node, node has ownership of children. Consequences:non symmetric relationship between parent and children, see null and detach member functions. 
+1)RAII to handle memory resources.
+2)invariants: parent has ownership of node, node has ownership of children. Consequences:non symmetric relationship between parent and children, see null and detach member functions.
 3)use of smart pointers to implement RAII: unique_ptr to nodes and observer_ptr (raw ptr) to parent.
 4)why shared pointers and weak pointers are not the riht choice
-5)nodes are not copyable. Reasons: optimization of code in bst (copy constructor) and 
+5)nodes are not copyable. Reasons: optimization of code in bst (copy constructor) and
 6)use of asserts for validation of pre conditions for member functions with arguments. We can vhoose to handle exceptions for invalid values or use ap_error.h as helper.
 7)use of static asserts.
 8)bool to represent left and right child for fast iterator moving on the bst.

@@ -30,6 +30,9 @@ valgrind:
 clangify:
 	+find . -type d -exec cp -f "./.clang-format" {} \;
 
+documentation: ./doc/doxy.in
+	doxygen $^
+
 clangify-revert:
 	+cp -f ./.clang-format ./.clang-format-backup
 	+find . -type d -exec rm -R -f {}/./.clang-format \;
