@@ -15,13 +15,19 @@ default: all
 SRC = benchmarks.cpp
 ################################################################################
 
-#-std=c++17 -Ofast -xCORE-AVX2 -xHost -fma -use-intel-optimized-headers -qopt-subscript-in-range -falign-loops -parallel -pthread -funroll-loops -ipo -vec -no-inline-max-size -no-inline-max-total-size -W -Wall -Wextra -O3 -I./ -I../include/
-
-CXX = g++
-#CXX = icpc
-#CXXFLAGS = -std=c++17 -xCORE-AVX2 -xHost -fma -use-intel-optimized-headers -qopt-subscript-in-range -falign-loops -parallel -pthread -funroll-loops -ipo -vec -no-inline-max-size -no-inline-max-total-size -W -Wall -Wextra -O3 -I./ -I../include/
-CXXFLAGS = -W -Wall -Wextra -std=c++17 -O3 -I./ -I../include/
+##############
+## GNU C.C. ##
+##############
+#CXX = g++
+#CXXFLAGS = -W -Wall -Wextra -std=c++17 -O3 -I./ -I../include/
 #CXXFLAGS = -W -Wall -Wextra -std=c++17 -O0 -I./ -I../include/
+
+###############
+## INTEL C.C ##
+###############
+CXX = icpc
+CXXFLAGS = -std=c++17 -xCORE-AVX2 -xHost -fma -use-intel-optimized-headers -qopt-subscript-in-range -falign-loops -parallel -pthread -funroll-loops -ipo -vec -no-inline-max-size -no-inline-max-total-size -W -Wall -Wextra -Ofast -I./ -I../include/
+
 
 EXE = $(SRC:.cpp=.x)
 
