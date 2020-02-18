@@ -25,7 +25,7 @@ plt.xlabel("pairs(int, int)")
 plt.ylabel("seconds")
 plt.legend(loc='upper left')
 plt.grid()
-plt.savefig('int_int.png', dpi=600, bbox_inches='tight', pad_inches=0.0)
+plt.savefig('./img/int_int.png', dpi=600, bbox_inches='tight', pad_inches=0.0)
 plt.clf()
 
 for i, item in enumerate(lis[4:8]):
@@ -35,7 +35,7 @@ plt.xlabel("pairs(double, double)")
 plt.ylabel("seconds")
 plt.legend(loc='upper left')
 plt.grid()
-plt.savefig('double_double.png', dpi=600, bbox_inches='tight', pad_inches=0.0)
+plt.savefig('./img/double_double.png', dpi=600, bbox_inches='tight', pad_inches=0.0)
 plt.clf()
 
 for i, item in enumerate(lis[8:12]):
@@ -45,4 +45,4 @@ plt.xlabel("pairs(char, char)")
 plt.ylabel("seconds")
 plt.legend(loc='upper left')
 plt.grid()
-plt.savefig('char_char.png', dpi=600, bbox_inches='tight', pad_inches=0.0)
+plt.savefig('./img/char_char.png', dpi=600, bbox_inches='tight', pad_inches=0.0)
