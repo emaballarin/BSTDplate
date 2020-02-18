@@ -92,9 +92,6 @@ class bst
     inline value_type& operator[](const_key_type&);
     inline value_type& operator[](key_type&&);
 
-    // ...
-    friend tree_iterator<pair_type>;
-
     //Put-to operator
     friend std::ostream& operator<<(std::ostream& os, const bst<kt, vt, cmp>& bstree)
     {
