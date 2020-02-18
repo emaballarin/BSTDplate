@@ -40,12 +40,17 @@ As this will be useful in defining more complex, ordered data structures, a node
 
 On the implementation side, these properties (or invariants) have been enforced by:
 
--   Explicitly making impossible (through the interface) to copy nodes *as nodes*, that is without their defining relationships. In particular, deleting the copy-constructor and copy-assignment operator for a binary node still allows to copy and copy-assign the element contained (according to the specific data type specifications), but also guards against copies of *nodes as data*, requiring copy operations to be defined inside the eventual further classes making use of the nodes. This also improves performance on such derived structures, as a means of forcing copy-elision.
--   Implementing the concept of *parent-child relationship* with two unique pointers pointing from parents to children, and one `std::experimental::observer_ptr` pointing from children to the parent. That way, each parent *becomes responsible* of the children, of setting 
+-   Explicitly making impossible (through the interface) to copy nodes *as nodes*, that is without their defining relationships. In particular, deleting the copy-constructor and copy-assignment operator for a binary node still allows to copy and copy-assign the element contained (according to the specific data type specifications), but also guards against copies of *nodes as data*, requiring copy operations to be defined inside the eventual further classes making use of the nodes. This also improves performance on such derived structures, as a means of forcing copy-elision (as it has been implemented in `bst.hpp`).
+-   Implementing the concept of *parent-child relationship* with two unique pointers pointing from parents to children, and one `std::experimental::observer_ptr` pointing from children to the parent. That way, each parent *becomes responsible* of the children, of setting itself as their parent, and to manage its memory.
+-   Allowing to set children 
 
 ### `iterator.hpp`: An iterator over tree-like graph composed of binary nodes
 
 ### `bst.hpp`: A Binary Search Tree (composed of *binary nodes*)
+
+
+
+## Further general remarks on design
 
 
 
