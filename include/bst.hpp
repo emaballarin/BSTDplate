@@ -60,7 +60,7 @@ class bst
      */
     inline bst(cmp c) : mycmp{c} {};
 
-	/**
+    /**
      * @brief custom constructor for a type-templated binary search tree
      */
     bst(const bst&);
@@ -96,7 +96,10 @@ class bst
     /**
      * @brief Clear function which clears the content of the binary search tree
      */
-    void clear() noexcept{root.reset();}
+    void clear() noexcept
+    {
+        root.reset();
+    }
 
     //(c)begin
     inline iterator begin() noexcept;
@@ -143,13 +146,13 @@ class bst
     void erase(const_key_type&);
 
     private:
-	/** PETOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+    /** PETOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
     cmp mycmp{};
 
-	/** The std::unique_ptr pointing to the root of the binary search tree */
+    /** The std::unique_ptr pointing to the root of the binary search tree */
     std::unique_ptr<node_type> root;
 
-	/** The std::vector that is defined as a vector of iterators */
+    /** The std::vector that is defined as a vector of iterators */
     std::vector<iterator> vec;
 
     // Private swap function
@@ -164,7 +167,7 @@ class bst
     void balance_sub_r(std::size_t, std::size_t);  //Node::set
 
     //helpers for erase
-    inline void exchange(iterator);              //Node::set
+    inline void exchange(iterator);       //Node::set
     void replace(iterator);               //Node::set
     void substitute(iterator, iterator);  //Node::set
     void detach_leaf(iterator) noexcept;
@@ -172,7 +175,6 @@ class bst
     //helpers for begin and end
     iterator leftmost(node_type*) const noexcept;
     iterator rightmost(node_type*) const noexcept;
-
 };
 
 /**
@@ -776,7 +778,7 @@ detached and needs to be erased or reattached properly.*/
 
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::substitute(typename bst<kt, vt, cmp>::iterator to_be_substituted,
-                                         typename bst<kt, vt, cmp>::iterator substituting)
+                                  typename bst<kt, vt, cmp>::iterator substituting)
 {
     iterator left{to_be_substituted->read_lc().get()};
     iterator right{to_be_substituted->read_rc().get()};
@@ -892,10 +894,7 @@ inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find(const ke
 template<typename kt, typename vt, typename cmp>
 inline void bst<kt, vt, cmp>::swap(bst<kt, vt, cmp>& given) noexcept
 {
-    if (*this != given)
-    {
-        this->root.swap(given.root);
-    }
+    this->root.swap(given.root);
 }
 
 // User provided cmp-equality

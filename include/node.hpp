@@ -52,8 +52,7 @@ class Node
      * It is not possible to use it to construct nodes containing a node.
      */
     template<typename FWR>
-    explicit Node(FWR&& given) noexcept:
-        elem{std::forward<FWR>(given)} {};  // Acceptable warning (clang-tidy)
+    explicit Node(FWR&& given) noexcept : elem{std::forward<FWR>(given)} {};  // Acceptable warning (clang-tidy)
 
     /**
      * @brief Copy constructor for a type-templated node
@@ -239,7 +238,7 @@ class Node
      * @brief Setter of the std::experimental::observer_ptr pointing to the parent, by reset
      * @param newparent The raw pointer to the node to be set as the parent
      */
-     void set_parent(Node<T>* newparent) noexcept
+    void set_parent(Node<T>* newparent) noexcept
     {
         this->parent.reset(newparent);
     }
@@ -262,8 +261,6 @@ class Node
         this->childtype = false;
     }
 };
-
-
 
 
 /**
@@ -311,7 +308,7 @@ template<typename XK, typename XV>
 inline XV& Node<T>::value_refrw()
 {
     static_assert(std::is_same<T, std::pair<XK, XV>>::value == true);
-    
+
     return this->elem.second;
 };
 

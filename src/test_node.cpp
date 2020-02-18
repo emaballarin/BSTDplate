@@ -17,13 +17,11 @@ int main()
     auto test_4 = new Node_t(40);
     auto test_5 = new Node_t(50);
     auto test_6 = new Node_t(60);
-    auto test_7 = new Node_t();
 
     test_1->set_rc(test_2);
     test_3->set_children(test_1, test_5);
     test_6->set_lc(test_3);
     test_5->set_lc(test_4);
-    test_1->set_rc(test_7);
 
     std::cout << "~~ ADDRESSES: ~~" << std::endl;
     std::cout << test_1 << std::endl;
@@ -32,6 +30,8 @@ int main()
     std::cout << test_4 << std::endl;
     std::cout << test_5 << std::endl;
     std::cout << test_6 << std::endl;
+
+    delete test_6;
 
     return 0;
 }

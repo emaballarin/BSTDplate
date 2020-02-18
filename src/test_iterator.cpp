@@ -58,6 +58,7 @@ int main()
               << "Should be true: " << (pippo == end_pippo_const) << '\n';
 
     delete test_6;
+    delete pippo_move;
 
     return 0;
 }

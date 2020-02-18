@@ -17,7 +17,7 @@ int main()
     auto plutocmp = &pippocmp;
 
 
-    auto treetest = new bst<int, int, decltype(pippocmp)>(pippocmp);
+    auto treetest = new bst<int, int, decltype(plutocmp)>(plutocmp);
 
     treetest->emplace(std::move(50), std::move(1223));
     treetest->emplace(std::move(565), std::move(99999));
