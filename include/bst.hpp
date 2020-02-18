@@ -113,8 +113,6 @@ class bst
 
     private:
     cmp mycmp{};
-    friend tree_iterator<node_type, false>;
-    friend tree_iterator<node_type, true>;
 
     const node_type end_node{};
     std::unique_ptr<node_type> root;
@@ -138,8 +136,8 @@ class bst
     inline void detach_leaf(iterator) noexcept;
 
     //helpers for begin and end
-    inline iterator leftmost(node_type*) const;   //assert
-    inline iterator rightmost(node_type*) const;  //assert
+    inline iterator leftmost(node_type*) const noexcept;
+    inline iterator rightmost(node_type*) const noexcept;
 };
 
 
@@ -354,11 +352,14 @@ inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cbegin() cons
 
 template<typename kt, typename vt, typename cmp>
 inline typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::leftmost(typename bst<kt, vt, cmp>::node_type* node) const
+  noexcept
 {
-    assert(node);
-    while (node->read_lc().get())
+    if (node)
     {
-        node = node->read_lc().get();
+        while (node->read_lc().get())
+        {
+            node = node->read_lc().get();
+        }
     }
 
     iterator leftmost{node};
@@ -387,11 +388,14 @@ inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cend() const
 
 template<typename kt, typename vt, typename cmp>
 inline typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::rightmost(typename bst<kt, vt, cmp>::node_type* node) const
+  noexcept
 {
-    assert(node);
-    while (node->read_rc().get())
+    if (node)
     {
-        node = node->read_rc().get();
+        while (node->read_rc().get())
+        {
+            node = node->read_rc().get();
+        }
     }
 
     iterator rightmost{node};

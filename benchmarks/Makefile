@@ -19,14 +19,14 @@ SRC = benchmarks.cpp
 ## GNU C.C. ##
 ##############
 #CXX = g++
-#CXXFLAGS = -W -Wall -Wextra -std=c++17 -O3 -I./ -I../include/
-#CXXFLAGS = -W -Wall -Wextra -std=c++17 -O0 -I./ -I../include/
+#CXXFLAGS = -Ofast -flto -march=native -W -Wall -Wextra -std=c++17 -fassociative-math -fcode-hoisting -fexpensive-optimizations -ffast-math -ffinite-math-only -fhoist-adjacent-loads -findirect-inlining -floop-nest-optimize -fpartial-inlining -fpeel-loops -fpeephole -fpeephole2 -fprefetch-loop-arrays -freciprocal-math -frename-registers -funswitch-loops -funsafe-math-optimizations -I./ -I../include/
+
 
 ###############
 ## INTEL C.C ##
 ###############
 CXX = icpc
-CXXFLAGS = -std=c++17 -xCORE-AVX2 -xHost -fma -use-intel-optimized-headers -qopt-subscript-in-range -falign-loops -parallel -pthread -funroll-loops -ipo -vec -no-inline-max-size -no-inline-max-total-size -W -Wall -Wextra -Ofast -I./ -I../include/
+CXXFLAGS = -std=c++17 -xCORE-AVX2 -xHost -fma -use-intel-optimized-headers -qopt-subscript-in-range -falign-loops -parallel -funroll-loops -ipo -vec -no-inline-max-size -no-inline-max-total-size -W -Wall -Wextra -Ofast -I./ -I../include/
 
 
 EXE = $(SRC:.cpp=.x)

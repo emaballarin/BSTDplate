@@ -50,8 +50,9 @@ class tree_iterator
 
     friend tree_iterator<node, !Const>;
 
-    constexpr inline tree_iterator() noexcept = default;
-    explicit tree_iterator(value_type* given) noexcept : current{given} {}
+    explicit tree_iterator(value_type* given) noexcept : current{given}
+    {
+    }
 
     template<bool T>
     tree_iterator(tree_iterator<node, T> given) noexcept
@@ -59,8 +60,14 @@ class tree_iterator
         this->current = const_cast<pointer>(given.current);
     }
 
-    reference operator*() const{ return *current;}
-    pointer operator->() const{return &(*(*this));}
+    reference operator*() const
+    {
+        return *current;
+    }
+    pointer operator->() const
+    {
+        return &(*(*this));
+    }
 
     tree_iterator operator++() noexcept;
     inline tree_iterator operator++(int) noexcept;  // Acceptable warning (clang-tidy)
@@ -68,13 +75,13 @@ class tree_iterator
     template<bool T>
     bool operator==(const tree_iterator<node, T>& given) const noexcept
     {
-      return this->current == given.current;
+        return this->current == given.current;
     }
 
     template<bool T>
     bool operator!=(const tree_iterator<node, T>& given) const noexcept
     {
-      return !(this->current == given.current);
+        return !(this->current == given.current);
     }
 
     inline tree_iterator next() noexcept;
@@ -109,11 +116,7 @@ tree_iterator<node, Const> tree_iterator<node, Const>::operator++() noexcept
         {
             next.current = next->read_pr().get();
         }
-        next.current = (next->read_pr().get() != nullptr)
-                         ? next->read_pr().get()
-                         :++current;
-                         //: &bst<int, int>::end_node;
-        //std::cout << "EGGS " << &Spam::eggs << '\n';
+        next.current = (next->read_pr().get() != nullptr) ? next->read_pr().get() : nullptr;
     }
 
     // Allow (N)RVO
@@ -127,7 +130,8 @@ tree_iterator<node, Const> tree_iterator<node, Const>::operator++() noexcept
  * @tparam Const Bool to represent a const iterator (true) or an iterator (false)
  */
 template<typename node, bool Const>
-inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++(int) noexcept  // Acceptable warning (clang-tidy)
+inline tree_iterator<node, Const> tree_iterator<node, Const>::operator++(
+  int) noexcept  // Acceptable warning (clang-tidy)
 {
     tree_iterator<node, Const> old{current};  // Always possible if called from in-range
     ++*this;                                  // May result in UB (but not our problem; crf.: N.M. Josuttis, 1999)
