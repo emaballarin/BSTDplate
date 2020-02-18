@@ -12,12 +12,21 @@
 default: all
 
 ################################################################################
-SRC = test_node.cpp test_iterator.cpp test_bst.cpp bench_bst.cpp test.cpp \
-      another_test.cpp test_bst_balance.cpp
+SRC = test_bst_emplace.cpp \
+test_bst_subscript.cpp \
+test_mv.cpp \
+test_bst_balance.cpp \
+test_bst_emplace_n_find_n_sso.cpp \
+test.cpp \
+test_node.cpp \
+test_bst.cpp \
+test_bst_insert.cpp \
+test_iterator.cpp \
+test_pathological_test_iterator.cpp
 ################################################################################
 
-CXX = c++
-CXXFLAGS = -W -Wall -Wextra -std=c++17 -Ofast -I./ -I../include/
+CXX = g++
+CXXFLAGS = -W -Wall -Wextra -std=c++17 -O3 -I./ -I../include/
 
 EXE = $(SRC:.cpp=.x)
 
@@ -58,10 +67,5 @@ clean:
 .PHONY: clean
 
 ################################################################################
-test_node.cpp : CXXFLAGS += -W
-test_iterator.cpp : CXXFLAGS += -W
-test_bst.cpp : CXXFLAGS += -W
-bench_bst.cpp : CXXFLAGS += -W
-test.cpp : CXXFLAGS += -W
-another_test.cpp : CXXFLAGS += -W
+
 ################################################################################
