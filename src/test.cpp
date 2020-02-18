@@ -11,17 +11,11 @@ void debug(T);
 
 int main()
 {
-    tree_iterator<Node<int>, false> iter{new Node<int>{2}};
-    std::experimental::observer_ptr<int> ptr;
+    auto treetest = new bst<int, int>();
 
+    treetest->kv_insert(std::move(50), std::move(1223));
 
-    std::cout << "Hello, world!" << std::endl << ptr.get() << iter->read_elem() << '\n';
-    ++iter;
-    //debug(*iter);
+    std::cout << treetest->find(50)->read_elem().second << std::endl;
 
-    // std::cout << "Hello, world!" << std::endl
-    //           << *iter << '\n';
-    // std::cout << "Hello, world!" << std::endl
-    //           << *(++iter) << '\n';
     return 0;
 }
