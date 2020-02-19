@@ -1,7 +1,7 @@
 #!/usr/bin/zsh
 
 PREVIOUS_CALLDIR="$(pwd)"
-PRJ_FOLDER="/home/emaballarin/DSSC/advprog/BSTDplate/"
+PRJ_FOLDER="~/DSSC/advprog/BSTDplate/"
 
 cd "$PRJ_FOLDER"
 
