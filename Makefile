@@ -10,27 +10,25 @@ bear: clean compile
 compile:
 	+$(MAKE) $@ -C src -f Makefile
 	+$(MAKE) $@ -C include -f Makefile
+	+$(MAKE) $@ -C benchmarks -f Makefile
 
 clean:
 	+$(MAKE) $@ -C src -f Makefile clean
 	+$(MAKE) $@ -C include -f Makefile clean
+	+$(MAKE) $@ -C benchmarks -f Makefile clean
 	@find . -type f \( -name '*~' -o -name 'a.out' -name '*.x' \) -exec rm '{}' \;
 
 format:
 	+make clangify
 	+$(MAKE) $@ -C src
 	+$(MAKE) $@ -C include
+	+$(MAKE) $@ -C benchmarks
 	+make clangify-revert
-
-valgrind:
-	+make all
-	+$(MAKE) $@ -C src
-	+$(MAKE) $@ -C include
 
 clangify:
 	+find . -type d -exec cp -f "./.clang-format" {} \;
 
-documentation: ./doc/doxy.in
+docs: ./doc/doxy.in
 	doxygen $^
 
 clangify-revert:
@@ -80,4 +78,4 @@ clean-all:
 	+pvsdeploy rem ./
 
 
-.PHONY: all bear compile clean format default clangify clangify-revert pvsrun bear-aio clean-all pvsrun-compliant valgrind
+.PHONY: all bear compile clean format default clangify clangify-revert pvsrun bear-aio clean-all pvsrun-compliant docs

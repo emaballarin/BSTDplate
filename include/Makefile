@@ -15,8 +15,8 @@ default: all
 SRC =
 ################################################################################
 
-CXX = c++
-CXXFLAGS = -W -Wall -Wextra -std=c++17 -Ofast -I./ -I../include/
+CXX = g++
+CXXFLAGS = -W -Wall -Wextra -std=c++17 -O3 -I./ -I../include/
 
 EXE = $(SRC:.cpp=.x)
 
@@ -42,14 +42,6 @@ format: $(SRC)
 	@clang-format -i $^ -verbose || echo "Please, install clang-format to run this command!"
 
 .PHONY: format
-
-valgrind:
-	make all
-ifneq ("$(wildcard ./*.x)", "")
-	@valgrind -s ./*.x || echo "Please, install valgrind to run this command!"
-endif
-
-.PHONY: valgrind
 
 documentation: ../doc/doxy.in
 	doxygen $^
