@@ -1,4 +1,4 @@
-# BSTDplate [![Build Status](https://travis-ci.com/emaballarin/BSTDplate.svg?branch=master)](https://travis-ci.com/emaballarin/BSTDplate)
+# BSTDplate [![Build Status](https://travis-ci.com/emaballarin/BSTDplate.svg?branch=emaballarin-experiments)](https://travis-ci.com/emaballarin/BSTDplate)
 
 
 A *high-performance*, **templated Binary Search Tree** implementation, complete with iterators, in modern C++ (i.e. C++14/17/20).
