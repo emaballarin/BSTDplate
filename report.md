@@ -22,7 +22,7 @@ The `doc` folder includes the `doxy.in` used to generate the documentation. Run 
 make docs
 ```
 
-The include folder contains the implementation of the class binary search tree (``bst.hpp`), class node (`node.hpp`) and class tree_iterator (`iterator.hpp`). Some basic tests are performed in the folder `src` to compile run in the `src` directory.
+The include folder contains the implementation of the class binary search tree (`bst.hpp`), class node (`node.hpp`) and class tree_iterator (`iterator.hpp`). Some basic tests are performed in the folder `src` to compile run in the `src` directory.
 
 ```
 make
@@ -46,7 +46,7 @@ Whenever possible, *generic programming* in the form of templating has been used
 
 The RAII design pattern and abundant use of smart pointers improves memory safety in exception handling without dealing by hand deallocation.  In this perspective the class node is used as a resourse handle to manage the resourses in the tree class. The ownership of the children nodes is detained by the parent with unique pointers resulting in an asymmetric relationship.
 
-The std header type-traits is used in the implementation of class tree_iterator and const tree_iterator to avoid code duplication. The type of the iterator is a forward iterator which follows the tree traverse order. 
+The std header type-traits is used in the implementation of class tree_iterator and const tree_iterator to avoid code duplication. The type of the iterator is a forward iterator which follows the tree traverse order.
 
 In order to improve the runtime performance we used as much as possible one return per function, named return values (to trigger NRVO), forward references, inline keywards and implemented copy elision for the copy constructor of tree.
 
