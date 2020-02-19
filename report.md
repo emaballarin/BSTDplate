@@ -66,38 +66,24 @@ On the implementation side, these properties (or invariants) have been enforced 
 
 
 
-### APPENDIX I: Folder structure and execution steps
+### Folder structure and execution steps
 
-Folder structure
-The doc folder includes the doxy.in used to generate the documentation. Run the following to generate the Doxygen documentation,
-```
-make documentation
-```
-it will be contained in the subfolders html and latex.
+The `doc` folder includes the `doxy.in` used to generate the documentation. Run the following to generate the Doxygen documentation, it will be contained in the subfolders `html` and `latex`.
 
-The include folder contains the implementation of the class binary search tree (bst.hpp), class node(node.hpp) and class tree_iterator (iterator.hpp).
-Some basic tests are performed in the folder src to compile run
+```
+make docs
+```
+The include folder contains the implementation of the class binary search tree (``bst.hpp`), class node (`node.hpp`) and class tree_iterator (`iterator.hpp`). Some basic tests are performed in the folder `src` to compile run in the `src` directory.
+
 ```
 make
 ```
-in the src directory.
-
 The benchmarks folder contains the timings of the algorithm find implemented for our class bst and the std classes map and unordered map. The plots are saved in the directory bencharks/results along with the timings of the simulations for binary search tree, map and unordered map. To get the plots run the following in the results directory
 ```
 python script.py
 ```
 
 The Makefile is used to compile automatically our project in its various steps.
-
-
-
-
-
-
-
-
-
-
 
 
 
