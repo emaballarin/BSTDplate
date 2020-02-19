@@ -228,7 +228,7 @@ bst<kt, vt, cmp>::bst(const bst<kt, vt, cmp>& original)
             queue_this.pop();
         }
 
-        mycmp = std::copy(original.mycmp);
+        mycmp = original.mycmp;
         vec = std::vector<iterator>();
     }
 };
