@@ -60,7 +60,7 @@ class bst
      */
     inline bst(cmp c) : mycmp{c} {};
 
-    /**
+	/**
      * @brief custom constructor for a type-templated binary search tree
      */
     bst(const bst&);
@@ -96,10 +96,7 @@ class bst
     /**
      * @brief Clear function which clears the content of the binary search tree
      */
-    void clear() noexcept
-    {
-        root.reset();
-    }
+    void clear() noexcept{root.reset();}
 
     //(c)begin
     inline iterator begin() noexcept;
@@ -124,8 +121,11 @@ class bst
 
     /**
 	* @brief Put-to operator for a type templated binary search tree
-	* @param std::ostream reference
-	* @param PETOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+	* @param os std::ostream reference to the output stream to which the strings to be printed are appended
+	* @param bstree The const reference to the binary search tree instance to be printed
+	* @return std::ostream& The output stream to which strings have been appended
+	*
+	* Operator << prints the binary search tree in ascending key order
 	*/
     friend std::ostream& operator<<(std::ostream& os, const bst<kt, vt, cmp>& bstree)
     {
@@ -146,13 +146,13 @@ class bst
     void erase(const_key_type&);
 
     private:
-    /** PETOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO */
+	/** Comparison function or function object */
     cmp mycmp{};
 
-    /** The std::unique_ptr pointing to the root of the binary search tree */
+	/** The std::unique_ptr pointing to the root of the binary search tree */
     std::unique_ptr<node_type> root;
 
-    /** The std::vector that is defined as a vector of iterators */
+	/** The std::vector that is defined as a vector of iterators */
     std::vector<iterator> vec;
 
     // Private swap function
@@ -167,7 +167,7 @@ class bst
     void balance_sub_r(std::size_t, std::size_t);  //Node::set
 
     //helpers for erase
-    inline void exchange(iterator);       //Node::set
+    inline void exchange(iterator);              //Node::set
     void replace(iterator);               //Node::set
     void substitute(iterator, iterator);  //Node::set
     void detach_leaf(iterator) noexcept;
@@ -175,6 +175,7 @@ class bst
     //helpers for begin and end
     iterator leftmost(node_type*) const noexcept;
     iterator rightmost(node_type*) const noexcept;
+
 };
 
 /**
@@ -182,7 +183,7 @@ class bst
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @param original The bst object to be set as the new-bst element
+ * @param original The const reference to the binary search tree instance to be set as the new binary search tree element
  */
 template<typename kt, typename vt, typename cmp>
 bst<kt, vt, cmp>::bst(const bst<kt, vt, cmp>& original)
@@ -232,7 +233,7 @@ bst<kt, vt, cmp>::bst(const bst<kt, vt, cmp>& original)
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @param original The binary search tree to be move-assigned
+ * @param original The const reference to the binary search tree instance to be move-assigned
  */
 template<typename kt, typename vt, typename cmp>
 inline bst<kt, vt, cmp>& bst<kt, vt, cmp>::operator=(const bst<kt, vt, cmp>& original)
@@ -392,7 +393,7 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pa
 }
 
 /**
- * @brief Return an iterator to the left-most node, having as root the ... PETOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+ * @brief Return an iterator to the left-most node
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
@@ -405,11 +406,11 @@ inline typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::begin() noexcept
 }
 
 /**
- * @brief Return an iterator to the left-most node, having as root the ... PETOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+ * @brief Return an iterator to the left-most node
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @return Iterator to the left-most node
+ * @return Const iterator to the left-most node
  */
 template<typename kt, typename vt, typename cmp>
 inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::begin() const noexcept
@@ -419,11 +420,11 @@ inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::begin() const
 }
 
 /**
- * @brief Return an iterator to the left-most node, having as root the ... PETOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+ * @brief Return a const iterator to the left-most node
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @return Iterator to the left-most node
+ * @return Const iterator to the left-most node
  */
 template<typename kt, typename vt, typename cmp>
 inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cbegin() const noexcept
@@ -437,6 +438,7 @@ inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cbegin() cons
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
+ * @param node The pointer to the pair defining the node of the binary search tree 
  * @return Iterator to one-past the last element
  */
 template<typename kt, typename vt, typename cmp>
@@ -469,11 +471,11 @@ inline typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::end() noexcept
 }
 
 /**
- * @brief Return an iterator to one-past the last element
+ * @brief Return a const iterator to one-past the last element
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @return Iterator to one-past the last element
+ * @return Const iterator to one-past the last element
  */
 template<typename kt, typename vt, typename cmp>
 inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::end() const noexcept
@@ -483,11 +485,11 @@ inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::end() const n
 }
 
 /**
- * @brief Return an iterator to one-past the last element
+ * @brief Return a const iterator to one-past the last element
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @return Iterator to one-past the last element
+ * @return Const iterator to one-past the last element
  */
 template<typename kt, typename vt, typename cmp>
 inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cend() const noexcept
@@ -501,6 +503,7 @@ inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cend() const 
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
+ * @param node The pointer to the pair defining the node of the binary search tree 
  * @return Iterator to one-past the last element
  */
 template<typename kt, typename vt, typename cmp>
@@ -568,12 +571,12 @@ inline void bst<kt, vt, cmp>::detach() noexcept
 }
 
 /**
- * @brief PETOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+ * @brief Recursive balancing of the left subtree
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @param left std::size_t
- * @param right std::size_t
+ * @param left std::size_t the first index which points to the left-most non-allocated element of the binary search tree
+ * @param middle std::size_t the last index which points to the right-most non-allocated element of the binary search tree
  */
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::balance_sub_l(std::size_t left, std::size_t middle)
@@ -594,12 +597,12 @@ void bst<kt, vt, cmp>::balance_sub_l(std::size_t left, std::size_t middle)
 }
 
 /**
- * @brief PETOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+ * @brief Recursive balancing of the right subtree
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @param left std::size_t
- * @param right std::size_t
+ * @param middle std::size_t the first index which points to the left-most non-allocated element of the binary search tree
+ * @param right std::size_t the last index which points to the right-most non-allocated element of the binary search tree
  */
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::balance_sub_r(std::size_t middle, std::size_t right)
@@ -624,7 +627,7 @@ void bst<kt, vt, cmp>::balance_sub_r(std::size_t middle, std::size_t right)
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @param x The reference to the const  key PETOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+ * @param x The right value reference to the key that should be searched
  * @return Reference to the value that is mapped to a key equivalent to x
  */
 template<typename kt, typename vt, typename cmp>
@@ -639,7 +642,7 @@ inline typename bst<kt, vt, cmp>::value_type& bst<kt, vt, cmp>::operator[](typen
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @param x The right value reference to the key PETOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+ * @param x The right value reference to the key that should be searched
  * @return Reference to the value that is mapped to a key equivalent to x
  */
 template<typename kt, typename vt, typename cmp>
@@ -650,11 +653,13 @@ inline typename bst<kt, vt, cmp>::value_type& bst<kt, vt, cmp>::operator[](typen
 }
 
 /**
- * @brief Removes the element (if one exists) with the key equivalent to key
+ * @brief Removes the element (if one exists) with the key equivalent to key passed
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @param x The reference to the const key PETOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+ * @param x Left value reference to the key that should be searched
+ *
+ * It, recursively, erases the node if founded
  */
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::erase(typename bst<kt, vt, cmp>::const_key_type& x)
@@ -681,11 +686,11 @@ void bst<kt, vt, cmp>::erase(typename bst<kt, vt, cmp>::const_key_type& x)
 }
 
 /**
- * @brief Service function of erase() which calls replace() if the erased node has one child, or detach_leaf if the erased node is a leaf
+ * @brief Service function of erase() which calls replace() if the erased node has one child, or detach_leaf() if the erased node is a leaf
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @param actual The iterator to the pointed node
+ * @param actual The iterator to the pointed node 
  */
 template<typename kt, typename vt, typename cmp>
 inline void bst<kt, vt, cmp>::exchange(typename bst<kt, vt, cmp>::iterator actual)
@@ -701,12 +706,13 @@ inline void bst<kt, vt, cmp>::exchange(typename bst<kt, vt, cmp>::iterator actua
 }
 
 /**
- * @brief Erase a node with only one child
+ * @brief Detach a node with only one child
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @param substituting The iterator to the pointed node PETOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+ * @param substituting The iterator to the pointed node to be detached
  *
+ * It detaches the current node pointed by the iterator substituting linking the parent node with the only child of current node
  * It consists of two nested if-clauses: the first checks if the node to be erased is left or right, the second checks if its child is left or right
  */
 template<typename kt, typename vt, typename cmp>
@@ -771,13 +777,18 @@ void bst<kt, vt, cmp>::replace(typename bst<kt, vt, cmp>::iterator substituting)
     }
 }
 
-/**The node to_be_substituted has two children, substituting
-has no children and parent. At the end of the procedure to_be_substituted is
-detached and needs to be erased or reattached properly.*/
+/**
+ * @brief Detach a node with two children
+ * @tparam kt Typename of the key belonging to the element of the node
+ * @tparam vt Typename of the value belonging to the element of the node
+ * @tparam cmp Typename of the comparison function or function object
+ * @param to_be_substituted The iterator to the pointed node which should be detached 
+ * @param substituting The iterator to the pointed node which substitutes the node which is pointed by the iterator to_be_substituted 
+ */
 
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::substitute(typename bst<kt, vt, cmp>::iterator to_be_substituted,
-                                  typename bst<kt, vt, cmp>::iterator substituting)
+                                         typename bst<kt, vt, cmp>::iterator substituting)
 {
     iterator left{to_be_substituted->read_lc().get()};
     iterator right{to_be_substituted->read_rc().get()};
@@ -808,6 +819,13 @@ void bst<kt, vt, cmp>::substitute(typename bst<kt, vt, cmp>::iterator to_be_subs
     }
 }
 
+/**
+ * @brief Detach a terminal node (or leaf)
+ * @tparam kt Typename of the key belonging to the element of the node
+ * @tparam vt Typename of the value belonging to the element of the node
+ * @tparam cmp Typename of the comparison function or function object
+ * @param erasing The iterator to the pointed node which should be detached 
+ */
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::detach_leaf(typename bst<kt, vt, cmp>::iterator erasing) noexcept
 {
@@ -827,8 +845,17 @@ void bst<kt, vt, cmp>::detach_leaf(typename bst<kt, vt, cmp>::iterator erasing) 
         root.release();
     }
 }
-
-
+ 
+/**
+ * @brief Inserts a new element into the container constructed in-place with the given args
+ * @tparam kt Typename of the key belonging to the element of the node
+ * @tparam vt Typename of the value belonging to the element of the node
+ * @tparam cmp Typename of the comparison function or function object
+ * @param args Parameter pack
+ * @return std::pair of an iterator, pointing to the node, and a bool
+ *
+ * Emplace() inserts a new element if there is no element with the key in the container
+ */
 template<typename kt, typename vt, typename cmp>
 template<typename... Types>
 std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(Types&&... args)
@@ -838,6 +865,16 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::emplace(T
     return to_be_ret;
 }
 
+/**
+ * @brief Find a given key
+ * @tparam kt Typename of the key belonging to the element of the node
+ * @tparam vt Typename of the value belonging to the element of the node
+ * @tparam cmp Typename of the comparison function or function object
+ * @param key Left value reference to the key that should be searched
+ * @return std::pair of an iterator, pointing to the node, and a bool
+ *
+ * If the key is present, returns an iterator to the proper node, end() otherwise
+ */
 template<typename kt, typename vt, typename cmp>
 typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key)
 {
@@ -883,6 +920,16 @@ typename bst<kt, vt, cmp>::iterator bst<kt, vt, cmp>::find(const key_type& key)
     return iter_ret;
 }
 
+/**
+ * @brief Find a given key
+ * @tparam kt Typename of the key belonging to the element of the node
+ * @tparam vt Typename of the value belonging to the element of the node
+ * @tparam cmp Typename of the comparison function or function object
+ * @param key Left value reference to the key that should be searched
+ * @return std::pair of a const iterator, pointing to the node, and a bool
+ *
+ * If the key is present, returns an iterator to the proper node, end() otherwise
+ */
 template<typename kt, typename vt, typename cmp>
 inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find(const key_type& key) const
 {
@@ -890,13 +937,30 @@ inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::find(const ke
     return iter;
 }
 
+/**
+ * @brief Non-throwing swap between trees, using the handle-body idiom
+ * @tparam kt Typename of the key belonging to the element of the node
+ * @tparam vt Typename of the value belonging to the element of the node
+ * @tparam cmp Typename of the comparison function or function object
+ * @param given The const reference to the binary search tree instance to be swapped
+*/
 template<typename kt, typename vt, typename cmp>
 inline void bst<kt, vt, cmp>::swap(bst<kt, vt, cmp>& given) noexcept
 {
-    this->root.swap(given.root);
+        this->root.swap(given.root);
 }
 
-// User provided cmp-equality
+/**
+ * @brief User provided cmp-equality
+ * @tparam kt Typename of the key belonging to the element of the node
+ * @tparam vt Typename of the value belonging to the element of the node
+ * @tparam cmp Typename of the comparison function or function object
+ * @param lhs The left value belonging to the element of the node which should be compared
+ * @param rhs The right value belonging to the element of the node which should be compared
+ * @return bool
+ *
+ * It returns true is the two arguments are equal
+ */
 template<typename kt, typename vt, typename cmp>
 inline bool bst<kt, vt, cmp>::ecmp(kt lhs, kt rhs)
 {
