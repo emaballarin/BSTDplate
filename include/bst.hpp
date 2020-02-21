@@ -192,7 +192,7 @@ class bst
  */
 template<typename kt, typename vt, typename cmp>
 template<typename FW>
-std::pair<typename bst<kt, vt, cmp>::iterator, bool> _insert(FW&& pair)
+std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::_insert(FW&& pair)
 {
 std::pair<iterator, bool> to_be_ret = std::pair<iterator, bool>();
 node_type* cursor = this->root.get();
