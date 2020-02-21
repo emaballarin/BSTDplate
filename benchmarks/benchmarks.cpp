@@ -15,7 +15,7 @@
 
 
 timer<> t;
-template<class Tree, typename Pair, bool bst_custom=false>
+template<class Tree, typename Pair, bool bst_custom = false>
 void benchmarks(Rand_int r, std::string title, std::size_t max)
 {
 
@@ -42,7 +42,7 @@ void benchmarks(Rand_int r, std::string title, std::size_t max)
     file.close();
 }
 
-template<class Tree, typename Pair, bool bst_custom=false>
+template<class Tree, typename Pair, bool bst_custom = false>
 void benchmarks(Rand_double r, std::string title, std::size_t max)
 {
 
@@ -103,11 +103,11 @@ int main()
     benchmarks<std::map<int, int>, std::pair<int, int>>(ri, "map_int_int", max);
     benchmarks<std::unordered_map<int, int>, std::pair<int, int>>(ri, "umap_int_int", max);
 
-    benchmarks<bst<double, double>,std::pair<double, double>, true>(rd, "bst_double_double", max);
-    benchmarks<std::map<double, double>,std::pair<double, double>>(rd, "map_double_double", max);
-    benchmarks<std::unordered_map<double, double>,std::pair<double, double>>(rd, "umap_double_double", max);
+    benchmarks<bst<double, double>, std::pair<double, double>, true>(rd, "bst_double_double", max);
+    benchmarks<std::map<double, double>, std::pair<double, double>>(rd, "map_double_double", max);
+    benchmarks<std::unordered_map<double, double>, std::pair<double, double>>(rd, "umap_double_double", max);
 
     benchmarks<bst<char, char>, std::pair<char, char>, true>(rc, "bst_char_char", max);
     benchmarks<std::map<char, char>, std::pair<char, char>>(rc, "map_char_char", max);
-    benchmarks<std::unordered_map<char, char>,std::pair<char, char>>(rc, "umap_char_char", max);
+    benchmarks<std::unordered_map<char, char>, std::pair<char, char>>(rc, "umap_char_char", max);
 }

@@ -44,12 +44,14 @@ class tree_iterator
 
     friend tree_iterator<node, !Const>;
 
-    inline tree_iterator()= default; //deleted since it would coincide with end
+    inline tree_iterator() = default;  //deleted since it would coincide with end
     /**
      * @brief custom constructor
      * @param given The pointer to the node
      */
-    explicit tree_iterator(value_type* given) noexcept : current{given} {}
+    explicit tree_iterator(value_type* given) noexcept : current{given}
+    {
+    }
 
     /**
      * @brief constructor from const or non const iterator
@@ -65,13 +67,19 @@ class tree_iterator
      * @brief Dereference operator
      * @return reference to the current node
      */
-    reference operator*() const{ return *current;}
+    reference operator*() const
+    {
+        return *current;
+    }
 
     /**
      * @brief Access member of current
      * @return pointer to current node
      */
-    pointer operator->() const{return &(*(*this));}
+    pointer operator->() const
+    {
+        return &(*(*this));
+    }
 
     tree_iterator operator++() noexcept;
     inline tree_iterator operator++(int) noexcept;  // Acceptable warning (clang-tidy)
