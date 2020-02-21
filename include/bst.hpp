@@ -176,6 +176,69 @@ class bst
     iterator leftmost(node_type*) const noexcept;
     iterator rightmost(node_type*) const noexcept;
 
+    template<typename FW>
+    std::pair<iterator, bool>_insert(FW&& pair)
+    {
+        std::pair<iterator, bool> to_be_ret = std::pair<iterator, bool>();
+        node_type* cursor = this->root.get();
+
+        if (!cursor)
+        {
+            root.reset(new node_type{std::forward<FW>(pair)});
+            iterator found_key = iterator(this->root.get());
+            to_be_ret.first = found_key;
+            to_be_ret.second = true;
+        }
+        else
+        {
+            kt cursor_key = cursor->read_elem().first;
+
+            while (true)
+            {
+                if (node_type* r_child = cursor->read_rc().get(); (mycmp(cursor_key, pair.first)) && (r_child))
+                {
+                    cursor = r_child;
+                    cursor_key = cursor->read_elem().first;
+                }
+                else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get();
+                         (mycmp(pair.first, cursor_key)) && (l_child))
+                {
+                    cursor = l_child;
+                    cursor_key = cursor->read_elem().first;
+                }
+                else
+                {
+                    if (ecmp(cursor_key, pair.first))
+                    {
+                        iterator found_key = iterator(cursor);
+                        to_be_ret.first = found_key;
+                        to_be_ret.second = false;
+                        break;
+                    }
+                    else
+                    {
+                        if (mycmp(cursor_key, pair.first))
+                        {
+                            cursor->set_rc(new node_type(std::forward<FW>(pair)));
+                            iterator found_key = iterator(cursor->read_rc().get());
+                            to_be_ret.first = found_key;
+                            to_be_ret.second = true;
+                        }
+                        else
+                        {
+                            cursor->set_lc(new node_type(std::forward<FW>(pair)));
+                            iterator found_key = iterator(cursor->read_lc().get());
+                            to_be_ret.first = found_key;
+                            to_be_ret.second = true;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        return to_be_ret;
+    }
+
 };
 
 /**
@@ -259,64 +322,7 @@ inline bst<kt, vt, cmp>& bst<kt, vt, cmp>::operator=(const bst<kt, vt, cmp>& ori
 template<typename kt, typename vt, typename cmp>
 std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(const pair_type& pair)
 {
-    std::pair<iterator, bool> to_be_ret = std::pair<iterator, bool>();
-    node_type* cursor = this->root.get();
-
-    if (!cursor)
-    {
-        root.reset(new node_type{pair});
-        iterator found_key = iterator(this->root.get());
-        to_be_ret.first = found_key;
-        to_be_ret.second = true;
-    }
-    else
-    {
-        kt cursor_key = cursor->read_elem().first;
-
-        while (true)
-        {
-            if (node_type* r_child = cursor->read_rc().get(); (mycmp(cursor_key, pair.first)) && (r_child))
-            {
-                cursor = r_child;
-                cursor_key = cursor->read_elem().first;
-            }
-            else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get();
-                     (mycmp(pair.first, cursor_key)) && (l_child))
-            {
-                cursor = l_child;
-                cursor_key = cursor->read_elem().first;
-            }
-            else
-            {
-                if (ecmp(cursor_key, pair.first))
-                {
-                    iterator found_key = iterator(cursor);
-                    to_be_ret.first = found_key;
-                    to_be_ret.second = false;
-                    break;
-                }
-                else
-                {
-                    if (mycmp(cursor_key, pair.first))
-                    {
-                        cursor->set_rc(new node_type(pair));
-                        iterator found_key = iterator(cursor->read_rc().get());
-                        to_be_ret.first = found_key;
-                        to_be_ret.second = true;
-                    }
-                    else
-                    {
-                        cursor->set_lc(new node_type(pair));
-                        iterator found_key = iterator(cursor->read_lc().get());
-                        to_be_ret.first = found_key;
-                        to_be_ret.second = true;
-                    }
-                    break;
-                }
-            }
-        }
-    }
-    return to_be_ret;
+  return _insert(pair);
 }
 
 /**
@@ -332,64 +338,7 @@ std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(co
 template<typename kt, typename vt, typename cmp>
 std::pair<typename bst<kt, vt, cmp>::iterator, bool> bst<kt, vt, cmp>::insert(pair_type&& pair)
 {
-    std::pair<iterator, bool> to_be_ret = std::pair<iterator, bool>();
-    node_type* cursor = this->root.get();
-
-    if (!cursor)
-    {
-        root.reset(new node_type{pair});
-        iterator found_key = iterator(this->root.get());
-        to_be_ret.first = found_key;
-        to_be_ret.second = true;
-    }
-    else
-    {
-        kt cursor_key = cursor->read_elem().first;
-
-        while (true)
-        {
-            if (node_type* r_child = cursor->read_rc().get(); (mycmp(cursor_key, pair.first)) && (r_child))
-            {
-                cursor = r_child;
-                cursor_key = cursor->read_elem().first;
-            }
-            else if (Node<std::pair<const kt, vt>>* l_child = cursor->read_lc().get();
-                     (mycmp(pair.first, cursor_key)) && (l_child))
-            {
-                cursor = l_child;
-                cursor_key = cursor->read_elem().first;
-            }
-            else
-            {
-                if (ecmp(cursor_key, pair.first))
-                {
-                    iterator found_key = iterator(cursor);
-                    to_be_ret.first = found_key;
-                    to_be_ret.second = false;
-                    break;
-                }
-                else
-                {
-                    if (mycmp(cursor_key, pair.first))
-                    {
-                        cursor->set_rc(new node_type(pair));
-                        iterator found_key = iterator(cursor->read_rc().get());
-                        to_be_ret.first = found_key;
-                        to_be_ret.second = true;
-                    }
-                    else
-                    {
-                        cursor->set_lc(new node_type(pair));
-                        iterator found_key = iterator(cursor->read_lc().get());
-                        to_be_ret.first = found_key;
-                        to_be_ret.second = true;
-                    }
-                    break;
-                }
-            }
-        }
-    }
-    return to_be_ret;
+    return _insert(std::move(pair));
 }
 
 /**
@@ -438,7 +387,7 @@ inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cbegin() cons
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @param node The pointer to the pair defining the node of the binary search tree 
+ * @param node The pointer to the pair defining the node of the binary search tree
  * @return Iterator to one-past the last element
  */
 template<typename kt, typename vt, typename cmp>
@@ -503,7 +452,7 @@ inline typename bst<kt, vt, cmp>::const_iterator bst<kt, vt, cmp>::cend() const 
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @param node The pointer to the pair defining the node of the binary search tree 
+ * @param node The pointer to the pair defining the node of the binary search tree
  * @return Iterator to one-past the last element
  */
 template<typename kt, typename vt, typename cmp>
@@ -690,7 +639,7 @@ void bst<kt, vt, cmp>::erase(typename bst<kt, vt, cmp>::const_key_type& x)
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @param actual The iterator to the pointed node 
+ * @param actual The iterator to the pointed node
  */
 template<typename kt, typename vt, typename cmp>
 inline void bst<kt, vt, cmp>::exchange(typename bst<kt, vt, cmp>::iterator actual)
@@ -782,8 +731,8 @@ void bst<kt, vt, cmp>::replace(typename bst<kt, vt, cmp>::iterator substituting)
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @param to_be_substituted The iterator to the pointed node which should be detached 
- * @param substituting The iterator to the pointed node which substitutes the node which is pointed by the iterator to_be_substituted 
+ * @param to_be_substituted The iterator to the pointed node which should be detached
+ * @param substituting The iterator to the pointed node which substitutes the node which is pointed by the iterator to_be_substituted
  */
 
 template<typename kt, typename vt, typename cmp>
@@ -824,7 +773,7 @@ void bst<kt, vt, cmp>::substitute(typename bst<kt, vt, cmp>::iterator to_be_subs
  * @tparam kt Typename of the key belonging to the element of the node
  * @tparam vt Typename of the value belonging to the element of the node
  * @tparam cmp Typename of the comparison function or function object
- * @param erasing The iterator to the pointed node which should be detached 
+ * @param erasing The iterator to the pointed node which should be detached
  */
 template<typename kt, typename vt, typename cmp>
 void bst<kt, vt, cmp>::detach_leaf(typename bst<kt, vt, cmp>::iterator erasing) noexcept
@@ -845,7 +794,7 @@ void bst<kt, vt, cmp>::detach_leaf(typename bst<kt, vt, cmp>::iterator erasing) 
         root.release();
     }
 }
- 
+
 /**
  * @brief Inserts a new element into the container constructed in-place with the given args
  * @tparam kt Typename of the key belonging to the element of the node
